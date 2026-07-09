@@ -116,9 +116,9 @@
     "grades_sp_item_write_title": "Write it out.",
     "grades_sp_item_write_sub": "We'll make sure someone sees it.",
     "grades_sp_cta": "Need to talk to someone right away? <strong>Call 988.</strong>",
-    "grades_video_spark_grades": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
+    "grades_gj_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
     "grades_video_spark_attend": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
-    "grades_gj_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">"
+    "grades_video_spark_grades": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">"
   },
   "helpful-content": {
     "helpful_intro_heading": "Lots of students feel this way sometimes",
@@ -320,12 +320,12 @@
     "toolkit_support_item2_sub": "We'll make sure someone sees it.",
     "toolkit_support_cta": "Need to talk to someone right away? <strong>Call 988.</strong>",
     "toolkit_video_close_btn": "✕ Zamknij",
-    "toolkit_video_sparks_simple": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
-    "toolkit_video_sparks_hero": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
-    "toolkit_video_sparks_calming": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
-    "toolkit_video_sparks_resilience": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_doitagain_2": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_sparks_doitagain_1": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
-    "toolkit_video_sparks_doitagain_2": "1 <img src=\"./components/spark.svg\" alt=\"spark\">"
+    "toolkit_video_sparks_resilience": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_calming": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_hero": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_simple": "1 <img src=\"./components/spark.svg\" alt=\"spark\">"
   },
   "notice-wins": {
     "notice_wins_status_time": "9:41 Mon Jun 6",
@@ -381,7 +381,7 @@
     "onboarding_btn_next_s6": "Next",
     "onboarding_s7_reward_plus": "+10",
     "onboarding_s7_title": "Set-up\nComplete",
-    "onboarding_s7_bubble_green": "You earned 10 Sparkz! Every time you check in and do an activity, you earn more.",
+    "onboarding_s7_bubble_green": "You earned 10 Sparks! Every time you check in and do an activity, you earn more.",
     "onboarding_btn_start_mood": "Start with Your Mood",
     "onboarding_support_handle_label": "Talk",
     "onboarding_support_panel_title": "Need someone to talk to?",
