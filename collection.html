@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Collection</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Back button ───────────────────────────────────────────────── */
+.back-btn {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.12); border: 1px solid #444450; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 10; box-sizing: border-box;
+  transition: opacity 120ms;
+}
+.back-btn:active { opacity: 0.7; }
+
+/* ─── Main layout ───────────────────────────────────────────────── */
+.coll-layout {
+  position: absolute; top: 120px; left: 30px; right: 40px; bottom: 24px;
+  display: flex; gap: 72px;
+}
+
+/* ─── Left panel background ─────────────────────────────────────── */
+.coll-left-bg {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 382px;
+  background: #2b2b32; z-index: 0; pointer-events: none;
+}
+
+/* ─── Left panel ────────────────────────────────────────────────── */
+.coll-left {
+  width: 320px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 0;
+  position: relative; z-index: 1;
+}
+
+/* Counter */
+.coll-counter {
+  display: flex; align-items: baseline; gap: 2px;
+  line-height: 1; margin-bottom: 12px;
+}
+.coll-count-main {
+  font-family: var(--font-display); font-weight: 400; font-size: 96px; color: #f2f3e5;
+}
+.coll-count-denom {
+  font-family: var(--font-display); font-weight: 400; font-size: 48px; color: rgba(242,243,229,0.35);
+}
+
+/* Progress bar */
+.coll-progress-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+}
+.coll-progress-track {
+  flex: 1; height: 4px; background: #36363f; border-radius: 2px; overflow: hidden;
+}
+.coll-progress-fill {
+  height: 100%; background: #f2f3e5; border-radius: 2px;
+  transition: width 600ms var(--ease-out-soft);
+}
+.coll-progress-label {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  line-height: 20px; color: #f2f3e5; white-space: nowrap; flex-shrink: 0;
+}
+.coll-progress-label img { width: 16px; height: 16px; display: block; }
+
+/* Description */
+.coll-desc {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  line-height: 20px; color: #a4a59f; margin-bottom: 32px;
+}
+
+/* Category list */
+.coll-list { border-top: 1px solid #36363f; }
+.coll-list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 4px; border-bottom: 1px solid #36363f;
+}
+.coll-list-icon { width: 20px; height: 20px; display: block; flex-shrink: 0; }
+.coll-list-name {
+  flex: 1;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  line-height: 20px; color: #f2f3e5;
+}
+.coll-list-count {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  line-height: 20px; color: #a4a59f;
+}
+
+/* ─── Right panel ───────────────────────────────────────────────── */
+.coll-right {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none; padding-bottom: 8px;
+}
+.coll-right::-webkit-scrollbar { display: none; }
+
+/* Fade-out at bottom to hint scrollability */
+.coll-right-wrap { position: relative; }
+.coll-right-fade {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+  background: linear-gradient(to bottom, transparent, #1f1f25);
+  pointer-events: none; z-index: 2;
+}
+
+.coll-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+
+.coll-card {
+  aspect-ratio: 237 / 353;
+  border-radius: 14px; overflow: hidden; position: relative;
+}
+.coll-card.collected img {
+  width: 100%; height: 100%; display: block; object-fit: fill;
+}
+.coll-card.empty {
+  background: #2b2b32; border: 1px solid #36363f;
+}
+
+</style>
+</head>
+<body>
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span data-content="collection_status_time">9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <div class="coll-left-bg"></div>
+
+  <button class="back-btn" onclick="window.location.href='sparks.html'">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="coll-layout">
+
+    <!-- Left: stats -->
+    <div class="coll-left">
+      <div class="coll-counter">
+        <span class="coll-count-main" id="countNum">4</span>
+        <span class="coll-count-denom" id="countDenom" data-content="collection_count_denom">/20</span>
+      </div>
+
+      <div class="coll-progress-row">
+        <div class="coll-progress-track">
+          <div class="coll-progress-fill" id="progressFill"></div>
+        </div>
+        <span class="coll-progress-label" data-content="collection_progress_sparks">+30 <img src="./components/Spark-4.svg" alt="sparks"></span>
+      </div>
+
+      <p class="coll-desc" data-content="collection_desc">
+        You're starting your collection.<br>
+        Every card is one more step on your journey.
+      </p>
+
+      <div class="coll-list" id="catList"></div>
+    </div>
+
+    <!-- Right: scrollable grid -->
+    <div class="coll-right">
+      <div class="coll-grid" id="cardGrid"></div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+// ── Collection data ──────────────────────────────────────────────
+const TOTAL = 20;
+
+const SECTIONS = [
+  { key: 'mood',  label: 'Mood check-in',   icon: './components/section-icon-mood.svg',  asset: 'Mood-checkin-04.svg' },
+  { key: 'about', label: 'All about you',    icon: './components/section-icon-about.svg', asset: 'All-a-y-04.svg' },
+  { key: 'wins',  label: 'Notice your wins', icon: './components/section-icon-wins.svg',  asset: 'Notice-y-w-04.svg' },
+  { key: 'write', label: 'Write it out',     icon: './components/section-icon-write.svg', asset: 'Write-i-o-04.svg' },
+];
+
+const doneSections = JSON.parse(localStorage.getItem('bp_today_sections') || '["mood"]');
+const collected    = SECTIONS.filter(s => doneSections.includes(s.key));
+const count        = collected.length;
+const pct          = Math.round((count / TOTAL) * 100);
+
+// ── Update counter & progress ────────────────────────────────────
+document.getElementById('countNum').textContent    = count;
+document.getElementById('progressFill').style.width = pct + '%';
+
+// ── Category list ────────────────────────────────────────────────
+const listEl = document.getElementById('catList');
+SECTIONS.forEach(s => {
+  const done  = doneSections.includes(s.key);
+  const item  = document.createElement('div');
+  item.className = 'coll-list-item';
+  item.innerHTML = `
+    <img class="coll-list-icon" src="${s.icon}" alt="">
+    <span class="coll-list-name" style="color:${done ? '#f2f3e5' : '#636360'}">${s.label}</span>
+    <span class="coll-list-count">${done ? '1' : '0'}</span>`;
+  listEl.appendChild(item);
+});
+
+// ── Card grid ────────────────────────────────────────────────────
+const gridEl = document.getElementById('cardGrid');
+
+// Collected cards first (in order)
+collected.forEach(s => {
+  const card  = document.createElement('div');
+  card.className = 'coll-card collected';
+  const img   = document.createElement('img');
+  img.src = `./components/${s.asset}`;
+  img.alt = s.label;
+  card.appendChild(img);
+  gridEl.appendChild(card);
+});
+
+// Empty slots to fill up to TOTAL
+const empties = TOTAL - count;
+for (let i = 0; i < empties; i++) {
+  const card = document.createElement('div');
+  card.className = 'coll-card empty';
+  gridEl.appendChild(card);
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

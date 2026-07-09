@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Journey</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+.today-sidebar {
+  position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
+  width: 80px; height: 786px;
+  background: #2b2b32; border-radius: 20px;
+  padding: 24px 8px; box-sizing: border-box;
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: center; z-index: 10;
+}
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 400; font-size: 16px; color: #8e8b85;
+  text-transform: uppercase; text-align: center; letter-spacing: 0.5px;
+  height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 12px; }
+.nav-item {
+  width: 64px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 8px 0; cursor: pointer;
+  transition: background 140ms;
+}
+.nav-item.active { background: #1f1f25; }
+.nav-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+.nav-icon { width: 24px; height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.nav-icon img { width: 24px; height: 24px; display: block; }
+.nav-item.active .nav-icon img { filter: brightness(0) invert(1); }
+.nav-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px; line-height: 16px;
+}
+.nav-item.active .nav-label { color: #f2f3e5; }
+.sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #b8c0ed no-repeat center / cover;
+  border: 2px solid #36363f; overflow: hidden; box-sizing: border-box;
+}
+.user-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+}
+
+/* ─── Main ──────────────────────────────────────────────────── */
+.journey-main {
+  position: absolute; left: 152px; top: 72px; right: 24px; bottom: 0;
+  display: flex; flex-direction: column;
+}
+
+/* ─── Header ────────────────────────────────────────────────── */
+.journey-title {
+  font-family: var(--font-display); font-weight: 400; font-size: var(--title-medium-size); line-height: var(--title-medium-lh);
+  letter-spacing: 0; color: #f2f3e5; margin: 0 0 16px;
+}
+.journey-sub {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px; margin: 0;
+}
+
+/* ─── Tab pills ─────────────────────────────────────────────── */
+.tab-pills { display: flex; gap: 8px; margin-bottom: 24px; }
+.tab-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  height: 40px; padding: 0 20px; border-radius: 12px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  cursor: pointer; border: none; transition: background 150ms, color 150ms;
+}
+.tab-pill-active   { background: #f2f3e5; color: #1f1f25; }
+.tab-pill-inactive { background: #2b2b35; color: rgba(242,243,229,0.5); }
+.journey-header    { margin-bottom: 36px; }
+
+/* ─── Tab panels ────────────────────────────────────────────── */
+.period-panel { display: none; flex-direction: column; gap: 32px; }
+.period-panel.active { display: flex; }
+
+/* ─── Stat cards grid (This month) ─────────────────────────── */
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.stat-card {
+  height: 200px; border-radius: 16px;
+  border: 1px solid #36363f; background: #1f1f25;
+  padding: 24px; box-sizing: border-box;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.stat-label {
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #a4a59f; margin: 0; letter-spacing: -0.1px; line-height: 20px;
+  width: 168px; position: relative; z-index: 1;
+}
+.stat-big {
+  font-family: var(--font-display); font-weight: 400; font-size: 48px; line-height: 48px;
+  color: #f2f3e5; margin: 0; letter-spacing: 0;
+  position: relative; z-index: 1;
+}
+.stat-wzor {
+  position: absolute; left: 279px; top: 0px;
+  width: 300px; height: 300px; overflow: hidden; pointer-events: none;
+}
+.stat-wzor img { width: 300px; height: 300px; display: block; }
+
+/* ─── Stat detail overlay ───────────────────────────────────── */
+.stat-detail-ov {
+  position: absolute; inset: 0; z-index: 50;
+  pointer-events: none; display: none;
+  background: #1f1f25;
+}
+.stat-detail-ov.open { display: flex; pointer-events: all; }
+.stat-detail-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+.stat-detail-back {
+  position: absolute; left: 24px; top: 36px;
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.16); border: none; border-radius: 8px;
+  display: grid; place-items: center;
+  cursor: pointer; z-index: 10; transition: background 120ms;
+}
+.stat-detail-back:hover { background: rgba(255,255,255,0.24); }
+.stat-detail-back:active { opacity: 0.7; }
+
+/* Left info panel */
+.sdo-left {
+  width: 380px; flex-shrink: 0; box-sizing: border-box;
+  padding: 100px 36px 40px;
+  display: flex; flex-direction: column; gap: 20px;
+  border-right: 1px solid #2b2b32;
+}
+.sdo-stat-lbl {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sdo-num {
+  font-family: var(--font-display); font-weight: 400; font-size: 88px; line-height: 1;
+  color: #f2f3e5; margin: 0; letter-spacing: 1px;
+}
+.sdo-period {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #737472; margin: -10px 0 0;
+}
+.sdo-enc {
+  background: #2b2b32; border-radius: 16px; padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.sdo-enc-text {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.5; margin: 0;
+}
+.sdo-enc-link {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; cursor: pointer;
+}
+.sdo-sub {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; line-height: 1.5; margin: 0;
+}
+
+/* Right visualization panel */
+.sdo-right { flex: 1; position: relative; overflow: hidden; }
+
+/* ── Feelings: emotion bubbles ────────────────────────────── */
+.sdo-bubbles { position: relative; width: 100%; height: 100%; }
+.em-bubble {
+  position: absolute; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+}
+.em-bubble-name {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #f2f3e5; text-align: center; line-height: 1; padding: 0 8px;
+}
+.em-bubble-ct {
+  font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.55); line-height: 1;
+}
+
+/* ── Check-ins: calendar ─────────────────────────────────── */
+.sdo-calendar { padding: 70px 50px 40px; display: flex; flex-direction: column; gap: 14px; }
+.cal-month {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500; color: #737472; margin: 0;
+}
+.cal-week-hdr {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+}
+.cal-wday {
+  font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  color: #444450; text-align: center;
+}
+.cal-grid { display: flex; flex-direction: column; gap: 8px; }
+.cal-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.cal-cell {
+  aspect-ratio: 1; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+}
+.cal-cell.done   { background: rgba(242,243,229,0.15); color: #f2f3e5; }
+.cal-cell.missed { background: rgba(255,255,255,0.04); color: #444450; }
+.cal-cell.future { color: #2b2b35; }
+.cal-cell.today  { background: rgba(242,243,229,0.22); color: #f2f3e5; outline: 2px solid rgba(242,243,229,0.35); outline-offset: -2px; }
+
+/* ── Sparkz: dots + weekly bars ──────────────────────────── */
+.sdo-sparks { padding: 70px 50px 40px; display: flex; flex-direction: column; gap: 28px; }
+.sdo-sparks-big {
+  font-family: var(--font-display); font-weight: 400; font-size: 100px; line-height: 1;
+  color: #f2f3e5; margin: 0; letter-spacing: 1px;
+}
+.sdo-sparks-lbl {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; margin: -8px 0 0;
+}
+.spark-dots { display: flex; flex-wrap: wrap; gap: 5px; max-width: 430px; }
+.spark-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: rgba(242,243,229,0.1);
+}
+.spark-dot.lit { background: rgba(242,243,229,0.82); }
+.sdo-weeks { display: flex; gap: 16px; align-items: flex-end; }
+.sdo-week { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.sdo-week-bars { width: 72px; height: 96px; display: flex; align-items: flex-end; }
+.sdo-week-bar { width: 100%; border-radius: 6px; }
+.sdo-week-num {
+  font-family: var(--font-display); font-weight: 400; font-size: 20px;
+  color: #f2f3e5; line-height: 1;
+}
+.sdo-week-lbl {
+  font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #737472;
+}
+
+/* ── Toolkit: activity bubbles ───────────────────────────── */
+.sdo-toolkit { position: relative; width: 100%; height: 100%; }
+.tool-bubble {
+  position: absolute; border-radius: 50%;
+  background: #2b2b32; border: 1px solid #36363f;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+}
+.tool-bubble-name {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #f2f3e5; text-align: center; line-height: 1.25; padding: 0 12px;
+}
+.tool-bubble-ct {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500; color: #a4a59f;
+}
+
+/* ── Feelings: full-screen organic tiles ─────────────────────── */
+.sdo-feelings { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.feel-tile { position: absolute; }
+.feel-shape { width: 100%; height: 100%; display: block; }
+.feel-overlay {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 12px; width: 66px;
+}
+.feel-badge {
+  width: 40px; height: 40px; background: #1f1f25; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 20px; line-height: 1; color: #f2f3e5;
+}
+.feel-name {
+  font-family: var(--font-display); font-size: 18px; line-height: 1.05;
+  color: #1f1f25; text-transform: uppercase; text-align: center; white-space: nowrap;
+}
+.feel-stat {
+  position: absolute; bottom: 48px; left: 40px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.feel-stat-num {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  color: #f2f3e5; margin: 0; letter-spacing: 1.5px;
+}
+.feel-stat-lbl {
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #737472; margin: 0; line-height: 1.4;
+}
+
+/* ─── Open recap button ─────────────────────────────────────── */
+.open-recap-btn {
+  position: absolute; bottom: 63px; left: 50%; transform: translateX(-50%);
+  height: 48px; width: 200px; padding: 0; border-radius: 8px;
+  background: transparent; border: 1px solid rgba(255,255,255,0.16);
+  cursor: pointer; font-family: var(--font-body); font-size: 16px;
+  font-weight: 500; color: #f5f5f5; letter-spacing: -0.1px;
+  transition: background 150ms;
+}
+.open-recap-btn:hover { background: rgba(255,255,255,0.06); }
+
+/* ─── All times horizontal cards ───────────────────────────── */
+.alltime-clip {
+  position: absolute; left: 152px; top: 320px;
+  right: 24px; height: 400px;
+  overflow: hidden;
+  cursor: grab; user-select: none;
+}
+.alltime-clip.dragging { cursor: grabbing; }
+.alltime-row {
+  display: flex; align-items: center;
+  position: absolute; left: 0; top: 0;
+  transition: transform 800ms cubic-bezier(0.73,-0.01,0.2,0.98);
+}
+.activity-card {
+  width: 318px; height: 376px; border-radius: 16px;
+  border: 1px solid #36363f; background: #1f1f25;
+  padding: 24px; box-sizing: border-box;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between;
+  flex-shrink: 0;
+}
+.activity-title {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; margin: 0; line-height: 1.1; letter-spacing: -0.4px;
+  width: 187px; position: relative; z-index: 1;
+}
+.activity-date {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #737472; margin: 0; letter-spacing: -0.1px;
+  position: relative; z-index: 1;
+}
+.activity-wzor {
+  position: absolute; left: 118px; top: 150px;
+  width: 300px; height: 300px; pointer-events: none;
+}
+.activity-wzor img { width: 300px; height: 300px; display: block; }
+.alltime-connector {
+  width: 120px; height: 376px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.alltime-connector img { width: 120px; height: 24px; display: block; }
+
+/* ─── Pagination arrows ─────────────────────────────────────── */
+.alltime-nav {
+  position: absolute; right: 182px; bottom: 70px;
+  display: none; gap: 13px; align-items: center; z-index: 5;
+}
+.alltime-nav.visible { display: flex; }
+.nav-arrow {
+  width: 24px; height: 24px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.16); background: transparent;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.nav-arrow:hover { background: rgba(255,255,255,0.08); }
+.nav-arrow svg { display: block; }
+
+/* ─── Wrap overlay ──────────────────────────────────────────── */
+.wrap-overlay {
+  position: absolute; inset: 0; z-index: 25; overflow: hidden;
+}
+.wrap-progress {
+  position: absolute; top: 32px; left: 119px; right: 119px;
+  display: flex; gap: 6px; z-index: 3; pointer-events: none;
+}
+.wrap-prog-seg {
+  flex: 1; height: 4px; border-radius: 99px;
+  background: var(--colors-gray-300);
+}
+.wrap-prog-seg.done { background: rgba(255,255,255,0.9); }
+.wrap-prog-seg.active {
+  background: rgba(255,255,255,0.9);
+  transform-origin: left;
+  animation: prog linear forwards;
+}
+@keyframes prog { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.wrap-slide { position: absolute; inset: 0; display: none; }
+.wrap-slide.ws-active { display: block; }
+
+.ws-blob {
+  position: absolute; left: -315px; top: -33px;
+  width: 1771px; height: 1107px;
+  pointer-events: none; z-index: 0;
+}
+.ws-blob svg { width: 100%; height: 100%; display: block; }
+
+.ws-emotion {
+  position: absolute; pointer-events: none; z-index: 0;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+}
+.ws-emotion img { display: block; filter: brightness(0) invert(1) brightness(0.12); transform: scale(2); transform-origin: center center; }
+
+.ws-content {
+  position: absolute; z-index: 1;
+  left: 50%; transform: translateX(-50%);
+  top: 0; bottom: 0; width: 661px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.ws-text-group {
+  flex: 1; display: flex; flex-direction: column;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px; gap: 24px;
+  padding-top: 120px;
+}
+.ws-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.1px; margin: 0; line-height: 1.25;
+}
+.ws-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; margin: 0;
+}
+.ws-actions {
+  display: flex; gap: 12px; align-items: center;
+  padding-bottom: 65px; flex-shrink: 0;
+}
+.ws-btn-back {
+  width: 48px; height: 48px; border-radius: 8px; border: none;
+  background: rgba(255,255,255,0.16); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0;
+}
+.ws-btn-back svg { display: block; }
+.ws-btn-next {
+  height: 48px; min-width: 200px; padding: 0 24px;
+  border-radius: 8px; border: none; background: #f2f3e5; cursor: pointer;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #1f1f25; letter-spacing: -0.1px; white-space: nowrap;
+}
+.ws-skip {
+  position: absolute; top: 24px; right: 48px; z-index: 5;
+  background: transparent; border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.6); padding: 8px 16px; border-radius: 8px;
+  letter-spacing: -0.1px;
+}
+.ws-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; pointer-events: none; z-index: 0;
+}
+.ws-btn-wide {
+  height: 48px; width: 270px;
+  border-radius: 8px; border: none; background: #f2f3e5; cursor: pointer;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #1f1f25; letter-spacing: -0.1px;
+}
+.ws-btn-share {
+  height: 48px; width: 270px;
+  border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.45);
+  background: transparent; cursor: pointer;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.1px;
+}
+
+/* ── Support handle + panel ──────────────────────────────────── */
+.support-handle {
+  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  width: 64px; height: 72px;
+  background: #1f1f25; border: 1px solid #36363f; border-right: none;
+  border-radius: 14px 0 0 14px;
+  padding: 0; cursor: pointer; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 150ms;
+}
+.support-handle:hover { background: #252530; }
+.support-handle-label { font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #a4a59f; pointer-events: none; line-height: 1; }
+.support-panel.sp-open .support-handle { background: #2b2b32; }
+.sp-backdrop {
+  position: absolute; inset: 0; z-index: 34;
+  background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.sp-backdrop.sp-open { opacity: 1; pointer-events: all; }
+.support-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 380px; z-index: 35;
+  background: #2b2b32; border-left: 1px solid #36363f;
+  transform: translateX(100%); transition: transform 1200ms cubic-bezier(0.73, -0.01, 0.2, 0.98);
+  display: flex; flex-direction: column;
+}
+.support-panel.sp-open { transform: translateX(0); }
+.sp-header {
+  display: flex; flex-direction: column;
+  padding: 52px 24px 20px; border-bottom: 1px solid #36363f; flex-shrink: 0;
+}
+.sp-subtitle {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 6px 0 0; line-height: 1.4;
+}
+.sp-cta {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; padding: 16px 24px; line-height: 1.5;
+}
+.sp-cta strong { color: #f2f3e5; }
+.sp-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.1;
+  letter-spacing: 0.5px; color: #f2f3e5; margin: 0;
+}
+.sp-close {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.sp-close:hover { background: rgba(255,255,255,0.14); }
+.sp-items { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+.sp-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 24px; cursor: pointer; transition: background 120ms;
+}
+.sp-item:hover { background: rgba(255,255,255,0.04); }
+.sp-item-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: #36363f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sp-item-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; margin: 0 0 3px; letter-spacing: -0.1px;
+}
+.sp-item-sub {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
+
+/* ── Feeling shape float animations ─────────────────────────── */
+@keyframes float-a { 0%,100%{transform:translateY(0) translateX(0)}    50%{transform:translateY(-20px) translateX(3px)} }
+@keyframes float-b { 0%,100%{transform:translateY(0) translateX(0)}    50%{transform:translateY(-16px) translateX(-4px)} }
+@keyframes float-c { 0%,100%{transform:translateY(0) translateX(0)}    50%{transform:translateY(-22px) translateX(2px)} }
+@keyframes float-d { 0%,100%{transform:translateY(0) translateX(0)}    50%{transform:translateY(-14px) translateX(-3px)} }
+@keyframes float-e { 0%,100%{transform:translateY(0) translateX(0)}    50%{transform:translateY(-18px) translateX(4px)} }
+@keyframes float-f { 0%,100%{transform:translateY(0) translateX(0)}    50%{transform:translateY(-19px) translateX(-2px)} }
+
+/* ─── Entry from recap ──────────────────────────────────────── */
+#journey-inner { position: absolute; inset: 0; }
+#journey-inner.from-recap {
+  animation: journey-enter-up 800ms cubic-bezier(0.73,-0.01,0.2,0.98) both;
+}
+@keyframes journey-enter-up {
+  from { transform: translateY(80px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+<div id="journey-inner">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Sidebar -->
+  <nav class="today-sidebar">
+    <div class="sidebar-logo" data-content="journey_logo">Sparkz</div>
+    <div class="sidebar-nav">
+      <div class="nav-item" onclick="window.location.href='today.html'">
+        <div class="nav-icon"><img src="./components/icon-02.svg" alt="Today"></div>
+        <span class="nav-label" data-content="nav_today">Today</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journal.html'">
+        <div class="nav-icon"><img src="./components/icon-01.svg" alt="Journal"></div>
+        <span class="nav-label" data-content="nav_journal">Journal</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='my-toolkit.html'">
+        <div class="nav-icon"><img src="./components/icon-03.svg" alt="My toolkit"></div>
+        <span class="nav-label" data-content="nav_my_toolkit">My toolkit</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><img src="./components/icon-04.svg" alt="Journey"></div>
+        <span class="nav-label" data-content="nav_journey">Journey</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='grades.html'">
+        <div class="nav-icon"><img src="./components/icon-05.svg" alt="Grades"></div>
+        <span class="nav-label" data-content="nav_grades">Grades</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='sparks.html'">
+        <div class="nav-icon"><img src="./components/icon-06.svg" alt="Sparkz"></div>
+        <span class="nav-label" data-content="nav_sparkz">Sparkz</span>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar" onclick="window.location.href='settings.html'" style="cursor:pointer"></div>
+      <span class="user-name">Sophie</span>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="journey-main">
+
+    <!-- Header -->
+    <div class="journey-header">
+      <h1 class="journey-title" data-content="journey_title">Journey</h1>
+      <p class="journey-sub" data-content="journey_sub">See what you've been up to.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-pills">
+      <button class="tab-pill tab-pill-active" data-content="journey_tab_this_month"  onclick="switchPeriod(this, 0)">This month</button>
+      <button class="tab-pill tab-pill-inactive" data-content="journey_tab_over_time" onclick="switchPeriod(this, 1)">Over time</button>
+    </div>
+
+    <!-- This month panel -->
+    <div class="period-panel active" id="panel-thismonth">
+
+      <div class="stats-grid">
+        <div class="stat-card" style="cursor:pointer" onclick="openStatDetail('feelings')">
+          <p class="stat-label" data-content="journey_stat_feelings_label">Feelings named</p>
+          <span class="stat-big" data-content="journey_stat_feelings_value">32</span>
+          <div class="stat-wzor"><img src="./components/journey-shape-04.svg" alt=""></div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="openStatDetail('checkins')">
+          <p class="stat-label" data-content="journey_stat_checkins_label">Check-in completed</p>
+          <span class="stat-big" data-content="journey_stat_checkins_value">13</span>
+          <div class="stat-wzor"><img src="./components/journey-shape-03.svg" alt=""></div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="openStatDetail('sparks')">
+          <p class="stat-label" data-content="journey_stat_sparks_label">Sparks earned</p>
+          <span class="stat-big" id="journeySparks">200</span>
+          <div class="stat-wzor"><img src="./components/journey-shape-01.svg" alt=""></div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="openStatDetail('activities')">
+          <p class="stat-label" data-content="journey_stat_activities_label">Activities done</p>
+          <span class="stat-big" data-content="journey_stat_activities_value">27</span>
+          <div class="stat-wzor"><img src="./components/journey-shape-02.svg" alt=""></div>
+        </div>
+      </div>
+
+      <button class="open-recap-btn" data-content="btn_open_monthly_recap" onclick="openWrap()">Open monthly recap</button>
+
+    </div>
+
+    <!-- All times panel (header only — cards are positioned absolutely) -->
+    <div class="period-panel" id="panel-alltime" style="gap:0"></div>
+
+  </div>
+
+  <!-- All times horizontal cards (absolutely positioned for overflow clip) -->
+  <div class="alltime-clip" id="alltimeClip" style="display:none">
+    <div class="alltime-row" id="alltimeRow">
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_1_title">Handled hard emotions connected to grade</p>
+        <p class="activity-date" data-content="journey_card_activity_1_date">Today</p>
+        <div class="activity-wzor"><img src="./components/wzor-03.svg" alt=""></div>
+      </div>
+
+      <div class="alltime-connector">
+        <img src="./components/laczniik.svg" alt="">
+      </div>
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_2_title">Learned about Emotional Regulation</p>
+        <p class="activity-date" data-content="journey_card_activity_2_date">12.04.24</p>
+        <div class="activity-wzor"><img src="./components/wzor-07.svg" alt=""></div>
+      </div>
+
+      <div class="alltime-connector">
+        <img src="./components/laczniik.svg" alt="">
+      </div>
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_3_title">Wrote 20 notes in Journal</p>
+        <p class="activity-date" data-content="journey_card_activity_3_date">01.04.24</p>
+        <div class="activity-wzor"><img src="./components/wzor-01.svg" alt=""></div>
+      </div>
+
+      <div class="alltime-connector">
+        <img src="./components/laczniik.svg" alt="">
+      </div>
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_4_title">Completed your first Monthly Recap</p>
+        <p class="activity-date" data-content="journey_card_activity_4_date">28.03.24</p>
+        <div class="activity-wzor"><img src="./components/wzor-02.svg" alt=""></div>
+      </div>
+
+      <div class="alltime-connector">
+        <img src="./components/laczniik.svg" alt="">
+      </div>
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_5_title">Reached 100 Sparkz milestone</p>
+        <p class="activity-date" data-content="journey_card_activity_5_date">15.03.24</p>
+        <div class="activity-wzor"><img src="./components/wzor-04.svg" alt=""></div>
+      </div>
+
+      <div class="alltime-connector">
+        <img src="./components/laczniik.svg" alt="">
+      </div>
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_6_title">Tried your first breathing exercise</p>
+        <p class="activity-date" data-content="journey_card_activity_6_date">02.02.24</p>
+        <div class="activity-wzor"><img src="./components/wzor-06.svg" alt=""></div>
+      </div>
+
+      <div class="alltime-connector">
+        <img src="./components/laczniik.svg" alt="">
+      </div>
+
+      <div class="activity-card">
+        <p class="activity-title" data-content="journey_card_activity_7_title">Started</p>
+        <p class="activity-date" data-content="journey_card_activity_7_date">12.01.24</p>
+        <div class="activity-wzor"><img src="./components/wzor-05.svg" alt=""></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pagination arrows (All times) -->
+  <div class="alltime-nav" id="alltimeNav">
+    <button class="nav-arrow" onclick="navCards(-1)" id="navPrev">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 12L6 8L10 4" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="nav-arrow" onclick="navCards(1)" id="navNext">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M6 4L10 8L6 12" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ── Wrap overlay ──────────────────────────────────────────── -->
+  <div id="wrap-overlay" class="wrap-overlay" style="display:none">
+
+    <div class="wrap-progress" id="wrapProgress"></div>
+
+    <!-- Slide 1: Your Monthly Recap -->
+    <div class="wrap-slide ws-active" id="ws-0">
+      <img class="ws-bg" src="./components/tlo-01.svg" alt="">
+      <button class="ws-skip" data-content="btn_recap_skip" onclick="closeWrap(event)">Skip</button>
+      <div class="ws-content">
+        <div class="ws-text-group" style="padding-top:265px;">
+          <p class="ws-label" data-content="recap_slide1_date_label" style="color:rgba(255,255,255,0.6);">May 2026</p>
+          <h2 class="ws-title" data-content="recap_slide1_title" style="font-size:80px;">Your Monthly<br>Recap</h2>
+        </div>
+        <div class="ws-actions">
+          <button class="ws-btn-wide" data-content="btn_recap_start" onclick="nextSlide()">Start</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Sleep & mood -->
+    <div class="wrap-slide" id="ws-1">
+      <img class="ws-bg" src="./components/tlo-02.svg" alt="">
+      <div class="ws-content">
+        <div class="ws-text-group">
+          <p class="ws-label" data-content="recap_slide2_label" style="color:rgba(255,255,255,0.6);">Sleep &amp; mood</p>
+          <h2 class="ws-title" data-content="recap_slide2_title">On the days you slept well, you were more likely to feel happy. Your body is talking — you're listening.</h2>
+        </div>
+        <div class="ws-actions">
+          <button class="ws-btn-back" onclick="prevSlide(event)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="ws-btn-next" data-content="btn_recap_next_slide2" onclick="nextSlide()">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Journal quote -->
+    <div class="wrap-slide" id="ws-2">
+      <img class="ws-bg" src="./components/tlo-05.svg" alt="">
+      <div class="ws-content">
+        <div class="ws-text-group">
+          <p class="ws-label" data-content="recap_slide3_label" style="color:rgba(255,255,255,0.6);">You wrote something very important in the journal</p>
+          <h2 class="ws-title" data-content="recap_slide3_title">"I just needed someone to understand."</h2>
+        </div>
+        <div class="ws-actions">
+          <button class="ws-btn-back" onclick="prevSlide(event)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="ws-btn-next" data-content="btn_recap_next_slide3" onclick="nextSlide()">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: Progress & shifts -->
+    <div class="wrap-slide" id="ws-3">
+      <img class="ws-bg" src="./components/tlo-04.svg" alt="">
+      <div class="ws-content">
+        <div class="ws-text-group">
+          <p class="ws-label" data-content="recap_slide4_label" style="color:rgba(255,255,255,0.6);">Progress &amp; shifts</p>
+          <h2 class="ws-title" data-content="recap_slide4_title">The second half of May had more good days than the first. Things shifted — and you were there for it.</h2>
+        </div>
+        <div class="ws-actions">
+          <button class="ws-btn-back" onclick="prevSlide(event)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="ws-btn-next" data-content="btn_recap_next_slide4" onclick="nextSlide()">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Win of the month -->
+    <div class="wrap-slide" id="ws-4">
+      <img class="ws-bg" src="./components/tlo-03.svg" alt="">
+      <div class="ws-content">
+        <div class="ws-text-group">
+          <p class="ws-label" data-content="recap_slide5_label" style="color:rgba(255,255,255,0.6);">Win of the month</p>
+          <h2 class="ws-title" data-content="recap_slide5_title">This month you wrote: "I finished my project on time." That's not small.</h2>
+        </div>
+        <div class="ws-actions">
+          <button class="ws-btn-back" onclick="prevSlide(event)"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="ws-btn-next" data-content="btn_recap_next_slide5" onclick="nextSlide()">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Final — proud of you -->
+    <div class="wrap-slide" id="ws-5">
+      <img class="ws-bg" src="./components/tlo-06.svg" alt="">
+      <div class="ws-content">
+        <div class="ws-text-group">
+          <p class="ws-label" data-content="recap_slide6_label" style="color:rgba(255,255,255,0.6);">There is a lot to be proud of!</p>
+          <h2 class="ws-title" data-content="recap_slide6_title">You got to know yourself better this month.</h2>
+        </div>
+        <div class="ws-actions">
+          <button class="ws-btn-share" data-content="btn_recap_share" onclick="">Share</button>
+          <button class="ws-btn-wide" data-content="btn_recap_back_to_journey" onclick="closeWrap(event)">Back to Journey</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Support handle ──────────────────────────────────────── -->
+  <div class="sp-backdrop" id="spBackdrop" onclick="closeSupport()"></div>
+  <div class="support-panel" id="supportPanel">
+    <button class="support-handle" onclick="toggleSupport()"><img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt=""><span class="support-handle-label" data-content="journey_support_handle_label">Talk</span></button>
+        <div class="sp-header">
+      <h2 class="sp-title" data-content="journey_support_title">Need to talk?</h2>
+      <p class="sp-subtitle" data-content="journey_support_subtitle">When things are tough, you are not alone.</p>
+    </div>
+    <div class="sp-items">
+      <div class="sp-item">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="3.5" stroke="#f2f3e5" stroke-width="1.5"/>
+            <path d="M4 19c0-3.87 3.13-7 7-7h0c3.87 0 7 3.13 7 7" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="journey_support_item1_title">Talk to someone.</p>
+          <p class="sp-item-sub" data-content="journey_support_item1_sub">A trusted adult at your school is here to help.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <div class="sp-item" style="cursor:pointer" onclick="window.location.href='support-write.html'">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="journey_support_item2_title">Write it out.</p>
+          <p class="sp-item-sub" data-content="journey_support_item2_sub">We'll make sure someone sees it.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <p class="sp-cta" data-content="journey_support_cta">Need to talk to someone right away? <strong>Call 988.</strong></p>
+    </div>
+  </div>
+  </div>
+
+  <!-- Stat detail overlay -->
+  <div class="stat-detail-ov" id="statDetailOv">
+    <div class="stat-detail-bar"><span>9:41</span><span>100% 🔋</span></div>
+    <button class="stat-detail-back" id="statDetailBack">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="sdo-left" id="sdoLeft"></div>
+    <div class="sdo-right" id="sdoRight"></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+// Avatar
+(function(){
+  var src = localStorage.getItem('bp_avatar') || './foundations/assets/avatars/avatar-3.svg';
+  var bg  = localStorage.getItem('bp_avatar_bg') || '#b8c0ed';
+  var el = document.getElementById('userAvatar');
+  if (el) el.style.background = bg + ' url("' + src + '") no-repeat center / cover';
+})();
+(function(){
+  var name = localStorage.getItem('bp_username') || 'Sophie';
+  var el = document.querySelector('.user-name');
+  if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+// Sparkz
+(function() {
+  var n = parseInt(localStorage.getItem('bp_sparks') || '360', 10);
+  document.getElementById('journeySparks').textContent = n;
+})();
+
+// ─── Period tabs ─────────────────────────────────────────────
+function switchPeriod(btn, idx) {
+  var pills = btn.closest('.tab-pills').querySelectorAll('.tab-pill');
+  pills.forEach(function(b) { b.className = 'tab-pill tab-pill-inactive'; });
+  btn.className = 'tab-pill tab-pill-active';
+  document.getElementById('panel-thismonth').classList.toggle('active', idx === 0);
+  document.getElementById('panel-alltime').classList.toggle('active', idx === 1);
+  document.getElementById('alltimeClip').style.display = idx === 1 ? 'block' : 'none';
+  document.getElementById('alltimeNav').classList.toggle('visible', idx === 1);
+}
+
+// ─── All times carousel ───────────────────────────────────────
+var _cardOffset = 0;
+var CARD_STEP = 460; // 318 card + 142 connector
+var MAX_OFFSET = CARD_STEP * 6;
+
+function navCards(dir) {
+  _cardOffset = Math.max(0, Math.min(_cardOffset + dir * CARD_STEP, MAX_OFFSET));
+  document.getElementById('alltimeRow').style.transform = 'translateX(-' + _cardOffset + 'px)';
+  document.getElementById('navPrev').style.opacity = _cardOffset > 0 ? '1' : '0.3';
+  document.getElementById('navNext').style.opacity = _cardOffset < MAX_OFFSET ? '1' : '0.3';
+}
+
+// Init arrow opacity
+document.getElementById('navPrev').style.opacity = '0.3';
+
+// ─── Carousel drag ───────────────────────────────────────────
+(function() {
+  var clip = document.getElementById('alltimeClip');
+  var row  = document.getElementById('alltimeRow');
+  var startX = 0, startOffset = 0, dragging = false;
+
+  function updateArrows() {
+    document.getElementById('navPrev').style.opacity = _cardOffset > 0 ? '1' : '0.3';
+    document.getElementById('navNext').style.opacity = _cardOffset < MAX_OFFSET ? '1' : '0.3';
+  }
+
+  function onStart(x) {
+    dragging = true;
+    startX = x;
+    startOffset = _cardOffset;
+    row.style.transition = 'none';
+    clip.classList.add('dragging');
+  }
+
+  function onMove(x) {
+    if (!dragging) return;
+    var delta = startOffset + (startX - x);
+    // light rubber-band beyond edges
+    if (delta < 0) delta = delta * 0.3;
+    if (delta > MAX_OFFSET) delta = MAX_OFFSET + (delta - MAX_OFFSET) * 0.3;
+    row.style.transform = 'translateX(-' + delta + 'px)';
+  }
+
+  function onEnd(x) {
+    if (!dragging) return;
+    dragging = false;
+    clip.classList.remove('dragging');
+    var delta = startOffset + (startX - x);
+    var snapped = Math.round(delta / CARD_STEP) * CARD_STEP;
+    _cardOffset = Math.max(0, Math.min(snapped, MAX_OFFSET));
+    row.style.transition = 'transform 600ms cubic-bezier(0.73,-0.01,0.2,0.98)';
+    row.style.transform = 'translateX(-' + _cardOffset + 'px)';
+    updateArrows();
+  }
+
+  clip.addEventListener('mousedown',  function(e) { onStart(e.clientX); e.preventDefault(); });
+  window.addEventListener('mousemove', function(e) { onMove(e.clientX); });
+  window.addEventListener('mouseup',   function(e) { onEnd(e.clientX); });
+  clip.addEventListener('touchstart',  function(e) { onStart(e.touches[0].clientX); }, { passive: true });
+  clip.addEventListener('touchmove',   function(e) { onMove(e.touches[0].clientX); }, { passive: true });
+  clip.addEventListener('touchend',    function(e) { onEnd(e.changedTouches[0].clientX); });
+})();
+
+// ─── Wrap ────────────────────────────────────────────────────
+var SLIDE_COUNT = 6;
+var _slide = 0;
+var _wrapAnimating = false;
+var WRAP_BEZ = 'cubic-bezier(0.73,-0.01,0.2,0.98)';
+var WRAP_DUR = 800;
+
+function openWrap() {
+  window.location.href = 'recap.html';
+}
+
+function buildProgress() {
+  var bar = document.getElementById('wrapProgress');
+  bar.innerHTML = '';
+  for (var i = 0; i < SLIDE_COUNT; i++) {
+    var seg = document.createElement('div');
+    seg.className = 'wrap-prog-seg' + (i < _slide ? ' done' : i === _slide ? ' active' : '');
+    bar.appendChild(seg);
+  }
+}
+
+function animateWrap(fromIdx, toIdx) {
+  if (_wrapAnimating) return;
+  _wrapAnimating = true;
+  var overlay = document.getElementById('wrap-overlay');
+  overlay.style.pointerEvents = 'none';
+  var dir = toIdx > fromIdx ? 1 : -1;
+  var fromSlide = document.getElementById('ws-' + fromIdx);
+  var toSlide   = document.getElementById('ws-' + toIdx);
+  var fromC = fromSlide.querySelector('.ws-content');
+  var toC   = toSlide.querySelector('.ws-content');
+  var exitX  = 'calc(-50% + ' + (dir * -1300) + 'px)';
+  var enterX = 'calc(-50% + ' + (dir *  1300) + 'px)';
+  toC.style.transition = 'none';
+  toC.style.transform  = enterX;
+  toSlide.classList.add('ws-active');
+  toSlide.style.zIndex = '2';
+  fromSlide.style.zIndex = '1';
+  toC.offsetWidth;
+  var t = 'transform ' + WRAP_DUR + 'ms ' + WRAP_BEZ;
+  fromC.style.transition = t;
+  fromC.style.transform  = exitX;
+  toC.style.transition   = t;
+  toC.style.transform    = 'translateX(-50%)';
+  var cleaned = false;
+  function cleanup() {
+    if (cleaned) return;
+    cleaned = true;
+    toC.removeEventListener('transitionend', cleanup);
+    fromSlide.classList.remove('ws-active');
+    fromSlide.style.zIndex = '';
+    toSlide.style.zIndex   = '';
+    fromC.style.transition = 'none';
+    fromC.style.transform  = '';
+    toC.style.transition   = 'none';
+    toC.style.transform    = '';
+    requestAnimationFrame(function() {
+      fromC.style.transition = '';
+      toC.style.transition   = '';
+      overlay.style.pointerEvents = '';
+      _wrapAnimating = false;
+    });
+  }
+  toC.addEventListener('transitionend', cleanup);
+  setTimeout(cleanup, WRAP_DUR + 120);
+}
+
+function nextSlide() {
+  if (_slide >= SLIDE_COUNT - 1 || _wrapAnimating) return;
+  var prev = _slide++;
+  buildProgress();
+  animateWrap(prev, _slide);
+}
+
+function prevSlide(e) {
+  if (e) e.stopPropagation();
+  if (_slide <= 0 || _wrapAnimating) return;
+  var prev = _slide--;
+  buildProgress();
+  animateWrap(prev, _slide);
+}
+
+function closeWrap(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('wrap-overlay').style.display = 'none';
+  _wrapAnimating = false;
+}
+
+function toggleSupport() {
+  document.getElementById('supportPanel').classList.contains('sp-open') ? closeSupport() : openSupport();
+}
+function openSupport() {
+  document.getElementById('supportPanel').classList.add('sp-open');
+  document.getElementById('spBackdrop').classList.add('sp-open');
+}
+function closeSupport() {
+  document.getElementById('supportPanel').classList.remove('sp-open');
+  document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+
+if (location.search.includes('from=recap')) {
+  document.getElementById('journey-inner').classList.add('from-recap');
+}
+
+// ─── Stat detail overlay ────────────────────────────────────────
+// Each shape: container positioned from combined SVG (757×441 → 1100×640, offset 47,55)
+// bx/by = badge center offset from container top-left
+var FEEL_SHAPES = [
+  { name:'Curious',  count:5, svgFile:'hopeful',
+    x:386, y:443, w:253, h:253, bx:126, by:126,
+    anim:'float-a', dur:'6s',   delay:'0s' },
+  { name:'Anxious',  count:9, svgFile:'anxious',
+    x:8,   y:265, w:434, h:432, bx:217, by:217, imgRot:15,
+    anim:'float-b', dur:'5.5s', delay:'1.1s' },
+  { name:'Happy',    count:8, svgFile:'happy',
+    x:514, y:120, w:323, h:323, bx:161, by:161,
+    anim:'float-c', dur:'7s',   delay:'0.4s' },
+  { name:'Stressed', count:7, svgFile:'stressed',
+    x:859, y:225, w:284, h:293, bx:142, by:121,
+    anim:'float-d', dur:'5.2s', delay:'2s' },
+  { name:'Tired',    count:1, svgFile:'tired',
+    x:659, y:470, w:174, h:174, bx:87,  by:102,
+    anim:'float-e', dur:'6.8s', delay:'0.7s' },
+  { name:'Okay',     count:2, svgFile:'calm',
+    x:269, y:55,  w:227, h:227, bx:113, by:113, imgRot:30,
+    anim:'float-f', dur:'6.2s', delay:'1.5s' },
+];
+
+// bubble centers in overlay coords: SVG offset (left:242, top:125) + circle center in SVG (711×519)
+var BUBBLE_BADGES = [
+  { name: 'Breathing',    count: 8, cx: 576, cy: 271 },
+  { name: 'Body scan',    count: 5, cx: 824, cy: 414 },
+  { name: 'Journaling',   count: 4, cx: 425, cy: 524 },
+  { name: 'Grounding',    count: 3, cx: 332, cy: 323 },
+  { name: 'Mindful walk', count: 2, cx: 630, cy: 506 },
+];
+
+function sdoMakeLeft(lbl, num, enc, sub) {
+  return '<p class="sdo-stat-lbl">' + lbl + '</p>' +
+    '<p class="sdo-num">' + num + '</p>' +
+    '<p class="sdo-period">w tym miesiącu</p>' +
+    '<div class="sdo-enc"><p class="sdo-enc-text">' + enc + '</p>' +
+    '<p class="sdo-enc-link">Zajrzyj do swojego toolkitu →</p></div>' +
+    (sub ? '<p class="sdo-sub">' + sub + '</p>' : '');
+}
+
+function sdoBuildCalendar() {
+  var done = new Set([1, 2, 4, 5, 7, 8, 10, 11, 13, 15, 17, 18, 20, 22, 24]);
+  var today = 24;
+  var dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var hdr = '<div class="cal-week-hdr">' + dayNames.map(function(d){ return '<span class="cal-wday">'+d+'</span>'; }).join('') + '</div>';
+  var rows = [], row = [];
+  for (var d = 1; d <= 30; d++) {
+    var cls = d === today ? 'today' : d > today ? 'future' : done.has(d) ? 'done' : 'missed';
+    row.push('<div class="cal-cell ' + cls + '">' + d + '</div>');
+    if (row.length === 7 || d === 30) {
+      while (row.length < 7) row.push('<div class="cal-cell"></div>');
+      rows.push('<div class="cal-row">' + row.join('') + '</div>');
+      row = [];
+    }
+  }
+  return '<div class="sdo-calendar"><p class="cal-month">June 2026</p>' + hdr + '<div class="cal-grid">' + rows.join('') + '</div></div>';
+}
+
+function sdoBuildSparks(total) {
+  var weeks = [60, 65, 55, 40]; var maxW = 65;
+  var dotTotal = 48; var dotLit = 30;
+  var dots = '';
+  for (var i = 0; i < dotTotal; i++) dots += '<div class="spark-dot' + (i < dotLit ? ' lit' : '') + '"></div>';
+  var wks = weeks.map(function(w, i) {
+    var h = Math.round((w / maxW) * 96);
+    var op = (0.25 + (w / maxW) * 0.7).toFixed(2);
+    return '<div class="sdo-week">' +
+      '<span class="sdo-week-num">' + w + '</span>' +
+      '<div class="sdo-week-bars"><div class="sdo-week-bar" style="height:' + h + 'px;background:rgba(242,243,229,' + op + ')"></div></div>' +
+      '<span class="sdo-week-lbl">Tyg ' + (i+1) + '</span></div>';
+  }).join('');
+  return '<div class="sdo-sparks">' +
+    '<div><p class="sdo-sparks-big">' + total + '</p><p class="sdo-sparks-lbl">zebranych sparks w tym miesiącu</p></div>' +
+    '<div class="spark-dots">' + dots + '</div>' +
+    '<div class="sdo-weeks">' + wks + '</div></div>';
+}
+
+function openStatDetail(key) {
+  var sparks = parseInt(localStorage.getItem('bp_sparks') || '360', 10);
+  var sdoL = document.getElementById('sdoLeft');
+  var sdoR = document.getElementById('sdoRight');
+
+  // Reset panel styles
+  sdoL.style.cssText = '';
+  sdoR.style.cssText = '';
+
+  if (key === 'feelings') {
+    sdoL.style.display = 'none';
+    sdoR.style.cssText = 'flex:initial;width:100%;position:relative;overflow:hidden;';
+    var shapesHtml = FEEL_SHAPES.map(function(s) {
+      var imgSt = 'width:100%;height:100%;display:block;position:absolute;inset:0;' +
+        (s.imgRot ? 'transform:rotate('+s.imgRot+'deg);transform-origin:50% 50%;' : '');
+      return '<div style="position:absolute;left:'+s.x+'px;top:'+s.y+'px;width:'+s.w+'px;height:'+s.h+'px;animation:'+s.anim+' '+s.dur+' ease-in-out infinite '+s.delay+';">' +
+        '<img src="./components/emotions/'+s.svgFile+'.svg" style="'+imgSt+'">' +
+        '<div class="feel-overlay" style="left:'+s.bx+'px;top:'+s.by+'px">' +
+          '<div class="feel-badge">'+s.count+'</div>' +
+          '<span class="feel-name">'+s.name+'</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    sdoR.innerHTML = '<div class="sdo-feelings">' +
+      '<div style="position:absolute;inset:0;transform:scale(0.75);transform-origin:center 40%;">' +
+        shapesHtml +
+      '</div>' +
+      '<div class="feel-stat"><p class="feel-stat-num">32</p>' +
+      '<p class="feel-stat-lbl">Named feelings.<br>That takes courage!</p></div></div>';
+
+  } else if (key === 'checkins') {
+    sdoL.style.display = 'none';
+    sdoR.style.cssText = 'flex:initial;width:100%;position:relative;overflow:hidden;';
+    var CK_COLS = [57,197,337,477,617];
+    var CK_ROWS = [57,196,335,474];
+    var CK_DONE = new Set(['57,57','57,196','57,474','197,196','197,474','337,57','477,57','477,196','477,335','477,474','617,57','617,196','617,474']);
+    var CK_ANIMS  = ['float-a','float-c','float-b','float-f','float-d','float-e','float-b','float-a','float-c','float-e','float-d','float-f','float-a'];
+    var CK_DELAYS = ['0s','1.2s','0.4s','1.8s','0.9s','2.2s','0.3s','1.5s','0.7s','2.0s','1.1s','0.6s','1.7s'];
+    var CK_DURS   = ['6s','7s','5.5s','6.5s','5.2s','6.8s','7s','6.2s','5.8s','6.5s','7.2s','5.5s','6s'];
+    var doneIdx = 0, ckHtml = '';
+    CK_COLS.forEach(function(cx) {
+      CK_ROWS.forEach(function(cy) {
+        var ck = cx+','+cy;
+        var lft = 261 + cx - 57, tp = 149 + cy - 57;
+        if (CK_DONE.has(ck)) {
+          var an = CK_ANIMS[doneIdx], dl = CK_DELAYS[doneIdx], dr = CK_DURS[doneIdx]; doneIdx++;
+          ckHtml += '<div style="position:absolute;left:'+lft+'px;top:'+tp+'px;width:114px;height:114px;border-radius:50%;background:#E65800;animation:'+an+' '+dr+' ease-in-out infinite '+dl+';"></div>';
+        } else {
+          ckHtml += '<div style="position:absolute;left:'+lft+'px;top:'+tp+'px;width:114px;height:114px;border-radius:50%;border:3px solid #36363F;box-sizing:border-box;"></div>';
+        }
+      });
+    });
+    sdoR.innerHTML = '<div class="sdo-feelings">' +
+      ckHtml +
+      '<div class="feel-stat"><p class="feel-stat-num">13</p>' +
+      '<p class="feel-stat-lbl">Completed check-ins.<br>You showed up!</p></div></div>';
+
+  } else if (key === 'sparks') {
+    sdoL.style.display = 'none';
+    sdoR.style.cssText = 'flex:initial;width:100%;position:relative;overflow:hidden;';
+    var skN = 36;
+    var skHtml = '';
+    for (var i = 0; i < skN; i++) {
+      skHtml += '<img id="skc'+i+'" src="./components/Spark-4.svg" style="position:absolute;width:50px;height:50px;pointer-events:none;">';
+    }
+    sdoR.innerHTML = '<div class="sdo-feelings" id="skField">' + skHtml +
+      '<div class="feel-stat"><p class="feel-stat-num">'+sparks+'</p>' +
+      '<p class="feel-stat-lbl">Earned sparks.<br>Spend some!</p></div></div>';
+
+    (function() {
+      var R = 25;
+      var field = document.getElementById('skField');
+      var FW = field.offsetWidth || 1194;
+      var FH = field.offsetHeight || 834;
+      var cx = 597, cy = 370;
+      var SHAPE_FUNS = [
+        function() { // flower
+          var pts = [];
+          for (var k=0;k<6;k++){var a=k*Math.PI/3;pts.push([cx+32*Math.cos(a),cy+32*Math.sin(a)]);}
+          for (var p=0;p<5;p++){var pa=p*2*Math.PI/5-Math.PI/2,px=cx+175*Math.cos(pa),py=cy+175*Math.sin(pa);for(var k=0;k<6;k++){var a=k*Math.PI/3;pts.push([px+60*Math.cos(a),py+60*Math.sin(a)]);}}
+          return pts;
+        },
+        function() { // star
+          var pts=[], R1=250, R2=100;
+          for(var p=0;p<5;p++){var a=p*2*Math.PI/5-Math.PI/2,tx=cx+R1*Math.cos(a),ty=cy+R1*Math.sin(a);for(var k=0;k<4;k++){var ka=k*Math.PI/2;pts.push([tx+22*Math.cos(ka),ty+22*Math.sin(ka)]);}}
+          for(var p=0;p<5;p++){var a=p*2*Math.PI/5-Math.PI/2+Math.PI/5,tx=cx+R2*Math.cos(a),ty=cy+R2*Math.sin(a);pts.push([tx-12,ty]);pts.push([tx+12,ty]);}
+          for(var k=0;k<6;k++){var a=k*Math.PI/3;pts.push([cx+30*Math.cos(a),cy+30*Math.sin(a)]);}
+          return pts;
+        },
+        function() { // heart
+          var pts=[], sc=17;
+          for(var k=0;k<36;k++){var t=k*2*Math.PI/36,hx=16*Math.pow(Math.sin(t),3),hy=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);pts.push([cx+hx*sc,cy-hy*sc]);}
+          return pts;
+        },
+        function() { // lightning bolt
+          var pts=[];
+          function seg(x1,y1,x2,y2,n){for(var i=0;i<n;i++){var t=n>1?i/(n-1):0;pts.push([x1+(x2-x1)*t,y1+(y2-y1)*t]);}}
+          seg(720,100,555,345,12); seg(555,345,695,345,7); seg(695,345,510,625,12); seg(695,130,545,345,5);
+          return pts;
+        },
+        function() { // smiley
+          return [[630,95],[731,113],[820,164],[886,243],[921,339],[921,441],[886,538],[820,616],[731,667],[630,685],[529,667],[440,616],[374,538],[339,441],[339,339],[374,242],[440,164],[529,113],[489,284],[541,284],[489,336],[541,336],[719,284],[771,284],[719,336],[771,336],[604,400],[656,400],[821,530],[780,581],[725,618],[663,638],[597,638],[535,618],[480,581],[439,530]];
+        },
+        function() { // strawberry
+          var pts=[];
+          // Rounded body outline — 20 points tracing smooth curve clockwise
+          var body=[[-55,-185],[-115,-130],[-155,-60],[-170,20],[-155,100],[-120,165],[-75,210],[-30,235],[0,240],[30,235],[75,210],[120,165],[155,100],[170,20],[155,-60],[115,-130],[55,-185],[25,-190],[0,-192],[-25,-190]];
+          body.forEach(function(p){pts.push([cx+p[0],cy+p[1]]);});
+          // Seeds inside body — 6 points
+          [[-70,-50],[70,-50],[-90,60],[90,60],[-50,150],[50,150]].forEach(function(p){pts.push([cx+p[0],cy+p[1]]);});
+          // Leaves — 10 points (4 leaves)
+          [[-140,-170],[-160,-240],[-70,-190],[-80,-265],[0,-195],[0,-275],[70,-190],[80,-265],[140,-170],[160,-240]].forEach(function(p){pts.push([cx+p[0],cy+p[1]]);});
+          return pts; // 20+6+10=36
+        }
+      ];
+      var TARGETS = SHAPE_FUNS[Math.floor(Math.random()*SHAPE_FUNS.length)]();
+      var pts = [];
+      for (var i = 0; i < skN; i++) {
+        pts.push({
+          x: R + Math.random() * (FW - 2*R),
+          y: 60 + Math.random() * (FH - 250),
+          vx: (Math.random()-0.5)*2,
+          vy: (Math.random()-0.5)*2,
+          el: document.getElementById('skc'+i)
+        });
+      }
+      var SPRING = 0.018, DAMP = 0.88, PERTURB = 0.018, MAXV = 3.5;
+      var ovEl = document.getElementById('statDetailOv');
+      if (window._skRaf) cancelAnimationFrame(window._skRaf);
+      function skTick() {
+        if (!ovEl.classList.contains('open')) return;
+        for (var i = 0; i < skN; i++) {
+          var p = pts[i];
+          p.vx += (TARGETS[i][0]-p.x)*SPRING + (Math.random()-0.5)*PERTURB;
+          p.vy += (TARGETS[i][1]-p.y)*SPRING + (Math.random()-0.5)*PERTURB;
+          p.vx *= DAMP; p.vy *= DAMP;
+          var spd = Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+          if (spd > MAXV) { p.vx *= MAXV/spd; p.vy *= MAXV/spd; }
+          p.x += p.vx; p.y += p.vy;
+        }
+        for (var i = 0; i < skN; i++) {
+          for (var j = i+1; j < skN; j++) {
+            var a = pts[i], b = pts[j];
+            var dx = b.x-a.x, dy = b.y-a.y;
+            var d2 = dx*dx+dy*dy;
+            if (d2 < 2500 && d2 > 0.001) {
+              var dist = Math.sqrt(d2);
+              var nx = dx/dist, ny = dy/dist;
+              var push = (50-dist)*0.5;
+              a.x -= nx*push; a.y -= ny*push;
+              b.x += nx*push; b.y += ny*push;
+              var rv = (a.vx-b.vx)*nx + (a.vy-b.vy)*ny;
+              if (rv > 0) { a.vx -= rv*nx; a.vy -= rv*ny; b.vx += rv*nx; b.vy += rv*ny; }
+            }
+          }
+        }
+        for (var i = 0; i < skN; i++) {
+          pts[i].el.style.left = (pts[i].x-R)+'px';
+          pts[i].el.style.top  = (pts[i].y-R)+'px';
+        }
+        window._skRaf = requestAnimationFrame(skTick);
+      }
+      window._skRaf = requestAnimationFrame(skTick);
+    })();
+
+  } else {
+    sdoL.style.display = 'none';
+    sdoR.style.cssText = 'flex:initial;width:100%;position:relative;overflow:hidden;';
+    // each bubble: x/y = top-left in overlay, d = diameter, bx/by = badge center offset
+    var BUBBLE_SHAPES = [
+      { name:'Breathing',    count:8, color:'#68DCC6', x:430, y:125, d:293, bx:146, by:146, anim:'float-c', dur:'6.5s', delay:'0s' },
+      { name:'Grounding',    count:3, color:'#E65800', x:242, y:233, d:181, bx:90,  by:90,  anim:'float-b', dur:'5.5s', delay:'1.3s' },
+      { name:'Mindful walk', count:2, color:'#56CCF2', x:557, y:433, d:147, bx:73,  by:73,  anim:'float-d', dur:'5.2s', delay:'0.7s' },
+      { name:'Journaling',   count:4, color:'#FDDA3C', x:306, y:405, d:239, bx:119, by:119, anim:'float-a', dur:'7s',   delay:'1.8s' },
+      { name:'Body scan',    count:5, color:'#6A7EFF', x:696, y:286, d:257, bx:128, by:128, anim:'float-e', dur:'6.8s', delay:'0.4s' },
+    ];
+    var bubblesHtml = BUBBLE_SHAPES.map(function(b) {
+      return '<div style="position:absolute;left:'+b.x+'px;top:'+b.y+'px;width:'+b.d+'px;height:'+b.d+'px;border-radius:50%;background:'+b.color+';animation:'+b.anim+' '+b.dur+' ease-in-out infinite '+b.delay+';">' +
+        '<div class="feel-overlay" style="left:'+b.bx+'px;top:'+b.by+'px">' +
+          '<div class="feel-badge">'+b.count+'</div>' +
+          '<span class="feel-name">'+b.name+'</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    sdoR.innerHTML = '<div class="sdo-feelings">' +
+      bubblesHtml +
+      '<div class="feel-stat"><p class="feel-stat-num">27</p>' +
+      '<p class="feel-stat-lbl">Activities done.<br>You explored a lot!</p></div></div>';
+  }
+
+  var ov = document.getElementById('statDetailOv');
+  ov.classList.add('open');
+  ov.style.transition = 'none';
+  ov.style.clipPath = 'inset(834px 0 0 0)';
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
+    ov.style.transition = 'clip-path 800ms cubic-bezier(0.81, 0, 0.26, 0.98)';
+    ov.style.clipPath = 'inset(0px 0 0 0)';
+    setTimeout(function() { ov.style.clipPath = 'none'; ov.style.transition = ''; }, 810);
+  }); });
+}
+
+document.getElementById('statDetailBack').addEventListener('click', function() {
+  var ov = document.getElementById('statDetailOv');
+  ov.style.transition = 'clip-path 600ms cubic-bezier(0.81, 0, 0.26, 0.98)';
+  ov.style.clipPath = 'inset(834px 0 0 0)';
+  setTimeout(function() {
+    ov.classList.remove('open');
+    ov.style.clipPath = '';
+    ov.style.transition = '';
+  }, 620);
+});
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

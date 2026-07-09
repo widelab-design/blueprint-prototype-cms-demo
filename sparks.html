@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Sparkz</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+.today-sidebar {
+  position: absolute;
+  left: 24px; top: 50%; transform: translateY(-50%);
+  width: 80px; height: 786px;
+  background: #2b2b32; border-radius: 20px;
+  padding: 24px 8px; box-sizing: border-box;
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: center;
+  z-index: 10;
+}
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 400; font-size: 16px; color: #8e8b85;
+  text-transform: uppercase; text-align: center; letter-spacing: 0.5px;
+  height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 12px; }
+.nav-item {
+  width: 64px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 8px 0; cursor: pointer;
+  transition: background 140ms;
+}
+.nav-item.active { background: #1f1f25; }
+.nav-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+.nav-icon { width: 24px; height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.nav-icon img { width: 24px; height: 24px; display: block; }
+.nav-item.active .nav-icon img { filter: brightness(0) invert(1); }
+.nav-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px; line-height: 16px;
+}
+.nav-item.active .nav-label { color: #f2f3e5; }
+.sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #b8c0ed no-repeat center / cover;
+  border: 2px solid #36363f;
+  overflow: hidden; box-sizing: border-box;
+}
+.user-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+}
+
+/* ─── Lightning bg ──────────────────────────────────────────── */
+.lightning-bg {
+  position: absolute;
+  left: -299px; top: -416px;
+  width: 1865px; height: 1865px;
+  pointer-events: none; z-index: 0; opacity: 1;
+}
+
+/* ─── Exit animations ────────────────────────────────────────── */
+.coll-cloud-bg {
+  position: absolute;
+  width: 1499px; height: 937px;
+  left: -203px; top: 55px;
+  pointer-events: none; z-index: 0;
+  transform-origin: center center;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
+}
+.coll-cloud-bg img { width: 100%; height: 100%; display: block; }
+.coll-cloud-bg.exit {
+  transform: scale(3);
+}
+
+.today-sidebar.exit {
+  transform: translateY(-50%) translateX(-300px);
+  opacity: 0;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
+}
+.sparks-header-left.exit {
+  transform: translateY(-200px);
+  opacity: 0;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
+}
+.sparks-total-box.exit {
+  transform: translateY(-200px);
+  opacity: 0;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
+}
+.sparks-grid.exit {
+  transform: translateY(400px);
+  opacity: 0;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
+}
+.sparks-collection-btn.exit {
+  transform: translateX(-50%) translateY(200px);
+  opacity: 0;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
+}
+.lightning-bg.exit {
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+/* ─── Main ──────────────────────────────────────────────────── */
+.sparks-main {
+  position: absolute;
+  left: 152px; top: 72px; bottom: 100px;
+  width: 998px;
+  z-index: 1;
+  display: flex; flex-direction: column;
+}
+
+/* ─── Header ────────────────────────────────────────────────── */
+.sparks-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.sparks-grid-wrapper {
+  flex: 1; display: flex; align-items: center; width: 100%;
+}
+.sparks-header-left { width: 532px; display: flex; flex-direction: column; gap: 16px; }
+.sparks-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; margin: 0;
+}
+.sparks-subtitle {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px; margin: 0;
+}
+.sparks-total-box {
+  width: calc((100% - 48px) / 4);
+  background: #1f1f25; border: 1px solid #444450; border-radius: 20px;
+  padding: 36px; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.sparks-total-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #737472; letter-spacing: 0;
+}
+.sparks-total-num {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 40px;
+  letter-spacing: -0.8px; color: #f2f3e5;
+}
+.sparks-total-num img { width: 32px; height: 32px; display: block; }
+
+/* ─── Grid ──────────────────────────────────────────────────── */
+.sparks-grid {
+  display: flex; flex-direction: column; gap: 16px; width: 100%;
+}
+.sparks-row {
+  display: flex; gap: 16px;
+}
+
+/* ─── Art card ──────────────────────────────────────────────── */
+.art-card {
+  flex: 1; height: 241px; border-radius: 16px;
+  border: 1px solid #444450;
+  position: relative; overflow: hidden;
+  cursor: pointer;
+}
+.art-card-dark { background: #1f1f25; border: none; }
+.art-card-blue { background: #3f50b8; border: none; }
+
+/* dark overlay for locked cards */
+.art-dark-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: rgba(0,0,0,0.89);
+}
+
+/* lock icon */
+.art-lock {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  width: 24px; height: 24px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  pointer-events: none;
+}
+.art-lock svg {
+  width: 24px; height: 24px; display: block;
+}
+
+/* spark cost badge */
+.art-badge {
+  position: absolute; bottom: 11px; left: 11px; z-index: 2;
+  background: transparent; border-radius: 99px;
+  padding: 8px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.art-card-locked .art-badge { opacity: 0.4; }
+
+/* key icon — centered in affordable card */
+.art-key {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 25px; height: 47px;
+  pointer-events: none;
+}
+.art-key svg { width: 100%; height: 100%; display: block; }
+.art-badge-num {
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; line-height: 1.05;
+  color: #f2f3e5; text-transform: uppercase;
+}
+.art-badge img { width: 20px; height: 20px; display: block; }
+
+/* artwork inside unlocked cards */
+.art-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+/* ─── Unlock overlay ────────────────────────────────────────── */
+.unlock-overlay {
+  position: absolute; inset: 0; z-index: 20;
+  overflow: hidden; display: none;
+  background: #3f50b8;
+  transition: background-color 800ms cubic-bezier(0.73,-0.01,0.2,0.98);
+}
+.unlock-overlay.is-success { background: #4CAF82; }
+
+.overlay-lightning {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%,-50%) rotate(0deg);
+  width: 3730px; height: 6598px;
+  pointer-events: none; z-index: 0;
+  transition: transform 800ms cubic-bezier(0.73,-0.01,0.2,0.98);
+}
+.unlock-overlay.is-success .overlay-lightning {
+  transform: translate(-50%,-50%) rotate(-30deg);
+}
+
+/* Confirm content panel */
+.oc-confirm {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  gap: 24px;
+  transition: transform 800ms cubic-bezier(0.73,-0.01,0.2,0.98),
+              opacity 600ms ease;
+}
+.unlock-overlay.is-success .oc-confirm {
+  transform: translateY(600px); opacity: 0;
+}
+
+/* Success content panel */
+.oc-success {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  gap: 24px;
+  transform: translateY(-600px); opacity: 0;
+  transition: transform 800ms cubic-bezier(0.73,-0.01,0.2,0.98),
+              opacity 600ms ease;
+}
+.unlock-overlay.is-success .oc-success {
+  transform: translateY(0); opacity: 1;
+}
+
+/* confirm elements — enter from top/bottom on first reveal */
+.confirm-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: #2f2f37; border-radius: 99px; padding: 8px 16px;
+  transform: translateY(-80px); opacity: 0;
+}
+.confirm-badge.in {
+  transform: translateY(0); opacity: 1;
+  transition: transform 1000ms cubic-bezier(0.73,-0.01,0.2,0.98),
+              opacity 800ms ease;
+}
+.confirm-badge-num { font-family: var(--font-display); font-weight: 400; font-size: 20px; color: #f2f3e5; }
+.confirm-badge img { width: 20px; height: 20px; display: block; }
+
+.confirm-question {
+  font-family: var(--font-display); font-weight: 400; font-size: 52px; line-height: 1.1;
+  color: #f2f3e5; text-align: center; margin: 0;
+  width: 685px; letter-spacing: 0.5px;
+  transform: translateY(-80px); opacity: 0;
+}
+.confirm-question.in {
+  transform: translateY(0); opacity: 1;
+  transition: transform 1000ms cubic-bezier(0.73,-0.01,0.2,0.98) 60ms,
+              opacity 800ms ease 60ms;
+}
+
+/* ── View cards collection button ────────────────────────────── */
+.sparks-collection-btn {
+  position: absolute; bottom: 36px; left: 651px; transform: translateX(-50%);
+  height: 48px; padding: 0 28px; white-space: nowrap; z-index: 5;
+  background: transparent; color: #f5f5f5;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: 1px solid rgba(255,255,255,0.16);
+  cursor: pointer; letter-spacing: -0.1px;
+  box-shadow: 0px 1px 1px 0px rgba(20,21,26,0.03);
+  transition: background 140ms;
+}
+.sparks-collection-btn:hover { background: rgba(255,255,255,0.06); }
+
+.confirm-btn {
+  position: absolute; bottom: 45px; left: 50%;
+  transform: translateX(-50%) translateY(80px); opacity: 0;
+  width: 270px; height: 48px;
+  background: #f2f3e5; border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500; color: #1f1f25;
+  cursor: pointer;
+}
+.overlay-back {
+  position: absolute; top: 32px; left: 32px; z-index: 10;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 140ms;
+}
+.overlay-back:hover { background: rgba(255,255,255,0.18); }
+.unlock-overlay.is-success .overlay-back { display: none; }
+.confirm-btn.in {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 1000ms cubic-bezier(0.73,-0.01,0.2,0.98) 120ms,
+              opacity 800ms ease 120ms;
+}
+
+/* success elements */
+.success-art {
+  width: 237px; height: 241px; border-radius: 16px; display: block;
+}
+.success-label {
+  font-family: var(--font-display); font-weight: 400; font-size: 72px; line-height: 1.1;
+  color: #f2f3e5; margin: 0; letter-spacing: 1px;
+}
+
+
+/* ── Support handle + panel ──────────────────────────────────── */
+.support-handle {
+  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  width: 64px; height: 72px;
+  background: #1f1f25; border: 1px solid #36363f; border-right: none;
+  border-radius: 14px 0 0 14px;
+  padding: 0; cursor: pointer; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 150ms;
+}
+.support-handle:hover { background: #252530; }
+.support-handle-label { font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #a4a59f; pointer-events: none; line-height: 1; }
+.support-panel.sp-open .support-handle { background: #2b2b32; }
+.sp-backdrop {
+  position: absolute; inset: 0; z-index: 34;
+  background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.sp-backdrop.sp-open { opacity: 1; pointer-events: all; }
+.support-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 380px; z-index: 35;
+  background: #2b2b32; border-left: 1px solid #36363f;
+  transform: translateX(100%); transition: transform 1200ms cubic-bezier(0.73, -0.01, 0.2, 0.98);
+  display: flex; flex-direction: column;
+}
+.support-panel.sp-open { transform: translateX(0); }
+.sp-header {
+  display: flex; flex-direction: column;
+  padding: 52px 24px 20px; border-bottom: 1px solid #36363f; flex-shrink: 0;
+}
+.sp-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.1;
+  letter-spacing: 0.5px; color: #f2f3e5; margin: 0;
+}
+.sp-subtitle {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 6px 0 0; line-height: 1.4;
+}
+.sp-cta {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; padding: 16px 24px; line-height: 1.5;
+}
+.sp-cta strong { color: #f2f3e5; }
+.sp-close {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.sp-close:hover { background: rgba(255,255,255,0.14); }
+.sp-items { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+.sp-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 24px; cursor: pointer; transition: background 120ms;
+}
+.sp-item:hover { background: rgba(255,255,255,0.04); }
+.sp-item-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: #36363f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sp-item-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; margin: 0 0 3px; letter-spacing: -0.1px;
+}
+.sp-item-sub {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
+
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Cloud background (animates out on collectible transition) -->
+  <div class="coll-cloud-bg" id="collCloudBg">
+    <img src="./components/cloud-1.svg" alt="">
+  </div>
+
+  <!-- Lightning background -->
+  <svg class="lightning-bg" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M350 50 L200 320 L310 320 L160 550 L420 250 L300 250 L450 50Z" fill="#1f1f25"/>
+  </svg>
+
+  <!-- Sidebar -->
+  <nav class="today-sidebar">
+    <div class="sidebar-logo" data-content="sparks_sidebar_logo">Sparkz</div>
+    <div class="sidebar-nav">
+      <div class="nav-item" onclick="window.location.href='today.html'">
+        <div class="nav-icon"><img src="./components/icon-02.svg" alt="Today"></div>
+        <span class="nav-label" data-content="nav_today">Today</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journal.html'">
+        <div class="nav-icon"><img src="./components/icon-01.svg" alt="Journal"></div>
+        <span class="nav-label" data-content="nav_journal">Journal</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='my-toolkit.html'">
+        <div class="nav-icon"><img src="./components/icon-03.svg" alt="My toolkit"></div>
+        <span class="nav-label" data-content="nav_my_toolkit">My toolkit</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journey.html'">
+        <div class="nav-icon"><img src="./components/icon-04.svg" alt="Journey"></div>
+        <span class="nav-label" data-content="nav_journey">Journey</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='grades.html'">
+        <div class="nav-icon"><img src="./components/icon-05.svg" alt="Grades"></div>
+        <span class="nav-label" data-content="nav_grades">Grades</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><img src="./components/icon-06.svg" alt="Sparkz"></div>
+        <span class="nav-label" data-content="nav_sparkz">Sparkz</span>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar" onclick="window.location.href='settings.html'" style="cursor:pointer"></div>
+      <span class="user-name">Sophie</span>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="sparks-main">
+
+    <!-- Header -->
+    <div class="sparks-header">
+      <div class="sparks-header-left">
+        <h1 class="sparks-title" data-content="sparks_title">Sparkz</h1>
+        <p class="sparks-subtitle" data-content="sparks_subtitle">Collect Sparkz. Collect art you love.</p>
+      </div>
+      <div class="sparks-total-box">
+        <span class="sparks-total-label" data-content="sparks_total_label">Total</span>
+        <div class="sparks-total-num">
+          <span id="sparksCount">220</span>
+          <img src="./components/Spark-4.svg" alt="spark">
+        </div>
+      </div>
+    </div>
+
+    <!-- Artwork grid -->
+    <div class="sparks-grid-wrapper">
+    <div class="sparks-grid">
+
+      <!-- Row 1 -->
+      <div class="sparks-row">
+
+        <!-- Unlocked 20 — affordable -->
+        <div class="art-card art-card-dark" style="cursor:pointer" onclick="tryUnlock(20, this)">
+          <img class="art-img" src="./components/Frame-1308.svg" alt="">
+          <div class="art-dark-overlay" style="background:rgba(0,0,0,0.7)"></div>
+          <div class="art-key" style="z-index:2"><svg viewBox="0 0 25 47" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 12.2435C25 5.48091 19.4383 0 12.5789 0C5.71978 0 0.158021 5.48149 0.158021 12.2435C0.158021 16.8797 2.77369 20.9141 6.63152 22.9927L0 47H24.9663L18.3583 23.0759C22.3061 21.0238 25 16.9455 25 12.2435Z" fill="#36363f"/></svg></div>
+          <div class="art-badge">
+            <span class="art-badge-num">20</span>
+            <img src="./components/Spark-4.svg" alt="spark">
+          </div>
+        </div>
+
+        <!-- Unlocked — reward 1 -->
+        <div class="art-card art-card-blue" style="cursor:pointer" onclick="goToCollectible(1)">
+          <img class="art-img" src="./components/Frame-1305.svg" alt="Artwork">
+        </div>
+
+        <!-- Unlocked — reward 2 -->
+        <div class="art-card art-card-blue" style="cursor:pointer" onclick="goToCollectible(2)">
+          <img class="art-img" src="./components/Frame-1307.svg" alt="Artwork">
+        </div>
+
+        <!-- Locked 200 -->
+        <div class="art-card art-card-dark art-card-locked" data-cost="200">
+          <img class="art-img" src="./components/c1.jpg" alt="">
+          <div class="art-dark-overlay"></div>
+          <div class="art-lock">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 16H40C41.1046 16 42 16.8954 42 18V42C42 43.1046 41.1046 44 40 44H8C6.89544 44 6 43.1046 6 42V18C6 16.8954 6.89544 16 8 16H12V14C12 7.37258 17.3726 2 24 2C30.6274 2 36 7.37258 36 14V16ZM22 31.4648V36H26V31.4648C27.1956 30.7732 28 29.4806 28 28C28 25.7908 26.2092 24 24 24C21.7908 24 20 25.7908 20 28C20 29.4806 20.8044 30.7732 22 31.4648ZM32 16V14C32 9.58172 28.4182 6 24 6C19.5817 6 16 9.58172 16 14V16H32Z" fill="#444450"/></svg>
+          </div>
+          <div class="art-badge">
+            <span class="art-badge-num">200</span>
+            <img src="./components/Spark-4.svg" alt="spark">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 2 -->
+      <div class="sparks-row">
+
+        <div class="art-card art-card-dark art-card-locked" data-cost="400">
+          <img class="art-img" src="./components/c2.jpg" alt="">
+          <div class="art-dark-overlay"></div>
+          <div class="art-lock">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 16H40C41.1046 16 42 16.8954 42 18V42C42 43.1046 41.1046 44 40 44H8C6.89544 44 6 43.1046 6 42V18C6 16.8954 6.89544 16 8 16H12V14C12 7.37258 17.3726 2 24 2C30.6274 2 36 7.37258 36 14V16ZM22 31.4648V36H26V31.4648C27.1956 30.7732 28 29.4806 28 28C28 25.7908 26.2092 24 24 24C21.7908 24 20 25.7908 20 28C20 29.4806 20.8044 30.7732 22 31.4648ZM32 16V14C32 9.58172 28.4182 6 24 6C19.5817 6 16 9.58172 16 14V16H32Z" fill="#444450"/></svg>
+          </div>
+          <div class="art-badge">
+            <span class="art-badge-num">400</span>
+            <img src="./components/Spark-4.svg" alt="spark">
+          </div>
+        </div>
+
+        <div class="art-card art-card-dark art-card-locked" data-cost="600">
+          <img class="art-img" src="./components/c3.jpg" alt="">
+          <div class="art-dark-overlay"></div>
+          <div class="art-lock">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 16H40C41.1046 16 42 16.8954 42 18V42C42 43.1046 41.1046 44 40 44H8C6.89544 44 6 43.1046 6 42V18C6 16.8954 6.89544 16 8 16H12V14C12 7.37258 17.3726 2 24 2C30.6274 2 36 7.37258 36 14V16ZM22 31.4648V36H26V31.4648C27.1956 30.7732 28 29.4806 28 28C28 25.7908 26.2092 24 24 24C21.7908 24 20 25.7908 20 28C20 29.4806 20.8044 30.7732 22 31.4648ZM32 16V14C32 9.58172 28.4182 6 24 6C19.5817 6 16 9.58172 16 14V16H32Z" fill="#444450"/></svg>
+          </div>
+          <div class="art-badge">
+            <span class="art-badge-num">600</span>
+            <img src="./components/Spark-4.svg" alt="spark">
+          </div>
+        </div>
+
+        <div class="art-card art-card-dark art-card-locked" data-cost="800">
+          <img class="art-img" src="./components/c4.jpg" alt="">
+          <div class="art-dark-overlay"></div>
+          <div class="art-lock">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 16H40C41.1046 16 42 16.8954 42 18V42C42 43.1046 41.1046 44 40 44H8C6.89544 44 6 43.1046 6 42V18C6 16.8954 6.89544 16 8 16H12V14C12 7.37258 17.3726 2 24 2C30.6274 2 36 7.37258 36 14V16ZM22 31.4648V36H26V31.4648C27.1956 30.7732 28 29.4806 28 28C28 25.7908 26.2092 24 24 24C21.7908 24 20 25.7908 20 28C20 29.4806 20.8044 30.7732 22 31.4648ZM32 16V14C32 9.58172 28.4182 6 24 6C19.5817 6 16 9.58172 16 14V16H32Z" fill="#444450"/></svg>
+          </div>
+          <div class="art-badge">
+            <span class="art-badge-num">800</span>
+            <img src="./components/Spark-4.svg" alt="spark">
+          </div>
+        </div>
+
+        <div class="art-card art-card-dark art-card-locked" data-cost="1000">
+          <img class="art-img" src="./components/c5.jpg" alt="">
+          <div class="art-dark-overlay"></div>
+          <div class="art-lock">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 16H40C41.1046 16 42 16.8954 42 18V42C42 43.1046 41.1046 44 40 44H8C6.89544 44 6 43.1046 6 42V18C6 16.8954 6.89544 16 8 16H12V14C12 7.37258 17.3726 2 24 2C30.6274 2 36 7.37258 36 14V16ZM22 31.4648V36H26V31.4648C27.1956 30.7732 28 29.4806 28 28C28 25.7908 26.2092 24 24 24C21.7908 24 20 25.7908 20 28C20 29.4806 20.8044 30.7732 22 31.4648ZM32 16V14C32 9.58172 28.4182 6 24 6C19.5817 6 16 9.58172 16 14V16H32Z" fill="#444450"/></svg>
+          </div>
+          <div class="art-badge">
+            <span class="art-badge-num">1000</span>
+            <img src="./components/Spark-4.svg" alt="spark">
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <button class="sparks-collection-btn" data-content="btn_view_cards_collection" onclick="window.location.href='collection.html'">View cards collection</button>
+
+  <!-- ── Unlock overlay ──────────────────────────────────────── -->
+  <div id="unlock-overlay" class="unlock-overlay">
+    <button class="overlay-back" onclick="cancelUnlock()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <img class="overlay-lightning" src="./components/Lightning 1.svg" alt="">
+
+    <div class="oc-confirm">
+      <div class="confirm-badge">
+        <span class="confirm-badge-num" id="confirm-cost">20</span>
+        <img src="./components/Spark-4.svg" alt="spark">
+      </div>
+      <h1 class="confirm-question" id="confirm-question">Ready to unlock this collectible? It'll cost you 20 Sparkz.</h1>
+      <button class="confirm-btn" data-content="btn_buy_collectible" onclick="doBuy()">Buy a new collectible</button>
+    </div>
+
+    <div class="oc-success" style="cursor:pointer" onclick="goToCollectible(3)">
+      <img class="success-art" src="./components/Frame-1308.svg" alt="New collectible">
+      <p class="success-label" data-content="sparks_success_label">New collectible!</p>
+    </div>
+  </div>
+
+
+  <!-- ── Support handle ──────────────────────────────────────── -->
+  <div class="sp-backdrop" id="spBackdrop" onclick="closeSupport()"></div>
+  <div class="support-panel" id="supportPanel">
+    <button class="support-handle" onclick="toggleSupport()"><img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt=""><span class="support-handle-label" data-content="sparks_support_handle_label">Talk</span></button>
+    <div class="sp-header">
+      <h2 class="sp-title" data-content="sparks_support_title">Need to talk?</h2>
+      <p class="sp-subtitle" data-content="sparks_support_subtitle">When things are tough, you are not alone.</p>
+    </div>
+    <div class="sp-items">
+      <div class="sp-item">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="3.5" stroke="#f2f3e5" stroke-width="1.5"/>
+            <path d="M4 19c0-3.87 3.13-7 7-7h0c3.87 0 7 3.13 7 7" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="sparks_support_item1_title">Talk to someone.</p>
+          <p class="sp-item-sub" data-content="sparks_support_item1_sub">A trusted adult at your school is here to help.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <div class="sp-item" style="cursor:pointer" onclick="window.location.href='support-write.html'">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="sparks_support_item2_title">Write it out.</p>
+          <p class="sp-item-sub" data-content="sparks_support_item2_sub">We'll make sure someone sees it.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <p class="sp-cta" data-content="sparks_support_cta">Need to talk to someone right away? <strong>Call 988.</strong></p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+if (new URLSearchParams(location.search).get('back') === '1') {
+  enterFromCollectible();
+}
+
+// Load avatar
+(function(){
+  var src = localStorage.getItem('bp_avatar') || './foundations/assets/avatars/avatar-3.svg';
+  var bg  = localStorage.getItem('bp_avatar_bg') || '#b8c0ed';
+  var el  = document.getElementById('userAvatar');
+  if (el) el.style.background = bg + ' url("' + src + '") no-repeat center / cover';
+})();
+(function(){
+  var name = localStorage.getItem('bp_username') || 'Sophie';
+  var el = document.querySelector('.user-name');
+  if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+var KEY_SVG = '<svg viewBox="0 0 25 47" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 12.2435C25 5.48091 19.4383 0 12.5789 0C5.71978 0 0.158021 5.48149 0.158021 12.2435C0.158021 16.8797 2.77369 20.9141 6.63152 22.9927L0 47H24.9663L18.3583 23.0759C22.3061 21.0238 25 16.9455 25 12.2435Z" fill="#36363f"/></svg>';
+
+// Sync spark count from localStorage
+(function() {
+  const total = parseInt(localStorage.getItem('bp_sparks') || '360', 10);
+  if (total > 0) document.getElementById('sparksCount').textContent = total;
+  applyAffordability(total);
+})();
+
+function applyAffordability(sparks) {
+  document.querySelectorAll('.art-card-locked[data-cost]').forEach(function(card) {
+    var cost = parseInt(card.dataset.cost, 10);
+    if (sparks >= cost) {
+      card.classList.remove('art-card-locked');
+      card.style.cursor = 'pointer';
+      card.setAttribute('onclick', 'tryUnlock(' + cost + ', this)');
+      var overlay = card.querySelector('.art-dark-overlay');
+      if (overlay) overlay.style.background = 'rgba(0,0,0,0.7)';
+      var lockEl = card.querySelector('.art-lock');
+      if (lockEl) {
+        lockEl.style.cssText = 'position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:25px;height:47px;z-index:2;pointer-events:none;';
+        lockEl.innerHTML = KEY_SVG;
+      }
+    }
+  });
+}
+
+// ─── Unlock flow ───────────────────────────────────────────────
+var _unlockCost   = 0;
+var _unlockCard   = null;
+var _cardRect     = null;
+var _unlockArtSrc = './components/Frame-1308.svg';
+
+function tryUnlock(cost, card) {
+  var sparks = parseInt(document.getElementById('sparksCount').textContent, 10);
+  if (sparks < cost) return;
+  _unlockCost = cost;
+  _unlockCard = card;
+  var artImg = card.querySelector('.art-img');
+  _unlockArtSrc = artImg ? artImg.getAttribute('src') : './components/Frame-1308.svg';
+  document.getElementById('confirm-cost').textContent = cost;
+  document.getElementById('confirm-question').textContent =
+    'Ready to unlock this collectible? It\'ll cost you ' + cost + ' Sparkz.';
+
+  // Capture natural card position before anything moves
+  _cardRect = _unlockCard.getBoundingClientRect();
+
+  // Exit main content immediately on click
+  document.querySelector('.today-sidebar').classList.add('exit');
+  document.querySelector('.sparks-header-left').classList.add('exit');
+  document.querySelector('.sparks-total-box').classList.add('exit');
+  document.querySelector('.sparks-grid').classList.add('exit');
+
+  // Hide support handle
+  var handle = document.querySelector('.support-handle');
+  if (handle) handle.style.opacity = '0';
+
+  // Show overlay collapsed (clip-path 0%)
+  var overlay = document.getElementById('unlock-overlay');
+  overlay.style.display = 'block';
+  overlay.style.clipPath = 'circle(0% at 50% 50%)';
+
+  // Next frame: expand overlay
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      overlay.style.transition = 'clip-path 1000ms cubic-bezier(0.73,-0.01,0.2,0.98)';
+      overlay.style.clipPath = 'circle(150% at 50% 50%)';
+
+      // 200ms later: animate content in
+      setTimeout(function() {
+        document.querySelector('.confirm-badge').classList.add('in');
+        document.querySelector('.confirm-question').classList.add('in');
+        document.querySelector('.confirm-btn').classList.add('in');
+      }, 200);
+    });
+  });
+}
+
+function cancelUnlock() {
+  var overlay = document.getElementById('unlock-overlay');
+  overlay.style.transition = 'clip-path 600ms cubic-bezier(0.73,-0.01,0.2,0.98)';
+  overlay.style.clipPath = 'circle(0% at 50% 50%)';
+  setTimeout(function() {
+    overlay.style.display = 'none';
+    overlay.style.clipPath = '';
+    overlay.style.transition = '';
+    document.querySelector('.confirm-badge').classList.remove('in');
+    document.querySelector('.confirm-question').classList.remove('in');
+    document.querySelector('.confirm-btn').classList.remove('in');
+  }, 620);
+  var handle = document.querySelector('.support-handle');
+  if (handle) handle.style.opacity = '';
+  var els = [
+    document.querySelector('.today-sidebar'),
+    document.querySelector('.sparks-header-left'),
+    document.querySelector('.sparks-total-box'),
+    document.querySelector('.sparks-grid'),
+  ];
+  var T = '600ms cubic-bezier(0.73,-0.01,0.2,0.98)';
+  els.forEach(function(el) {
+    if (el) el.style.transition = 'transform ' + T + ', opacity ' + T;
+  });
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
+    els.forEach(function(el) { if (el) el.classList.remove('exit'); });
+  }); });
+}
+
+function doBuy() {
+  var sparks = parseInt(document.getElementById('sparksCount').textContent, 10);
+  var newTotal = Math.max(0, sparks - _unlockCost);
+  document.getElementById('sparksCount').textContent = newTotal;
+  localStorage.setItem('bp_sparks', newTotal);
+
+  document.querySelector('.success-art').src = _unlockArtSrc;
+  document.getElementById('unlock-overlay').classList.add('is-success');
+
+  // After success content is visible, start exit sequence
+  setTimeout(startSuccessExit, 1600);
+  // Full cleanup after animations complete
+  setTimeout(closeSuccess, 3200);
+}
+
+function startSuccessExit() {
+  if (!_unlockCard || !_cardRect) return;
+  var BEZ = 'cubic-bezier(0.73,-0.01,0.2,0.98)';
+  var DUR = '1000ms';
+
+  var overlay = document.getElementById('unlock-overlay');
+
+  // Overlay background fades to transparent so main content shows through
+  overlay.style.pointerEvents = 'none';
+  overlay.style.transition    = 'background-color 700ms ease';
+  overlay.style.backgroundColor = 'transparent';
+
+  // 1. Lightning expands and fades — becomes the transition medium
+  var lightning = document.querySelector('.overlay-lightning');
+  lightning.style.transition = 'transform ' + DUR + ' ' + BEZ + ', opacity 600ms ease 300ms';
+  lightning.style.transform  = 'translate(-50%,-50%) rotate(-30deg) scale(3)';
+  lightning.style.opacity    = '0';
+
+  // 2. "New collectible!" slides down
+  var label = document.querySelector('.success-label');
+  label.style.transition = 'transform ' + DUR + ' ' + BEZ + ', opacity 700ms ease';
+  label.style.transform  = 'translateY(400px)';
+  label.style.opacity    = '0';
+
+  // 3. Art flies to card slot — measure actual positions, scale from center
+  var s       = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  var devRect = document.getElementById('device').getBoundingClientRect();
+  var art     = document.querySelector('.success-art');
+  var artRect = art.getBoundingClientRect();
+
+  // Centers in device-space coordinates
+  var artCX  = (artRect.left + artRect.width  / 2 - devRect.left) / s;
+  var artCY  = (artRect.top  + artRect.height / 2 - devRect.top)  / s;
+  var cardCX = (_cardRect.left + _cardRect.width  / 2 - devRect.left) / s;
+  var cardCY = (_cardRect.top  + _cardRect.height / 2 - devRect.top)  / s;
+  var sc     = (_cardRect.width / s) / (artRect.width / s);
+
+  art.style.transition      = 'transform ' + DUR + ' ' + BEZ;
+  art.style.transformOrigin = 'center center';
+  art.style.transform       = 'translate(' + (cardCX - artCX) + 'px,' + (cardCY - artCY) + 'px) scale(' + sc + ')';
+
+  // 4. Main content re-enters — all at the same time, same duration
+  var els = [
+    document.querySelector('.today-sidebar'),
+    document.querySelector('.sparks-header-left'),
+    document.querySelector('.sparks-total-box'),
+    document.querySelector('.sparks-grid'),
+  ];
+  els.forEach(function(el) {
+    if (el) el.style.transition = 'transform ' + DUR + ' ' + BEZ + ', opacity ' + DUR + ' ease';
+  });
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      els.forEach(function(el) { if (el) el.classList.remove('exit'); });
+    });
+  });
+
+  // 5. Art lands → update card, fade art
+  setTimeout(function() {
+    if (_unlockCard) {
+      _unlockCard.className = 'art-card art-card-blue';
+      _unlockCard.removeAttribute('onclick');
+      _unlockCard.style.cursor = 'default';
+      _unlockCard.innerHTML    = '<img class="art-img" src="' + _unlockArtSrc + '" alt="Artwork">';
+    }
+    art.style.transition = 'opacity 150ms ease';
+    art.style.opacity    = '0';
+  }, 950);
+}
+
+function closeSuccess() {
+  // Hide overlay instantly
+  var overlay = document.getElementById('unlock-overlay');
+  overlay.style.transition = 'none';
+  overlay.style.clipPath   = '';
+  overlay.style.display    = 'none';
+  overlay.classList.remove('is-success');
+
+  // Reset confirm entry states
+  document.querySelector('.confirm-badge').classList.remove('in');
+  document.querySelector('.confirm-question').classList.remove('in');
+  document.querySelector('.confirm-btn').classList.remove('in');
+
+  // Reset art & label inline styles for next use
+  var art   = document.querySelector('.success-art');
+  var label = document.querySelector('.success-label');
+  var light = document.querySelector('.overlay-lightning');
+  [art, label, light].forEach(function(el) {
+    el.style.transition = el.style.transform = el.style.opacity =
+    el.style.transformOrigin = '';
+  });
+
+  // Restore overlay transition for next use
+  setTimeout(function() { overlay.style.transition = ''; }, 50);
+
+  // Ensure main content is fully reset (in case of fast re-click)
+  var els = [
+    document.querySelector('.today-sidebar'),
+    document.querySelector('.sparks-header-left'),
+    document.querySelector('.sparks-total-box'),
+    document.querySelector('.sparks-grid'),
+  ];
+  els.forEach(function(el) {
+    if (el) { el.classList.remove('exit'); el.style.transition = ''; }
+  });
+
+  _unlockCard = null;
+  _cardRect   = null;
+}
+
+function goToCollectible(cid) {
+  var BEZIER = 'cubic-bezier(0.75,0,0.3,0.99)';
+  var sidebar   = document.querySelector('.today-sidebar');
+  var headerL   = document.querySelector('.sparks-header-left');
+  var totalBox  = document.querySelector('.sparks-total-box');
+  var grid      = document.querySelector('.sparks-grid');
+  var btn       = document.querySelector('.sparks-collection-btn');
+  var cloud     = document.getElementById('collCloudBg');
+  var lightning = document.querySelector('.lightning-bg');
+  [sidebar, headerL, totalBox, grid, btn, cloud, lightning].forEach(function(el) {
+    if (el) el.classList.add('exit');
+  });
+  setTimeout(function() {
+    window.location.href = 'collectible.html?c=' + cid + '&anim=1';
+  }, 800);
+}
+
+function enterFromCollectible() {
+  var T = '900ms cubic-bezier(0.75,0,0.3,0.99)';
+  var sidebar  = document.querySelector('.today-sidebar');
+  var headerL  = document.querySelector('.sparks-header-left');
+  var totalBox = document.querySelector('.sparks-total-box');
+  var grid     = document.querySelector('.sparks-grid');
+  var btn      = document.querySelector('.sparks-collection-btn');
+  var cloud    = document.getElementById('collCloudBg');
+  var lightning = document.querySelector('.lightning-bg');
+
+  // set starting positions (same as exit states)
+  sidebar.style.transform  = 'translateY(-50%) translateX(-300px)'; sidebar.style.opacity = '0';
+  headerL.style.transform  = 'translateY(-200px)'; headerL.style.opacity = '0';
+  totalBox.style.transform = 'translateY(-200px)'; totalBox.style.opacity = '0';
+  grid.style.transform     = 'translateY(400px)';  grid.style.opacity = '0';
+  btn.style.transform      = 'translateX(-50%) translateY(200px)'; btn.style.opacity = '0';
+  cloud.style.transform    = 'scale(3)';
+  lightning.style.opacity  = '0';
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var trans = 'transform ' + T + ', opacity ' + T;
+      sidebar.style.transition  = trans; sidebar.style.transform  = 'translateY(-50%)'; sidebar.style.opacity = '1';
+      headerL.style.transition  = trans; headerL.style.transform  = ''; headerL.style.opacity = '1';
+      totalBox.style.transition = trans; totalBox.style.transform = ''; totalBox.style.opacity = '1';
+      grid.style.transition     = trans; grid.style.transform     = ''; grid.style.opacity = '1';
+      btn.style.transition      = trans; btn.style.transform      = 'translateX(-50%)'; btn.style.opacity = '1';
+      cloud.style.transition    = 'transform ' + T; cloud.style.transform = '';
+      lightning.style.transition = 'opacity ' + T; lightning.style.opacity = '1';
+    });
+  });
+}
+
+function toggleSupport() {
+  document.getElementById('supportPanel').classList.contains('sp-open') ? closeSupport() : openSupport();
+}
+function openSupport() {
+  document.getElementById('supportPanel').classList.add('sp-open');
+  document.getElementById('spBackdrop').classList.add('sp-open');
+}
+function closeSupport() {
+  document.getElementById('supportPanel').classList.remove('sp-open');
+  document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

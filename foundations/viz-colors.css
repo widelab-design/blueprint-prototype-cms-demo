@@ -1,0 +1,107 @@
+/* Blueprint UI — Visualization Colors
+ * 10 hue groups × 5 shades (900 = darkest, 100 = lightest)
+ * Source: Figma › Blueprint-UI-Design › Colors (node 54:82089)
+ * -----------------------------------------------------------
+ * Usage: --viz-{hue}-{shade}
+ * Intended for charts, maps, tags, status indicators, and
+ * any data-driven visual encoding — not for UI chrome.
+ */
+
+:root {
+
+  /* Gray
+     Neutral anchors — axes, grid lines, empty states */
+  --viz-gray-900: #1f1f25;
+  --viz-gray-700: #36363f;
+  --viz-gray-500: #444450;
+  --viz-gray-300: #737472;
+  --viz-gray-100: #a4a59f;
+
+  /* Blue
+     Primary data series, links, highlights */
+  --viz-blue-900: #1179ad;
+  --viz-blue-700: #49aee1;
+  --viz-blue-500: #8ecdec;
+  --viz-blue-300: #addbf2;
+  --viz-blue-100: #d1eaf7;
+
+  /* Indigo
+     Secondary data series, categories */
+  --viz-indigo-900: #384078;
+  --viz-indigo-700: #3f50b8;
+  --viz-indigo-500: #aab3eb;
+  --viz-indigo-300: #cbd1f5;
+  --viz-indigo-100: #dbdff9;
+
+  /* Violet
+     Tertiary series, accents */
+  --viz-violet-900: #7040c8;
+  --viz-violet-700: #b38aff;
+  --viz-violet-500: #c4a3ff;
+  --viz-violet-300: #d6c0fe;
+  --viz-violet-100: #e4d6fe;
+
+  /* Green
+     Positive values, growth, success */
+  --viz-green-900: #1a5e36;
+  --viz-green-700: #219653;
+  --viz-green-500: #58b880;
+  --viz-green-300: #b1d8c2;
+  --viz-green-100: #d5e9de;
+
+  /* Orange
+     Warnings, heat, high-intensity ranges */
+  --viz-orange-900: #ae4300;
+  --viz-orange-700: #e65800;
+  --viz-orange-500: #f0aa8c;
+  --viz-orange-300: #f3beaf;
+  --viz-orange-100: #f8d9d0;
+
+  /* Pink
+     Contrast series, gender/demographic splits */
+  --viz-pink-900: #c33e89;
+  --viz-pink-700: #e768b0;
+  --viz-pink-500: #efbcd8;
+  --viz-pink-300: #f2d1e4;
+  --viz-pink-100: #f8e7f1;
+
+  /* Brown
+     Earth/geo categories, resource types */
+  --viz-brown-900: #945218;
+  --viz-brown-700: #f08b31;
+  --viz-brown-500: #f5c499;
+  --viz-brown-300: #f7ddc6;
+  --viz-brown-100: #fbede2;
+
+  /* Amber
+     Alerts, pending states, medium-priority ranges */
+  --viz-amber-900: #bd8406;
+  --viz-amber-700: #ffbb25;
+  --viz-amber-500: #fccf83;
+  --viz-amber-300: #fce3bb;
+  --viz-amber-100: #fdeed6;
+
+  /* Yellow
+     Highlights, selections, low-intensity ranges */
+  --viz-yellow-900: #ceab0d;
+  --viz-yellow-700: #fdda3c;
+  --viz-yellow-500: #feeda1;
+  --viz-yellow-300: #fef5cc;
+  --viz-yellow-100: #fff9dd;
+
+}
+
+/* Categorical palette — pick one value per series
+ * (default: use -700 shade for max readability on white) */
+:root {
+  --viz-cat-1: var(--viz-blue-700);
+  --viz-cat-2: var(--viz-green-700);
+  --viz-cat-3: var(--viz-violet-900);
+  --viz-cat-4: var(--viz-orange-700);
+  --viz-cat-5: var(--viz-indigo-700);
+  --viz-cat-6: var(--viz-pink-900);
+  --viz-cat-7: var(--viz-amber-700);
+  --viz-cat-8: var(--viz-brown-700);
+  --viz-cat-9: var(--viz-yellow-900);
+  --viz-cat-10: var(--viz-gray-500);
+}

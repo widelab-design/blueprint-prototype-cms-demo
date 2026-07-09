@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — App is sleeping</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; background: #1f1f25;
+  transform-origin: center center; transform: scale(var(--s,1));
+}
+
+/* Status bar */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: #fff; pointer-events: none;
+}
+
+/* Moon — behind blue circle, slow orbital drift */
+.sleep-moon {
+  position: absolute;
+  width: 203px; height: 211px;
+  top: 85px; right: 45px;
+  z-index: -1; pointer-events: none;
+  animation: moon-orbit 12s linear infinite;
+}
+
+@keyframes moon-orbit {
+  0%   { transform: translate(0,    0); }
+  25%  { transform: translate(-18px, 14px); }
+  50%  { transform: translate(-30px, 0); }
+  75%  { transform: translate(-18px, -14px); }
+  100% { transform: translate(0,    0); }
+}
+
+/* Float wrapper — everything that bobs */
+.sleep-float {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+  animation: sleep-float 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes sleep-float {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-22px); }
+}
+
+/* Blue circle */
+.sleep-ellipse {
+  position: absolute;
+  width: 1910px; height: 1910px;
+  border-radius: 50%; background: #3f50b8;
+  left: -352px; top: 150px;
+}
+
+/* Sleeping eyes */
+.sleep-eyes {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, calc(-50% + 121.5px));
+  display: flex; gap: 49px;
+  align-items: flex-start;
+  z-index: 5;
+}
+.sleep-eye-svg {
+  width: 245px; height: 329px; overflow: visible;
+  display: block; flex-shrink: 0;
+}
+
+/* Animate the lighter ellipse (top part of eye) sliding down → more closed */
+@keyframes eye-close {
+  from { cy: 134.703px; }
+  to   { cy: 154px; }
+}
+.eye-light {
+  animation: eye-close 2.8s ease-in-out infinite alternate;
+}
+
+/* Content — title + bubble */
+.sleep-content {
+  position: absolute;
+  left: calc(50% - 248.5px); top: 298px;
+  width: 497px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  z-index: 10;
+}
+
+.sleep-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  line-height: 1.06; letter-spacing: 1.5px;
+  color: #f2f3e5; text-align: center; margin: 0;
+  width: 377px;
+}
+
+/* Message bubble */
+.sleep-bubble {
+  background: #f08b31; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
+  width: 395px; box-sizing: border-box;
+}
+.sleep-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5;
+  display: flex; align-items: center; justify-content: center;
+}
+.sleep-monster { position: relative; width: 40px; height: 40px; }
+.sleep-bubble-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  margin: 0; flex: 1;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span data-content="sleeping_status_time">9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Moon — stays fixed, behind circle -->
+  <img class="sleep-moon" src="./components/sleeping-moon.svg" alt="">
+
+  <!-- Float wrapper — circle + eyes bob together -->
+  <div class="sleep-float">
+
+    <div class="sleep-ellipse"></div>
+
+    <div class="sleep-eyes">
+      <!-- Left eye — inlined SVG so we can animate the lighter ellipse -->
+      <svg class="sleep-eye-svg" viewBox="0 0 244.914 329" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="122.457" cy="243.28" r="85.72" fill="#384078"/>
+        <ellipse class="eye-light" cx="122.457" cy="134.703" rx="122.457" ry="134.703" fill="#3F50B8"/>
+      </svg>
+      <!-- Right eye -->
+      <svg class="sleep-eye-svg" viewBox="0 0 244.914 329" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="122.457" cy="243.28" r="85.72" fill="#384078"/>
+        <ellipse class="eye-light" cx="122.457" cy="134.703" rx="122.457" ry="134.703" fill="#3F50B8"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- Title + bubble — also float -->
+  <div class="sleep-content" style="animation: sleep-float 3.5s ease-in-out infinite alternate;">
+    <h1 class="sleep-title" data-content="sleeping_title">The app<br>is sleeping</h1>
+
+    <div class="sleep-bubble">
+      <div class="sleep-avatar">
+        <div class="sleep-monster">
+          <img style="position:absolute;inset:0;width:100%;height:100%;transform:rotate(180deg) scaleY(-1);" src="./components/monster-star.svg" alt="">
+          <img style="position:absolute;left:13.3px;top:15.75px;width:6.193px;height:8px;transform:rotate(180deg) scaleY(-1);" src="./components/monster-star-eye-l.svg" alt="">
+          <img style="position:absolute;left:20.7px;top:15.75px;width:6.171px;height:8px;transform:rotate(180deg) scaleY(-1);" src="./components/monster-star-eye-r.svg" alt="">
+        </div>
+      </div>
+      <p class="sleep-bubble-text" data-content="sleeping_bubble_text">It is available Monday through Friday, from 9:00 AM to 5:00 PM.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+  document.getElementById('device').style.transform = 'scale(' + s + ')';
+}
+scale(); addEventListener('resize', scale);
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Completed!</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+body { background: #1f1f25; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* +1 spark badge */
+.spark-badge {
+  position: absolute;
+  left: 50%; top: 148px;
+  transform: translateX(-50%) translateY(12px);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  letter-spacing: -0.8px; color: #f2f3e5;
+  opacity: 0;
+  transition: opacity 350ms ease, transform 350ms ease;
+  white-space: nowrap;
+}
+.spark-badge.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.spark-badge.hide { opacity: 0; transform: translateX(-50%) translateY(-180px); transition: opacity 500ms ease, transform 600ms cubic-bezier(0.4,0,1,1); }
+.spark-badge img { width: 32px; height: 32px; display: block; }
+
+/* Completed! */
+.completed-text {
+  position: absolute;
+  left: 50%; top: 614px;
+  transform: translateX(-50%) translateY(0);
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  line-height: 1.06; letter-spacing: 0;
+  color: #f2f3e5; white-space: nowrap;
+  opacity: 0;
+  transition: opacity 400ms ease, transform 600ms cubic-bezier(0.4,0,1,1);
+}
+.completed-text.show { opacity: 1; }
+.completed-text.hide { transform: translateX(-50%) translateY(260px); opacity: 0; }
+
+/* Flying card */
+.flying-card {
+  position: absolute;
+  width: 237px; height: 353px;
+  left: 478.5px; top: 240.5px;
+  border-radius: 19px; overflow: hidden;
+  transform-origin: top left;
+  transform: translateY(16px);
+  opacity: 0;
+  z-index: 10;
+  transition: transform 480ms cubic-bezier(0.34,1.2,0.64,1),
+              opacity 300ms ease;
+  will-change: transform, opacity;
+}
+.flying-card img { width: 100%; height: 100%; display: block; object-fit: fill; }
+
+/* Szuflada wrapper */
+.szuflada-wrap {
+  position: absolute;
+  left: 280px;
+  top: 900px; /* starts off-screen */
+  width: 635px; height: 817px;
+  z-index: 5;
+  transition: top 800ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: top;
+}
+.szuflada-wrap.show { top: 96px; }
+.szuflada-wrap > img { width: 635px; height: 817px; display: block; }
+
+/* Mini cards already in szuflada */
+.mini-card {
+  position: absolute;
+  width: 114.136px; height: 170px;
+  border-radius: 9.26px; overflow: hidden;
+}
+.mini-card img { width: 100%; height: 100%; display: block; object-fit: fill; }
+
+/* ─── All-done screen ──────────────────────────────────────── */
+#all-done {
+  display: none; position: absolute; inset: 0; z-index: 50;
+  background: #3f50b8; overflow: hidden;
+}
+#all-done .star {
+  position: absolute; width: 1392px; height: 1392px;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+#all-done .ad-center {
+  position: absolute; left: 50%; top: calc(50% + 40px);
+  transform: translate(-50%, -50%);
+  width: 613px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+}
+#all-done .ad-reward {
+  display: flex; align-items: center; gap: 12px;
+}
+#all-done .ad-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  letter-spacing: -0.8px; color: #f2f3e5;
+}
+#all-done .ad-spark { width: 32px; height: 32px; display: block; }
+#all-done .ad-fan {
+  position: relative; width: 492px; height: 262px; flex-shrink: 0;
+}
+#all-done .ad-card {
+  position: absolute; width: 146.6px; height: 218px;
+  border-radius: 19px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+#all-done .ad-card img { width: 100%; height: 100%; display: block; object-fit: fill; }
+#all-done .ad-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 1.5px; color: #f2f3e5; text-align: center;
+  margin: 0;
+}
+
+/* Entry animation for all-done screen */
+#all-done.visible { display: block; }
+#all-done .ad-center { opacity: 0; transform: translate(-50%, calc(-50% + 40px)); transition: opacity 600ms ease, transform 600ms cubic-bezier(0.34,1.1,0.64,1); }
+#all-done.animate .ad-center { opacity: 1; transform: translate(-50%, -50%); }
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="spark-badge" id="sparkBadge" data-content="completed_spark_badge">
+    +1 <img src="./components/Spark-4.svg" alt="spark">
+  </div>
+
+  <div class="flying-card" id="flyingCard">
+    <img id="cardImg" src="" alt="">
+  </div>
+
+  <p class="completed-text" id="completedText" data-content="completed_completed_text">Completed!</p>
+
+  <div class="szuflada-wrap" id="szuflada">
+    <img src="./components/szuflada.svg" alt="">
+    <!-- previously collected mini cards injected by JS -->
+  </div>
+
+  <!-- ── All cards done screen ───────────────────────────────── -->
+  <div id="all-done">
+    <img class="star" src="./components/star-burst.svg" alt="">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <div class="ad-center">
+      <div class="ad-reward">
+        <span class="ad-plus" data-content="completed_ad_plus">+10</span>
+        <img class="ad-spark" src="./components/Spark-4.svg" alt="spark">
+      </div>
+      <div class="ad-fan">
+        <!-- Mood check-in: -30° bottom-left -->
+        <div class="ad-card" style="left:0;top:50px;transform:rotate(-30deg);transform-origin:center center;">
+          <img src="./components/Mood-checkin-04.svg" alt="">
+        </div>
+        <!-- Write it out: -15° left-center -->
+        <div class="ad-card" style="left:107px;top:0;transform:rotate(-15deg);transform-origin:center center;">
+          <img src="./components/Write-i-o-04.svg" alt="">
+        </div>
+        <!-- Notice your wins: +15° right-center -->
+        <div class="ad-card" style="left:186px;top:0;transform:rotate(15deg);transform-origin:center center;">
+          <img src="./components/Notice-y-w-04.svg" alt="">
+        </div>
+        <!-- All about you: +30° bottom-right -->
+        <div class="ad-card" style="left:256px;top:50px;transform:rotate(30deg);transform-origin:center center;">
+          <img src="./components/All-a-y-04.svg" alt="">
+        </div>
+      </div>
+      <p class="ad-title" data-content="completed_ad_title">Today mission<br>completed!</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ─── Scale device ─────────────────────────────────────────────
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+// ─── Config ───────────────────────────────────────────────────
+const params   = new URLSearchParams(location.search);
+const cardSlug = params.get('card') || 'wins';
+
+const CARD_CFG = {
+  mood:  { svg: 'Mood-checkin-04', col: 0, section: 'mood'  },
+  wins:  { svg: 'Notice-y-w-04',   col: 1, section: 'wins'  },
+  write: { svg: 'Write-i-o-04',    col: 2, section: 'write' },
+  about: { svg: 'All-a-y-04',      col: 3, section: 'about' },
+};
+const cfg = CARD_CFG[cardSlug] || CARD_CFG.wins;
+
+// Slot positions within szuflada SVG (635px wide)
+const COL_X = [16, 138.136, 260.271, 382.408, 504.544];
+const ROW_Y  = [16, 194, 372, 550];
+
+// Screen geometry
+const MINI_SCALE = 114.136 / 237;  // ≈ 0.4815
+const SZUF_LEFT  = 280, SZUF_TOP = 96;
+
+// Card center in device coords (matches .flying-card CSS: left=478.5, top=240.5)
+const CARD_LEFT_PX = (1194 - 237) / 2;  // 478.5
+const CARD_TOP_PX  = (834  - 353) / 2;  // 240.5
+
+// Target slot position (szuflada at SZUF_TOP, transform-origin: top left)
+const slotLeft = SZUF_LEFT + COL_X[cfg.col];
+const slotTop  = SZUF_TOP  + ROW_Y[0];
+const dxx = slotLeft - CARD_LEFT_PX;
+const dyy = slotTop  - CARD_TOP_PX;
+
+// ─── Set card image ───────────────────────────────────────────
+document.getElementById('cardImg').src = `./components/${cfg.svg}.svg`;
+
+// ─── Populate previously collected mini cards in szuflada ─────
+const sections = JSON.parse(localStorage.getItem('bp_today_sections') || '["mood"]');
+const szufEl   = document.getElementById('szuflada');
+
+Object.entries(CARD_CFG).forEach(([slug, c]) => {
+  if (slug === cardSlug) return;           // this one flies in, not pre-shown
+  if (!sections.includes(c.section)) return;
+  const el = document.createElement('div');
+  el.className = 'mini-card';
+  el.style.left = COL_X[c.col] + 'px';
+  el.style.top  = ROW_Y[0] + 'px';
+  el.innerHTML  = `<img src="./components/${c.svg}.svg" alt="">`;
+  szufEl.appendChild(el);
+});
+
+// ─── Is this the last card? ───────────────────────────────────
+const ALL_SECTIONS  = ['mood', 'wins', 'write', 'about'];
+const isLastCard    = !sections.includes(cfg.section) && sections.length === ALL_SECTIONS.length - 1;
+
+// ─── Animation sequence ───────────────────────────────────────
+const flyingCard    = document.getElementById('flyingCard');
+const sparkBadge    = document.getElementById('sparkBadge');
+const completedText = document.getElementById('completedText');
+
+{
+// 1. Card appears (fade + slide up)
+setTimeout(() => {
+  flyingCard.style.transform = 'translateY(0)';
+  flyingCard.style.opacity   = '1';
+}, 60);
+
+// 2. +1 spark
+setTimeout(() => sparkBadge.classList.add('show'), 120);
+
+// 3. "Completed!" text
+setTimeout(() => completedText.classList.add('show'), 350);
+
+// 4. Szuflada slides up + "Completed!" slides down + "+1 spark" slides up
+setTimeout(() => {
+  szufEl.classList.add('show');
+  completedText.classList.add('hide');
+  sparkBadge.classList.add('hide');
+}, 900);
+
+// 5. Card flies to slot (translate + scale)
+setTimeout(() => {
+  flyingCard.style.transition = 'transform 620ms cubic-bezier(0.4,0,0.15,1), opacity 200ms';
+  flyingCard.style.transform  = `translate(${dxx}px, ${dyy}px) scale(${MINI_SCALE})`;
+}, 1600);
+
+// 6. Everything slides out below
+setTimeout(() => {
+  szufEl.style.transition    = 'top 800ms cubic-bezier(0.4,0,1,1)';
+  szufEl.style.top           = '900px';
+  flyingCard.style.transition = 'transform 800ms cubic-bezier(0.4,0,1,1)';
+  flyingCard.style.transform  = `translate(${dxx}px, ${dyy + 804}px) scale(${MINI_SCALE})`;
+}, 3020);
+
+// 7. Redirect after slide-out finishes
+setTimeout(() => {
+  const dest = params.get('from') === 'journal' ? 'journal.html' : 'today.html';
+  if (dest === 'today.html') sessionStorage.setItem('bp_enter_anim', '1');
+  window.location.href = dest;
+}, 3900);
+}
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Journal</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+.today-sidebar {
+  position: absolute;
+  left: 24px; top: 50%; transform: translateY(-50%);
+  width: 80px; height: 786px;
+  background: #2b2b32; border-radius: 20px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  padding: 24px 8px; box-sizing: border-box;
+  z-index: 10;
+}
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 400; font-size: 16px; color: #8e8b85;
+  text-transform: uppercase; text-align: center; letter-spacing: 0.5px;
+  height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 12px; }
+.nav-item {
+  width: 64px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 8px 0; cursor: pointer;
+  transition: background 140ms;
+}
+.nav-item.active { background: #1f1f25; }
+.nav-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+.nav-icon { width: 24px; height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.nav-icon img { width: 24px; height: 24px; display: block; }
+.nav-item.active .nav-icon img { filter: brightness(0) invert(1); }
+.nav-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+  line-height: 16px;
+}
+.nav-item.active .nav-label { color: #f2f3e5; }
+.sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #b8c0ed no-repeat center / cover;
+  border: 2px solid #36363f;
+  overflow: hidden; box-sizing: border-box;
+}
+.user-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+}
+
+/* ─── Page title ────────────────────────────────────────────── */
+.page-title {
+  position: absolute;
+  left: 152px;
+  top: 72px;
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: left;
+  margin: 0; pointer-events: none;
+}
+.page-desc {
+  position: absolute;
+  left: 152px; top: 154px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  letter-spacing: -0.1px; line-height: 20px;
+  color: #737472; margin: 0; pointer-events: none;
+}
+
+/* ─── Content layout ────────────────────────────────────────── */
+.journal-content {
+  position: absolute;
+  left: 152px; top: 206px;
+  display: flex; gap: 32px; align-items: flex-start;
+}
+
+/* ─── Left column ───────────────────────────────────────────── */
+.col-left { width: 658px; display: flex; flex-direction: column; gap: 20px; max-height: 600px; overflow-y: auto; }
+.col-left::-webkit-scrollbar { display: none; }
+#qAnswerCards { display: none; flex-direction: column; gap: 20px; }
+
+.section-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: rgba(242,243,229,0.4); letter-spacing: -0.1px;
+}
+
+/* Purple CTA card (no entry) */
+.write-cta-card {
+  width: 658px; height: 315px; border-radius: 20px;
+  background: #c4a3ff; position: relative; overflow: hidden;
+  cursor: pointer; transition: opacity 120ms;
+}
+.write-cta-card:active { opacity: 0.9; }
+.write-cta-monster {
+  position: absolute; left: 7.5px; top: 50%; transform: translateY(-50%);
+  width: 291px; height: 291px; overflow: hidden;
+  pointer-events: none;
+}
+.write-cta-monster img {
+  width: 279px; height: 286px;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.write-cta-box {
+  position: absolute; bottom: 12px; right: 12px;
+  width: 164px; height: 96px;
+  background: #36363f; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px;
+}
+.write-cta-spark {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.2px;
+}
+.write-cta-spark img { width: 16px; height: 16px; display: block; }
+.write-cta-label {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.12;
+  color: #f2f3e5; letter-spacing: -0.4px; text-align: center;
+}
+
+/* Note card (with entry) */
+.note-card-today {
+  width: 658px; border-radius: 16px;
+  background: transparent; border: 1px solid #36363f;
+  padding: 24px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 24px;
+}
+.note-card-body {
+  display: flex; flex-direction: column; gap: 12px; width: 100%;
+}
+.note-question {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #a4a59f; letter-spacing: -0.1px; margin: 0; line-height: 1.25;
+}
+.note-answer {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px; margin: 0;
+}
+.note-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding-bottom: 12px; border-bottom: 1px solid #36363f;
+}
+.note-card-date {
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #737472; letter-spacing: -0.2px;
+}
+.note-card-edit {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.1px; text-decoration: underline;
+  cursor: pointer; background: none; border: none; padding: 0;
+}
+.note-card-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px;
+  word-break: break-word; margin: 0;
+}
+
+/* Past notes card */
+.past-notes-card {
+  width: 658px; border-radius: 16px;
+  background: #1f1f25; border: 1px solid #36363f;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px; box-sizing: border-box;
+  cursor: pointer; transition: background 120ms;
+}
+.past-notes-card:hover { background: #252530; }
+
+/* ── Add note (+) button ─────────────────────────────────────── */
+.add-note-btn {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: #2b2b32; border: 1px solid #36363f;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; align-self: center; transition: background 120ms; flex-shrink: 0;
+}
+.add-note-btn:hover { background: #36363f; }
+.add-note-btn svg { display: block; }
+.past-notes-info { display: flex; flex-direction: column; gap: 12px; }
+.past-notes-title {
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.2px;
+}
+.past-notes-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px;
+}
+.past-notes-dot {
+  width: 4px; height: 4px; border-radius: 50%; background: #737472; flex-shrink: 0;
+}
+.past-notes-arrow {
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ─── Right column ──────────────────────────────────────────── */
+.col-right { width: 282px; display: flex; flex-direction: column; gap: 20px; }
+
+.col-right .section-label { text-align: center; }
+
+.questions-list { display: flex; flex-direction: column; gap: 12px; padding: 0 31px; }
+
+.question-circle {
+  width: 220px; height: 220px; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 36px; box-sizing: border-box;
+  cursor: pointer; transition: opacity 120ms;
+}
+.question-circle:active { opacity: 0.85; }
+.question-circle-blue { background: #3f50b8; }
+.question-circle-coral { background: #e65800; }
+.question-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px; text-align: center;
+}
+
+
+/* ── Support handle + panel ──────────────────────────────────── */
+.support-handle {
+  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  width: 64px; height: 72px;
+  background: #1f1f25; border: 1px solid #36363f; border-right: none;
+  border-radius: 14px 0 0 14px;
+  padding: 0; cursor: pointer; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 150ms;
+}
+.support-handle:hover { background: #252530; }
+.support-handle-label { font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #a4a59f; pointer-events: none; line-height: 1; }
+.support-panel.sp-open .support-handle { background: #2b2b32; }
+.sp-backdrop {
+  position: absolute; inset: 0; z-index: 34;
+  background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.sp-backdrop.sp-open { opacity: 1; pointer-events: all; }
+.support-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 380px; z-index: 35;
+  background: #2b2b32; border-left: 1px solid #36363f;
+  transform: translateX(100%); transition: transform 1200ms cubic-bezier(0.73, -0.01, 0.2, 0.98);
+  display: flex; flex-direction: column;
+}
+.support-panel.sp-open { transform: translateX(0); }
+.sp-header {
+  display: flex; flex-direction: column;
+  padding: 52px 24px 20px; border-bottom: 1px solid #36363f; flex-shrink: 0;
+}
+.sp-subtitle {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 6px 0 0; line-height: 1.4;
+}
+.sp-cta {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; padding: 16px 24px; line-height: 1.5;
+}
+.sp-cta strong { color: #f2f3e5; }
+.sp-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.1;
+  letter-spacing: 0.5px; color: #f2f3e5; margin: 0;
+}
+.sp-close {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.sp-close:hover { background: rgba(255,255,255,0.14); }
+.sp-items { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+.sp-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 24px; cursor: pointer; transition: background 120ms;
+}
+.sp-item:hover { background: rgba(255,255,255,0.04); }
+.sp-item-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: #36363f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sp-item-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; margin: 0 0 3px; letter-spacing: -0.1px;
+}
+.sp-item-sub {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
+
+/* ─── Write-it-out overlay ──────────────────────────────────── */
+.write-overlay {
+  position: absolute; inset: 0; z-index: 50;
+  background: #b38aff; border-radius: 20px; overflow: hidden;
+  display: none;
+}
+.write-overlay-bg {
+  position: absolute; width: 1910px; height: 1910px; border-radius: 50%;
+  background: #1f1f25; left: -358px; top: 80px; pointer-events: none; z-index: 0;
+}
+.wov-back {
+  position: absolute; top: 36px; left: 24px; z-index: 10;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none; cursor: pointer;
+  display: grid; place-items: center; transition: background 120ms;
+}
+.wov-back:hover { background: rgba(255,255,255,0.24); }
+.wov-body {
+  position: absolute; top: 115px; left: 50%; transform: translateX(-50%); z-index: 5;
+  width: 440px; display: flex; flex-direction: column; align-items: center;
+}
+.wov-spark-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: #2f2f37; border-radius: 99px; padding: 8px 12px;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; color: #f2f3e5;
+  margin-bottom: 10px;
+}
+.wov-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; color: #f2f3e5;
+  margin: 0 0 48px; line-height: 40px; text-align: center;
+}
+.wov-bubble {
+  background: #b38aff; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px; width: 100%; box-sizing: border-box;
+  margin-bottom: 24px;
+}
+.wov-avatar {
+  width: 48px; height: 48px; background: #f2f3e5; flex-shrink: 0;
+  display: grid; place-items: center;
+}
+.wov-bubble-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+}
+.wov-textarea-wrap {
+  width: 100%; background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16); border-radius: 8px;
+}
+.wov-textarea {
+  width: 100%; box-sizing: border-box; border: none; outline: none; resize: none;
+  font-family: var(--font-body); font-size: 16px; font-weight: 600;
+  color: #f2f3e5; padding: 10px 16px; background: transparent; min-height: 200px;
+}
+.wov-textarea::placeholder { color: #adadad; font-weight: 400; }
+.wov-save-wrap {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 10;
+}
+.wov-save {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer; transition: opacity 150ms, transform 120ms;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.wov-save:active { transform: scale(0.97); }
+.wov-save:disabled { opacity: 0.4; cursor: default; }
+
+/* completion screen inside overlay — write-it-out (dark bg) */
+.wov-done {
+  position: absolute; inset: 0; z-index: 20; background: #1f1f25;
+  display: none; flex-direction: column; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.wov-done.show { display: flex; }
+.wov-done-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+}
+.wov-done-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; color: #f2f3e5;
+}
+.wov-done-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1;
+  color: #f2f3e5; margin: 0;
+}
+
+/* completion screen inside question overlay — transparent (shows overlay bg) */
+.qov-done {
+  position: absolute; inset: 0; z-index: 20;
+  display: none; flex-direction: column; align-items: center;
+  padding-top: 260px; box-sizing: border-box; gap: 12px;
+}
+.qov-done-bubble {
+  background: #58b880; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
+  width: 439px; box-sizing: border-box;
+}
+.qov-btn-row {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 24px; align-items: center;
+}
+.qov-btn-secondary {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); color: #ededed;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer;
+}
+.qov-btn-primary {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer;
+}
+/* extra spacing between spark pill and bubble in question overlay (no h1 above) */
+#questionOverlay .wov-bubble { margin-top: 48px; }
+/* reset margin so qov-done gap handles spacing */
+.qov-done .wov-done-row { margin-bottom: 0; }
+
+/* ─── qovDone entry animation (same pattern as onboarding S7) ── */
+#qovDone .wov-done-row,
+#qovDone .wov-done-title {
+  transform: translateY(400px); opacity: 0;
+}
+#qovDone .qov-done-bubble {
+  transform: translateX(500px); opacity: 0;
+}
+#qovDone .qov-btn-row {
+  transform: translateX(-50%) translateY(200px); opacity: 0;
+}
+/* Phase 1: reward row + title slide up from bottom */
+#qovDone.qov-entered .wov-done-row,
+#qovDone.qov-entered .wov-done-title {
+  transform: translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75, 0, 0.3, 0.99),
+              opacity 400ms ease;
+}
+/* Phase 2: bubble from right, buttons from bottom */
+#qovDone.qov-phase2 .qov-done-bubble {
+  transform: translateX(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75, 0, 0.3, 0.99),
+              opacity 400ms ease;
+}
+#qovDone.qov-phase2 .qov-btn-row {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75, 0, 0.3, 0.99),
+              opacity 400ms ease;
+}
+
+/* ─── Step 1: Question prompt screen ──────────────────────────── */
+#qovPrompt {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+#qovPromptCircle {
+  position: absolute; width: 1026px; height: 1026px; border-radius: 50%;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 0;
+}
+.qov-prompt-text {
+  font-family: var(--font-body); font-weight: 500; font-size: 48px;
+  line-height: 1.14; color: #f2f3e5; text-align: center;
+  width: 355px; position: relative; z-index: 1; margin: 0;
+}
+.qov-prompt-write {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer; z-index: 6;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Sidebar -->
+  <nav class="today-sidebar">
+    <div class="sidebar-logo">Sparkz</div>
+    <div class="sidebar-nav">
+      <div class="nav-item" onclick="window.location.href='today.html'">
+        <div class="nav-icon"><img src="./components/icon-02.svg" alt="Today"></div>
+        <span class="nav-label" data-content="nav_today">Today</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><img src="./components/icon-01.svg" alt="Journal"></div>
+        <span class="nav-label" data-content="nav_journal">Journal</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='my-toolkit.html'">
+        <div class="nav-icon"><img src="./components/icon-03.svg" alt="My toolkit"></div>
+        <span class="nav-label" data-content="nav_my_toolkit">My toolkit</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journey.html'">
+        <div class="nav-icon"><img src="./components/icon-04.svg" alt="Journey"></div>
+        <span class="nav-label" data-content="nav_journey">Journey</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='grades.html'">
+        <div class="nav-icon"><img src="./components/icon-05.svg" alt="Grades"></div>
+        <span class="nav-label" data-content="nav_grades">Grades</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='sparks.html'">
+        <div class="nav-icon"><img src="./components/icon-06.svg" alt="Sparkz"></div>
+        <span class="nav-label" data-content="nav_sparkz">Sparkz</span>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar" onclick="window.location.href='settings.html'" style="cursor:pointer"></div>
+      <span class="user-name">Sophie</span>
+    </div>
+  </nav>
+
+  <h1 class="page-title" data-content="journal_page_title">Journal</h1>
+  <p class="page-desc" data-content="journal_page_desc">Journaling can help you understand your feelings.</p>
+
+  <!-- Content -->
+  <div class="journal-content">
+
+    <!-- Left column -->
+    <div class="col-left">
+      <span class="section-label" data-content="journal_section_notes">Notes</span>
+
+      <!-- Question answer cards — shown when questions are answered -->
+      <div id="qAnswerCards"></div>
+
+      <!-- Purple CTA card — shown when no write-it-out entry -->
+      <div class="write-cta-card" id="writeCta" style="display:none" onclick="var o=document.getElementById('writeOverlay');o.style.display='block';document.getElementById('wovInput').value='';document.getElementById('wovSaveBtn').disabled=true;document.getElementById('wovDone').style.display='none';document.getElementById('wovInput').focus();">
+        <div class="write-cta-monster">
+          <img src="./components/Property 1=M02, Type=Default.svg" alt="">
+        </div>
+        <div class="write-cta-box">
+          <div class="write-cta-spark" data-content="journal_write_cta_sparks">
+            1 <img src="./components/spark.svg" alt="spark">
+          </div>
+          <span class="write-cta-label" data-content="journal_write_cta_label">Write it out</span>
+        </div>
+      </div>
+
+      <!-- Today's note card — shown when write-it-out is done -->
+      <div class="note-card-today" id="noteCard" style="display:none">
+        <div class="note-card-header">
+          <span class="note-card-date" data-content="journal_note_card_date">Today</span>
+          <button class="note-card-edit" data-content="btn_edit_note" onclick="var o=document.getElementById('writeOverlay');o.style.display='block';document.getElementById('wovInput').value=document.getElementById('noteText').textContent;document.getElementById('wovSaveBtn').disabled=false;document.getElementById('wovDone').style.display='none';document.getElementById('wovInput').focus();">Edit note</button>
+        </div>
+        <p class="note-card-text" id="noteText"></p>
+      </div>
+
+      <!-- Past notes card (always visible) -->
+      <div class="past-notes-card" onclick="window.location.href='journal-past-notes.html'" style="cursor:pointer;">
+        <div class="past-notes-info">
+          <span class="past-notes-title" data-content="journal_past_notes_title">Past notes</span>
+          <div class="past-notes-meta" id="pastNotesMeta" style="display:none">
+            <span id="pastNotesMonth"></span>
+            <div class="past-notes-dot"></div>
+            <span id="pastNotesAll"></span>
+          </div>
+        </div>
+        <div class="past-notes-arrow">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M7.5 4.16669L13.3333 10L7.5 15.8334" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Add new note button -->
+      <button class="add-note-btn" id="addNoteBtn" style="display:none" onclick="openAddNotePrompt()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 4V16M4 10H16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Right column -->
+    <div class="col-right">
+      <span class="section-label" data-content="journal_section_topics">Topics to write about</span>
+      <div class="questions-list" id="questionsList">
+        <div class="question-circle question-circle-blue" id="qCircle1" onclick="animateToOverlay(1)">
+          <p class="question-text">What makes you feel excited?</p>
+        </div>
+        <div class="question-circle question-circle-coral" id="qCircle2" onclick="animateToOverlay(2)">
+          <p class="question-text">What was the best thing that happened yesterday?</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Write button that slides up during circle→overlay animation -->
+  <button id="jWriteAnimBtn" data-content="journal_anim_write_btn" style="display:none; position:absolute; bottom:-80px; left:50%; transform:translateX(-50%); width:270px; height:48px; border-radius:8px; background:#f2f3e5; color:#1f1f25; font-family:var(--font-body); font-size:16px; font-weight:500; border:none; z-index:46; pointer-events:none;">Write</button>
+
+
+  <!-- ── Write-it-out overlay ─────────────────────────────────── -->
+  <div class="write-overlay" id="writeOverlay">
+    <div class="write-overlay-bg"></div>
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <button class="wov-back" onclick="document.getElementById('writeOverlay').style.display='none';">
+      <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+        <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="wov-body">
+      <div class="wov-spark-pill">
+        1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+      </div>
+      <h1 class="wov-title" data-content="journal_wov_title">Write It Out.</h1>
+
+      <div class="wov-bubble">
+        <div class="wov-avatar">
+          <div style="position:relative;width:40px;height:40px;">
+            <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
+            <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="wov-bubble-text" id="wovBubbleText">Journaling can help you understand your feelings.</p>
+      </div>
+
+      <div class="wov-textarea-wrap">
+        <textarea class="wov-textarea" id="wovInput" placeholder="Start writing here" data-content-placeholder="journal_wov_textarea_placeholder" oninput="var b=document.getElementById('wovSaveBtn');b.disabled=this.value.trim().length===0;"></textarea>
+      </div>
+    </div>
+
+    <div class="wov-save-wrap">
+      <button class="wov-save" id="wovSaveBtn" data-content="btn_save" disabled onclick="doWovSave()">Save</button>
+    </div>
+
+    <!-- Completion screen -->
+    <div class="wov-done" id="wovDone">
+      <div class="wov-done-row">
+        <span class="wov-done-plus" data-content="journal_wov_done_plus">+1</span>
+        <img src="./components/spark.svg" alt="spark" style="width:28px;height:28px;display:block;">
+      </div>
+      <p class="wov-done-title" data-content="journal_wov_done_title">Completed!</p>
+    </div>
+  </div>
+
+  <!-- ── Question overlay ─────────────────────────────────────── -->
+  <div class="write-overlay" id="questionOverlay">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <input type="hidden" id="activeQNum" value="">
+
+    <button class="wov-back" onclick="qovBack()">
+      <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+        <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Step 1: Prompt screen — question on big circle, Write button -->
+    <div id="qovPrompt" style="display:none">
+      <div id="qovPromptCircle"></div>
+      <p class="qov-prompt-text" id="qovPromptText"></p>
+      <button class="qov-prompt-write" data-content="journal_qov_prompt_write_btn" onclick="showQovWrite()">Write</button>
+    </div>
+
+    <!-- Step 2+3 dark circle bg (shown in write + done steps) -->
+    <div class="write-overlay-bg" id="qovBg" style="display:none"></div>
+
+    <!-- Step 2: Write body -->
+    <div class="wov-body" id="qovBody" style="display:none">
+      <div class="wov-spark-pill">
+        1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+      </div>
+      <div class="wov-bubble" id="qovBubble">
+        <div class="wov-avatar">
+          <div style="position:relative;width:40px;height:40px;">
+            <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
+            <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="wov-bubble-text" id="qovTitle"></p>
+      </div>
+      <div class="wov-textarea-wrap">
+        <textarea class="wov-textarea" id="qovInput" placeholder="Start writing here" data-content-placeholder="journal_qov_textarea_placeholder"
+          oninput="document.getElementById('qovSaveBtn').disabled=this.value.trim().length===0;"></textarea>
+      </div>
+    </div>
+
+    <div class="wov-save-wrap" id="qovSaveWrap" style="display:none">
+      <button class="wov-save" id="qovSaveBtn" data-content="journal_qov_save_btn" disabled onclick="saveQAnswer()">Save</button>
+    </div>
+
+    <!-- Step 3: Done screen — transparent, overlay bg shows through -->
+    <div class="qov-done" id="qovDone" style="display:none">
+      <div class="wov-done-row">
+        <span class="wov-done-plus" data-content="journal_qov_done_plus">+1</span>
+        <img src="./components/spark.svg" alt="spark" style="width:28px;height:28px;display:block;">
+      </div>
+      <p class="wov-done-title" data-content="journal_qov_done_title">Note saved!</p>
+      <div class="qov-done-bubble">
+        <div class="wov-avatar">
+          <div style="position:relative;width:40px;height:40px;">
+            <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
+            <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="wov-bubble-text" data-content="journal_qov_done_bubble">Did writing help you understand your feelings?</p>
+      </div>
+      <div class="qov-btn-row">
+        <button class="qov-btn-secondary" data-content="journal_qov_btn_secondary" onclick="closeQOverlay()">Not really</button>
+        <button class="qov-btn-primary" data-content="journal_qov_btn_primary" onclick="closeQOverlay()">Yes, a bit!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Support handle ──────────────────────────────────────── -->
+  <div class="sp-backdrop" id="spBackdrop" onclick="closeSupport()"></div>
+  <div class="support-panel" id="supportPanel">
+    <button class="support-handle" onclick="toggleSupport()"><img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt=""><span class="support-handle-label" data-content="journal_support_handle_label">Talk</span></button>
+        <div class="sp-header">
+      <h2 class="sp-title" data-content="journal_support_title">Need to talk?</h2>
+      <p class="sp-subtitle" data-content="journal_support_subtitle">When things are tough, you are not alone.</p>
+    </div>
+    <div class="sp-items">
+      <div class="sp-item">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="3.5" stroke="#f2f3e5" stroke-width="1.5"/>
+            <path d="M4 19c0-3.87 3.13-7 7-7h0c3.87 0 7 3.13 7 7" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="journal_support_item1_title">Talk to someone.</p>
+          <p class="sp-item-sub" data-content="journal_support_item1_sub">A trusted adult at your school is here to help.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <div class="sp-item" style="cursor:pointer" onclick="window.location.href='support-write.html'">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="journal_support_item2_title">Write it out.</p>
+          <p class="sp-item-sub" data-content="journal_support_item2_sub">We'll make sure someone sees it.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <p class="sp-cta" data-content="journal_support_cta">Need to talk to someone right away? <strong>Call 988.</strong></p>
+    </div>
+  </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  const el = document.getElementById('device') || document.querySelector('.bp-device');
+  if (el) el.style.setProperty('--s', s);
+}
+document.addEventListener('DOMContentLoaded', scale);
+addEventListener('resize', scale);
+addEventListener('pageshow', scale);
+addEventListener('focus', scale);
+scale();
+
+// ── Render journal notes ────────────────────────────────────────
+// Reads from localStorage, OR from ?demo= URL param for preview.
+// demo=1: empty, demo=2: write-it-out note, demo=3: question + write-it-out
+function renderJournal() {
+  initEmotionCircles();
+  var QUESTIONS = Q_DATA.map(function(q, i) {
+    return { key: q.key, text: q.text, qnum: String(i + 1) };
+  });
+  var WRITE_TEXT = 'Today my mood was okay. I felt a bit low on energy and not very motivated at times, but nothing too overwhelming. There were small moments when I felt calm and a bit more present, which helped. Overall, it was a pretty average day — not bad, just a bit slow.';
+
+  var demo = new URLSearchParams(location.search).get('demo');
+
+  var writeText, qAnswers;
+
+  if (demo === '1') {
+    writeText = null; qAnswers = [null, null];
+  } else if (demo === '2') {
+    writeText = WRITE_TEXT; qAnswers = [null, null];
+  } else if (demo === '3') {
+    writeText = WRITE_TEXT; qAnswers = [null, 'Weekend trip.'];
+  } else {
+    // Read only from sessionStorage — today's notes only (same tab/session)
+    var urlNote = new URLSearchParams(location.search).get('wt');
+    if (urlNote) {
+      try { sessionStorage.setItem('bp_write_text', urlNote); } catch(e) {}
+      writeText = urlNote;
+    } else {
+      try { writeText = sessionStorage.getItem('bp_write_text') || null; } catch(e) {}
+    }
+    qAnswers = QUESTIONS.map(function(q) {
+      try { return sessionStorage.getItem(q.key) || null; } catch(e) { return null; }
+    });
+  }
+
+  var hasQCards = qAnswers.some(function(a) { return !!a; });
+  var hasWrite  = !!writeText;
+  var hasAnyNote = hasQCards || hasWrite;
+
+  // CTA card (state 1)
+  document.getElementById('writeCta').style.display = hasAnyNote ? 'none' : 'block';
+
+  // Write-it-out note card (state 2 + 3)
+  var noteCard = document.getElementById('noteCard');
+  noteCard.style.display = hasWrite ? 'flex' : 'none';
+  if (hasWrite) document.getElementById('noteText').textContent = writeText;
+  var addBtn = document.getElementById('addNoteBtn');
+  if (addBtn) addBtn.style.display = hasWrite ? 'flex' : 'none';
+
+  // Question answer cards (state 3)
+  var container = document.getElementById('qAnswerCards');
+  container.innerHTML = '';
+  for (var j = 0; j < QUESTIONS.length; j++) {
+    var q = QUESTIONS[j];
+    var answer = qAnswers[j];
+    if (!answer) continue;
+    var card = document.createElement('div');
+    card.className = 'note-card-today';
+    card.setAttribute('data-qnum', q.qnum);
+    card.innerHTML =
+      '<div class="note-card-header">' +
+        '<span class="note-card-date">Today</span>' +
+        '<button class="note-card-edit" onclick="openQOverlay(' + q.qnum + ')">Edit note</button>' +
+      '</div>' +
+      '<div class="note-card-body">' +
+        '<p class="note-question">' + q.text + '</p>' +
+        '<p class="note-answer">' + answer + '</p>' +
+      '</div>';
+    container.appendChild(card);
+  }
+  container.style.display = hasQCards ? 'flex' : 'none';
+
+  // Past notes counts from bp_journal_notes array
+  (function() {
+    var notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]');
+    var metaEl = document.getElementById('pastNotesMeta');
+    if (notes.length > 0) {
+      var now = new Date();
+      var monthCount = notes.filter(function(n) {
+        var d = new Date(n.date);
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      }).length;
+      var allCount = notes.length;
+      var monthEl = document.getElementById('pastNotesMonth');
+      var allEl   = document.getElementById('pastNotesAll');
+      if (monthEl) monthEl.textContent = monthCount + (monthCount === 1 ? ' entry this month' : ' entries this month');
+      if (allEl)   allEl.textContent   = allCount   + (allCount   === 1 ? ' entry total'      : ' entries total');
+      if (metaEl)  metaEl.style.display = 'flex';
+    } else {
+      if (metaEl) metaEl.style.display = 'none';
+    }
+  })();
+
+  // Dim answered question circles
+  var list = document.getElementById('questionsList');
+  var circles = list.querySelectorAll('.question-circle');
+  for (var i = 0; i < circles.length; i++) {
+    var el = circles[i];
+    var answered = qAnswers[i] !== null && qAnswers[i] !== undefined;
+    el.style.opacity = answered ? '0.2' : '1';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderJournal);
+window.addEventListener('pageshow', renderJournal);
+
+// ── Circle → overlay animation ──────────────────────────────────
+function animateToOverlay(qnum) {
+  var BEZIER = 'cubic-bezier(0.75, 0, 0.3, 0.99)';
+  var DUR = '800ms';
+  var T = DUR + ' ' + BEZIER;
+
+  var sidebar     = document.querySelector('.today-sidebar');
+  var titleEl     = document.querySelector('.page-title');
+  var descEl      = document.querySelector('.page-desc');
+  var colLeft     = document.querySelector('.col-left');
+  var qLabel      = document.querySelector('.col-right .section-label');
+  var otherNum    = qnum === 1 ? 2 : 1;
+  var circle      = document.getElementById('qCircle' + qnum);
+  var otherCircle = document.getElementById('qCircle' + otherNum);
+  var writeBtn    = document.getElementById('jWriteAnimBtn');
+
+  // Pre-calculated: device center (597,417), circle center x=983
+  // circle1 center y≈356, circle2 center y≈588
+  var ANIM = { 1: { dx: -386, dy:  61 }, 2: { dx: -386, dy: -171 } };
+  var scale = 1026 / 220; // 4.664
+  var pos = ANIM[qnum];
+
+  // Lock clicks during animation
+  circle.style.pointerEvents = 'none';
+  otherCircle.style.pointerEvents = 'none';
+
+  // Set transitions
+  var exitT = 'transform ' + T + ', opacity 600ms ' + BEZIER;
+  [sidebar, titleEl, descEl, colLeft, qLabel, otherCircle].forEach(function(el) {
+    el.style.transition = exitT;
+  });
+  circle.style.transition = 'transform ' + T;
+  circle.style.position   = 'relative';
+  circle.style.zIndex     = '45';
+
+  // Text inside circle: counter-scale so net visual size = 48px (not 94px)
+  // net = 20px * circleScale * textScale → textScale = 48/(20*4.664) = 0.515
+  // Width 148px = small circle content width; × net_scale 2.4 = 355px = overlay width
+  var circleText = circle.querySelector('.question-text');
+  circleText.style.width = '148px';
+  circleText.style.transition = 'transform ' + T;
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      // Sidebar → left
+      sidebar.style.transform = 'translateX(-220px)';
+      sidebar.style.opacity   = '0';
+      // Title + desc + left column → up
+      titleEl.style.transform  = 'translateY(-260px)';  titleEl.style.opacity = '0';
+      descEl.style.transform   = 'translateY(-260px)';  descEl.style.opacity  = '0';
+      colLeft.style.transform  = 'translateY(-300px)';  colLeft.style.opacity = '0';
+      // Right label + other circle → right
+      qLabel.style.transform      = 'translateX(380px)'; qLabel.style.opacity      = '0';
+      otherCircle.style.transform = 'translateX(380px)'; otherCircle.style.opacity = '0';
+      // Clicked circle → expands to center
+      circle.style.transform = 'translate(' + pos.dx + 'px,' + pos.dy + 'px) scale(' + scale + ')';
+      // Text counter-scales to land at 48px visual size
+      circleText.style.transform = 'scale(0.515)';
+      // Write button slides up from bottom
+      writeBtn.style.display    = 'block';
+      writeBtn.style.transition = 'bottom ' + DUR + ' ' + BEZIER + ' 120ms';
+      writeBtn.style.bottom     = '36px';
+    });
+  });
+
+  // Switch to overlay after animation
+  setTimeout(function() {
+    // Hide animation button
+    writeBtn.style.transition = 'none';
+    writeBtn.style.bottom     = '-80px';
+    writeBtn.style.display    = 'none';
+
+    // Reset all elements instantly (overlay covers them)
+    [sidebar, titleEl, descEl, colLeft, qLabel, otherCircle].forEach(function(el) {
+      el.style.transition = 'none';
+      el.style.transform  = '';
+      el.style.opacity    = '';
+    });
+    circle.style.transition    = 'none';
+    circle.style.transform     = '';
+    circle.style.position      = '';
+    circle.style.zIndex        = '';
+    circle.style.pointerEvents = '';
+    otherCircle.style.pointerEvents = '';
+    circleText.style.transition = 'none';
+    circleText.style.transform  = '';
+    circleText.style.width      = '';
+
+    // Restore normal transitions after a tick
+    setTimeout(function() {
+      [sidebar, titleEl, descEl, colLeft, qLabel, otherCircle].forEach(function(el) {
+        el.style.transition = '';
+      });
+    }, 50);
+
+    openQOverlay(qnum);
+  }, 800);
+}
+
+// Load avatar
+(function(){
+  var src = localStorage.getItem('bp_avatar') || './foundations/assets/avatars/avatar-3.svg';
+  var bg  = localStorage.getItem('bp_avatar_bg') || '#b8c0ed';
+  var el  = document.getElementById('userAvatar');
+  if (el) el.style.background = bg + ' url("' + src + '") no-repeat center / cover';
+})();
+(function(){
+  var name = localStorage.getItem('bp_username') || 'Sophie';
+  var el = document.querySelector('.user-name');
+  if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+// ── Write-it-out overlay ────────────────────────────────────────
+var _wovCurrentNote = '';
+
+function openWriteOverlay() {
+  var overlay = document.getElementById('writeOverlay');
+  var input   = document.getElementById('wovInput');
+  var btn     = document.getElementById('wovSaveBtn');
+  var done    = document.getElementById('wovDone');
+  // pre-fill with existing note if editing
+  input.value = _wovCurrentNote;
+  btn.disabled = input.value.trim().length === 0;
+  done.classList.remove('show');
+  overlay.classList.add('open');
+  input.focus();
+}
+
+function closeWriteOverlay() {
+  document.getElementById('writeOverlay').classList.remove('open');
+}
+
+function onWovInput() {
+  var val = document.getElementById('wovInput').value.trim();
+  document.getElementById('wovSaveBtn').disabled = val.length === 0;
+}
+
+function saveWovNote() {
+  var val = document.getElementById('wovInput').value.trim();
+  if (!val) return;
+  _wovCurrentNote = val;
+
+  // Show completion screen
+  document.getElementById('wovDone').classList.add('show');
+
+  // After 1800ms: close overlay and show note card
+  setTimeout(function() {
+    document.getElementById('writeOverlay').classList.remove('open');
+
+    // Update note card immediately — no storage, no navigation
+    document.getElementById('writeCta').style.display = 'none';
+    var noteCard = document.getElementById('noteCard');
+    noteCard.style.display = 'flex';
+    document.getElementById('noteText').textContent = val;
+  }, 1800);
+}
+
+// ── Question overlay ────────────────────────────────────────────
+// ─── Emotion → color + contextual questions ───────────────────
+var EMOTION_COLORS = {
+  curious:   '#FDDA3C', happy:     '#FFAF25', excited:   '#E65800',
+  okay:      '#68DCC6', grateful:  '#2CD573', hopeful:   '#D1F00B',
+  meh:       '#F2F3E5', neutral:   '#BFBFBF', idontknow: '#8C8C8C',
+  sad:       '#56CCF2', tired:     '#6A7EFF', lonely:    '#C4A3FF',
+  angry:     '#EC3E23', stressed:  '#C12A67', anxious:   '#BD67FF',
+};
+var EMOTION_QUESTIONS = {
+  curious:   ["What's been sparking your curiosity today?",                         "What would you love to find out or explore right now?"],
+  happy:     ["What made you feel good today?",                                      "What small thing brought a smile to your face?"],
+  excited:   ["What are you most excited about right now?",                          "What's making you feel so pumped today?"],
+  okay:      ["What's keeping you feeling steady today?",                            "What would make today even a little bit better?"],
+  grateful:  ["What are you grateful for right now?",                                "Who or what made you feel warm and appreciated today?"],
+  hopeful:   ["What are you hoping for right now?",                                  "What feels possible today that maybe didn't before?"],
+  meh:       ["What would you change about today if you could?",                     "What usually helps when you're feeling a bit flat?"],
+  neutral:   ["What's been on your mind today — even if it feels small?",            "Is there something you've been thinking about but haven't said out loud?"],
+  idontknow: ["Sometimes feelings are hard to name — what do you notice in your body right now?", "What's been going on lately that might explain your mood?"],
+  sad:       ["What's been weighing on you lately?",                                 "What would help you feel even a little better right now?"],
+  tired:     ["What's been draining your energy lately?",                            "What would a real rest look like for you today?"],
+  lonely:    ["Is there someone you wish you could talk to right now?",              "What would help you feel more connected today?"],
+  angry:     ["What happened that got under your skin today?",                       "What would help you feel less frustrated right now?"],
+  stressed:  ["What's the biggest thing on your mind right now?",                   "What's one thing that would help you feel less overwhelmed?"],
+  anxious:   ["What's your mind racing about right now?",                            "What's one small thing that might help you feel calmer?"],
+};
+function _hexDarken(hex, f) {
+  var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return '#'+[Math.round(r*f),Math.round(g*f),Math.round(b*f)].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+}
+function _hexLighten(hex, f) {
+  var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return '#'+[Math.round(r+(255-r)*f),Math.round(g+(255-g)*f),Math.round(b+(255-b)*f)].map(function(v){return v.toString(16).padStart(2,'0');}).join('');
+}
+function _circleColor(hex) {
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return (0.299*r+0.587*g+0.114*b) > 140 ? _hexDarken(hex, 0.55) : hex;
+}
+function initEmotionCircles() {
+  var emotions = [];
+  try { emotions = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]'); } catch(e) {}
+  for (var i = 0; i < Q_DATA.length; i++) {
+    var emo = emotions[i];
+    if (!emo || !EMOTION_COLORS[emo]) continue;
+    var raw        = EMOTION_COLORS[emo];
+    var circColor  = _circleColor(raw);
+    var bubColor   = _hexLighten(raw, 0.28);
+    var qs         = EMOTION_QUESTIONS[emo] || [];
+    Q_DATA[i].color       = circColor;
+    Q_DATA[i].bubbleColor = bubColor;
+    Q_DATA[i].text        = qs[i] || qs[0] || Q_DATA[i].text;
+    var el = document.getElementById('qCircle' + (i + 1));
+    if (el) {
+      el.style.background = circColor;
+      el.classList.remove('question-circle-blue', 'question-circle-coral');
+      var txt = el.querySelector('.question-text');
+      if (txt) txt.textContent = Q_DATA[i].text;
+    }
+  }
+}
+
+var Q_DATA = [
+  { key: 'bp_journal_q1', text: 'What kinds of moments or things tend to lift your mood — even a little?', color: '#3f50b8', bubbleColor: '#49aee1' },
+  { key: 'bp_journal_q2', text: "What's making you feel this excited?", color: '#e65800', bubbleColor: '#f08b31' }
+];
+var _qovStep = 'prompt'; // 'prompt' | 'write' | 'done'
+var _addNoteMode = false;
+var _addNoteConfig = null;
+
+var ADD_QS = [
+  "What else is on your mind?",
+  "What else is on your mind?",
+  "What else is on your mind?"
+];
+
+function openAddNotePrompt() {
+  var notes = [];
+  try { notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]'); } catch(e) {}
+  var q = ADD_QS[notes.length % ADD_QS.length];
+  _addNoteMode = true;
+  document.getElementById('wovBubbleText').innerHTML =
+    '<strong>Every thought matters.</strong><br>' + q;
+  document.getElementById('writeOverlay').style.display = 'block';
+  document.getElementById('wovInput').value = '';
+  document.getElementById('wovSaveBtn').disabled = true;
+  document.getElementById('wovDone').style.display = 'none';
+  document.getElementById('wovInput').focus();
+}
+
+var _editNoteDate = null;
+
+function openEditNoteOverlay(noteDate) {
+  var notes = [];
+  try { notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]'); } catch(e) {}
+  var note = null;
+  for (var i = 0; i < notes.length; i++) { if (notes[i].date === noteDate) { note = notes[i]; break; } }
+  if (!note) return;
+  _editNoteDate = noteDate;
+  _addNoteMode = false;
+  document.getElementById('wovBubbleText').textContent = 'Journaling can help you understand your feelings.';
+  document.getElementById('writeOverlay').style.display = 'block';
+  document.getElementById('wovInput').value = note.text;
+  document.getElementById('wovSaveBtn').disabled = false;
+  document.getElementById('wovDone').style.display = 'none';
+  document.getElementById('wovInput').focus();
+}
+
+function doWovSave() {
+  var val = document.getElementById('wovInput').value.trim();
+  if (!val) return;
+  document.getElementById('wovDone').style.display = 'flex';
+
+  if (_editNoteDate) {
+    var dateKey = _editNoteDate;
+    var notes = [];
+    try { notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]'); } catch(e) {}
+    for (var i = 0; i < notes.length; i++) { if (notes[i].date === dateKey) { notes[i].text = val; break; } }
+    try { localStorage.setItem('bp_journal_notes', JSON.stringify(notes)); } catch(e) {}
+    setTimeout(function() {
+      document.getElementById('writeOverlay').style.display = 'none';
+      var card = document.querySelector('[data-note-date="' + dateKey + '"]');
+      if (card) { var p = card.querySelector('.note-answer'); if (p) p.textContent = val; }
+      _editNoteDate = null;
+    }, 1800);
+
+  } else if (_addNoteMode) {
+    var noteDate = new Date().toISOString();
+    var notes = [];
+    try { notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]'); } catch(e) {}
+    notes.unshift({ text: val, date: noteDate });
+    try { localStorage.setItem('bp_journal_notes', JSON.stringify(notes)); } catch(e) {}
+    setTimeout(function() {
+      document.getElementById('writeOverlay').style.display = 'none';
+      document.getElementById('wovBubbleText').textContent = 'Journaling can help you understand your feelings.';
+      var container = document.getElementById('qAnswerCards');
+      var card = document.createElement('div');
+      card.className = 'note-card-today';
+      card.setAttribute('data-note-date', noteDate);
+      card.innerHTML =
+        '<div class="note-card-header">' +
+          '<span class="note-card-date">Today</span>' +
+          '<button class="note-card-edit" onclick="openEditNoteOverlay(\'' + noteDate + '\')">Edit note</button>' +
+        '</div>' +
+        '<div class="note-card-body"><p class="note-answer">' + val + '</p></div>';
+      container.appendChild(card);
+      container.style.display = 'flex';
+      _updatePastNotesMeta(notes);
+      _addNoteMode = false;
+      _addNoteConfig = null;
+      var cl = document.querySelector('.col-left');
+      if (cl) cl.scrollTop = cl.scrollHeight;
+    }, 1800);
+
+  } else {
+    try { sessionStorage.setItem('bp_write_text', val); } catch(e) {}
+    try { localStorage.setItem('bp_write_text', val); } catch(e) {}
+    setTimeout(function() {
+      document.getElementById('writeOverlay').style.display = 'none';
+      document.getElementById('writeCta').style.display = 'none';
+      document.getElementById('noteCard').style.display = 'flex';
+      document.getElementById('noteText').textContent = val;
+      document.getElementById('addNoteBtn').style.display = 'flex';
+    }, 1800);
+  }
+}
+
+function openQOverlay(qnum) {
+  try {
+  var q = Q_DATA[qnum - 1];
+  var overlay = document.getElementById('questionOverlay');
+
+  document.getElementById('activeQNum').value = String(qnum);
+  document.getElementById('qovTitle').textContent = q.text;
+  document.getElementById('qovBubble').style.background = q.bubbleColor;
+  document.getElementById('qovPromptText').textContent = q.text;
+  document.getElementById('qovPromptCircle').style.background = q.color;
+
+  var saved = '';
+  try { saved = sessionStorage.getItem(q.key) || ''; } catch(e) {}
+
+  if (saved.trim()) {
+    // Already answered — open write step for editing
+    overlay.style.background = q.color;
+    overlay.style.display = 'block';
+    document.getElementById('qovPrompt').style.display = 'none';
+    document.getElementById('qovBg').style.display = 'block';
+    document.getElementById('qovInput').value = saved;
+    document.getElementById('qovSaveBtn').disabled = false;
+    document.getElementById('qovBody').style.display = 'flex';
+    document.getElementById('qovSaveWrap').style.display = 'block';
+    document.getElementById('qovDone').style.display = 'none';
+    document.getElementById('qovInput').focus();
+    _qovStep = 'write';
+  } else {
+    // Fresh — show prompt step first
+    overlay.style.background = '#1f1f25';
+    overlay.style.display = 'block';
+    document.getElementById('qovPrompt').style.display = 'flex';
+    document.getElementById('qovBg').style.display = 'none';
+    document.getElementById('qovBody').style.display = 'none';
+    document.getElementById('qovSaveWrap').style.display = 'none';
+    document.getElementById('qovDone').style.display = 'none';
+    _qovStep = 'prompt';
+  }
+  } catch(e) { alert('openQOverlay error: ' + e); }
+}
+
+function showQovWrite() {
+  var overlay = document.getElementById('questionOverlay');
+  var color;
+  if (_addNoteMode && _addNoteConfig) {
+    color = _addNoteConfig.color;
+  } else {
+    var qnum = document.getElementById('activeQNum').value;
+    color = Q_DATA[qnum - 1].color;
+  }
+  overlay.style.background = color;
+  document.getElementById('qovPrompt').style.display = 'none';
+  document.getElementById('qovBg').style.display = 'block';
+  document.getElementById('qovInput').value = '';
+  document.getElementById('qovSaveBtn').disabled = true;
+  document.getElementById('qovBody').style.display = 'flex';
+  document.getElementById('qovSaveWrap').style.display = 'block';
+  document.getElementById('qovDone').style.display = 'none';
+  document.getElementById('qovInput').focus();
+  _qovStep = 'write';
+}
+
+function qovBack() {
+  if (_qovStep === 'write') {
+    document.getElementById('questionOverlay').style.background = '#1f1f25';
+    document.getElementById('qovPrompt').style.display = 'flex';
+    document.getElementById('qovBg').style.display = 'none';
+    document.getElementById('qovBody').style.display = 'none';
+    document.getElementById('qovSaveWrap').style.display = 'none';
+    document.getElementById('qovDone').style.display = 'none';
+    _qovStep = 'prompt';
+  } else {
+    closeQOverlay();
+  }
+}
+
+function closeQOverlay() {
+  document.getElementById('questionOverlay').style.display = 'none';
+  var doneEl = document.getElementById('qovDone');
+  doneEl.classList.remove('qov-entered', 'qov-phase2');
+  _addNoteMode = false;
+  _addNoteConfig = null;
+}
+
+function _updatePastNotesMeta(notes) {
+  var metaEl = document.getElementById('pastNotesMeta');
+  if (notes.length > 0) {
+    var now = new Date();
+    var monthCount = notes.filter(function(n) {
+      var d = new Date(n.date); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }).length;
+    var monthEl = document.getElementById('pastNotesMonth');
+    var allEl   = document.getElementById('pastNotesAll');
+    if (monthEl) monthEl.textContent = monthCount + (monthCount === 1 ? ' entry this month' : ' entries this month');
+    if (allEl)   allEl.textContent   = notes.length + (notes.length === 1 ? ' entry total' : ' entries total');
+    if (metaEl)  metaEl.style.display = 'flex';
+  } else {
+    if (metaEl) metaEl.style.display = 'none';
+  }
+}
+
+function saveQAnswer() {
+  var val  = document.getElementById('qovInput').value.trim();
+  if (!val) return;
+
+  if (_addNoteMode) {
+    var notes = [];
+    try { notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]'); } catch(e) {}
+    notes.unshift({ text: val, date: new Date().toISOString() });
+    try { localStorage.setItem('bp_journal_notes', JSON.stringify(notes)); } catch(e) {}
+    document.getElementById('qovBody').style.display = 'none';
+    document.getElementById('qovSaveWrap').style.display = 'none';
+    var doneEl = document.getElementById('qovDone');
+    doneEl.classList.remove('qov-entered', 'qov-phase2');
+    doneEl.style.display = 'flex';
+    _qovStep = 'done';
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      doneEl.classList.add('qov-entered');
+      setTimeout(function() { doneEl.classList.add('qov-phase2'); }, 300);
+    }); });
+    var container = document.getElementById('qAnswerCards');
+    var card = document.createElement('div');
+    card.className = 'note-card-today';
+    card.innerHTML =
+      '<div class="note-card-header"><span class="note-card-date">Today</span></div>' +
+      '<div class="note-card-body"><p class="note-answer">' + val + '</p></div>';
+    container.appendChild(card);
+    container.style.display = 'flex';
+    _updatePastNotesMeta(notes);
+    return;
+  }
+
+  var qnum = document.getElementById('activeQNum').value;
+  var q    = Q_DATA[qnum - 1];
+  var key  = 'bp_journal_q' + qnum;
+
+  try { sessionStorage.setItem(key, val); } catch(e) {}
+  try { localStorage.setItem(key, val); } catch(e) {}
+
+  // Show done step with S7-style entry animation
+  document.getElementById('qovBody').style.display = 'none';
+  document.getElementById('qovSaveWrap').style.display = 'none';
+  var doneEl = document.getElementById('qovDone');
+  doneEl.classList.remove('qov-entered', 'qov-phase2');
+  doneEl.style.display = 'flex';
+  _qovStep = 'done';
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      doneEl.classList.add('qov-entered');
+      setTimeout(function() { doneEl.classList.add('qov-phase2'); }, 300);
+    });
+  });
+
+  // Update answer card in background
+  var container = document.getElementById('qAnswerCards');
+  var existing  = container.querySelector('[data-qnum="' + qnum + '"]');
+  if (existing) existing.remove();
+  var card = document.createElement('div');
+  card.className = 'note-card-today';
+  card.setAttribute('data-qnum', qnum);
+  card.innerHTML =
+    '<div class="note-card-header">' +
+      '<span class="note-card-date">Today</span>' +
+      '<button class="note-card-edit" onclick="openQOverlay(' + qnum + ')">Edit note</button>' +
+    '</div>' +
+    '<div class="note-card-body">' +
+      '<p class="note-question">' + q.text + '</p>' +
+      '<p class="note-answer">' + val + '</p>' +
+    '</div>';
+  container.appendChild(card);
+  container.style.display = 'flex';
+
+  var circle = document.getElementById('qCircle' + qnum);
+  if (circle) circle.style.opacity = '0.2';
+}
+
+function toggleSupport() {
+  document.getElementById('supportPanel').classList.contains('sp-open') ? closeSupport() : openSupport();
+}
+function openSupport() {
+  document.getElementById('supportPanel').classList.add('sp-open');
+  document.getElementById('spBackdrop').classList.add('sp-open');
+}
+function closeSupport() {
+  document.getElementById('supportPanel').classList.remove('sp-open');
+  document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

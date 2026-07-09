@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Today</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<script>if(sessionStorage.getItem('bp_enter_anim')==='1')document.documentElement.setAttribute('data-entry','');</script>
+<script>(function(){
+  try {
+    if (sessionStorage.getItem('bp_skip_success')==='1') return;
+    var FLAGS={'bp_wins_done':'card-wins','bp_write_done':'card-write','bp_about_done':'card-about'};
+    var incoming=Object.keys(FLAGS).filter(function(f){return localStorage.getItem(f)==='1';});
+    if (!incoming.length) return;
+    var sd=new Set(JSON.parse(sessionStorage.getItem('bp_session_done')||'[]'));
+    sd.add('card-mood');
+    incoming.forEach(function(f){sd.add(FLAGS[f]);});
+    if (sd.size>=4) document.documentElement.setAttribute('data-success-incoming','');
+  } catch(e) {}
+})();</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+
+/* Entry animation — elements hidden before first paint when coming from completed.html */
+html[data-entry] .today-sidebar    { transform: translateY(-50%) translateX(-140px) !important; opacity: 0 !important; }
+html[data-entry] .today-header     { transform: translateY(-80px) !important;  opacity: 0 !important; }
+html[data-entry] #cardRow          { transform: translateY(120px) !important;  opacity: 0 !important; }
+html[data-entry] .today-footer     { transform: translateY(120px) !important;  opacity: 0 !important; }
+html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120px) !important; opacity: 0 !important; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+.today-sidebar {
+  position: absolute;
+  left: 24px; top: 50%; transform: translateY(-50%);
+  width: 80px; height: 786px;
+  background: #2b2b32; border-radius: 20px;
+  padding: 24px 8px; box-sizing: border-box;
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: center;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: 16px; color: #8e8b85; text-transform: uppercase;
+  text-align: center; letter-spacing: 0.5px;
+  height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  width: 100%;
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 12px; }
+
+.nav-item {
+  width: 64px;
+  display: flex; flex-direction: column; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  gap: 12px; padding: 8px 0; cursor: pointer;
+  border-radius: 12px;
+  transition: background 140ms;
+}
+.nav-item.active { background: #1f1f25; }
+.nav-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+
+.nav-icon { width: 24px; height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.nav-icon img { width: 24px; height: 24px; display: block; }
+.nav-item.active .nav-icon img { filter: brightness(0) invert(1); }
+
+.spark-badge {
+  position: relative; width: 24px; height: 24px; border-radius: 50%; overflow: hidden;
+}
+.spark-badge img {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.spark-badge img:nth-child(1) { animation: spark-c1 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(2) { opacity: 0; animation: spark-c2 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(3) { opacity: 0; animation: spark-c3 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(4) { opacity: 0; animation: spark-c4 6400ms linear 1600ms infinite; }
+@keyframes spark-c1 { 0%{opacity:1} 25%{opacity:0} 75%{opacity:0} 100%{opacity:1} }
+@keyframes spark-c2 { 0%{opacity:0} 25%{opacity:1} 50%{opacity:0} 100%{opacity:0} }
+@keyframes spark-c3 { 0%{opacity:0} 50%{opacity:1} 75%{opacity:0} 100%{opacity:0} }
+@keyframes spark-c4 { 0%{opacity:0} 75%{opacity:1} 100%{opacity:0} }
+
+.nav-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; line-height: 16px;
+  width: 64px;
+}
+.nav-item.active .nav-label { color: #f2f3e5; }
+
+.sidebar-user {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #b8c0ed no-repeat center / cover;
+  border: 2px solid #36363f;
+  overflow: hidden; box-sizing: border-box;
+}
+.user-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+}
+
+/* ─── Main content ──────────────────────────────────────────── */
+.today-main {
+  position: absolute;
+  left: 152px; top: 72px; bottom: 0;
+  width: 998px;
+  display: flex; flex-direction: column; gap: 48px;
+}
+
+/* ─── Header row ────────────────────────────────────────────── */
+.today-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.today-greeting h1 {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; margin: 0 0 16px;
+}
+.today-greeting p {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  letter-spacing: -0.1px; line-height: 20px;
+  color: #737472; margin: 0;
+}
+.today-sparks-widget {
+  width: 237px; background: #1f1f25;
+  border: 1px solid #444450; border-radius: 20px;
+  padding: 36px; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  flex-shrink: 0;
+}
+.sparks-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #737472; line-height: 16px;
+}
+.sparks-total {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 40px;
+  letter-spacing: -0.8px; color: #f2f3e5;
+}
+.spark-icon {
+  width: 32px; height: 32px; flex-shrink: 0; display: block;
+}
+
+/* ─── Cards row ─────────────────────────────────────────────── */
+.today-cards { display: flex; gap: 16px; }
+
+.t-card {
+  width: 237px; height: 353px;
+  position: relative; border-radius: 19px; overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 140ms cubic-bezier(0.34,1.56,0.64,1), opacity 200ms ease;
+}
+.card-img {
+  width: 100%; height: 100%;
+  display: block; object-fit: fill; border-radius: 19px;
+}
+
+/* States */
+.t-card.sleepy           { cursor: pointer; opacity: 0.45; }
+.t-card.sleepy:hover     { transform: scale(1.025); opacity: 1; }
+.t-card.sleepy.hero      { opacity: 1; }
+.t-card.sleepy.hero:hover{ transform: scale(1.025); opacity: 1; }
+.t-card.recommended { cursor: pointer; }
+.t-card.recommended:hover { transform: scale(1.025); }
+.t-card.done        { cursor: pointer; }
+.t-card.done:hover  { transform: scale(1.025); }
+
+/* Eye overlay — always rendered, ry controls open/close */
+.eye-overlay {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 3;
+}
+.t-card.done .eye-overlay { display: none; }
+
+/* ─── Footer ────────────────────────────────────────────────── */
+.today-footer { position: absolute; bottom: 63px; left: 0; right: 0; display: flex; justify-content: center; }
+.btn-summary {
+  height: 48px; padding: 0 24px; width: 200px;
+  background: transparent; color: #f5f5f5;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: 1px solid rgba(255,255,255,0.16);
+  cursor: pointer; letter-spacing: -0.1px;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  transition: opacity 120ms;
+}
+.btn-summary:active { opacity: 0.7; }
+
+/* Mood overlay */
+.mood-ov {
+  position: absolute; inset: 0; background: #1f1f25; z-index: 50;
+  opacity: 0; pointer-events: none;
+  transition: opacity 220ms ease;
+  display: flex; flex-direction: column;
+}
+.mood-ov.open { opacity: 1; pointer-events: all; }
+.mood-ov-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+.mood-ov-back {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: #2b2b32; border: 1px solid #444450; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; z-index: 6; transition: opacity 120ms;
+}
+.mood-ov-back:active { opacity: 0.7; }
+.mood-ov-body {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; flex-direction: column; align-items: center; justify-content: center; gap: 4px; gap: 48px;
+}
+.mood-ov-hdr { display: flex; align-items: center; gap: 12px; }
+.mood-ov-icon { width: 32px; height: 32px; display: block; }
+.mood-ov-title { font-family: var(--font-body); font-size: 20px; font-weight: 500; color: #f2f3e5; }
+.mood-ov-emotions { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.mood-ov-tile {
+  position: relative; width: 160px; height: 160px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.mood-ov-tile img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; }
+.mood-ov-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; color: #1f1f25; text-align: center;
+}
+.mood-ov-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 600px; }
+.mood-ov-chip {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #f2f3e5; background: #2b2b32; border: 1px solid #444450;
+  border-radius: 100px; padding: 8px 16px;
+}
+.mood-ov-reasons { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+.mood-ov-reasons-label {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; text-transform: uppercase; letter-spacing: 0.8px;
+}
+.mood-ov-reasons-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.mood-ov-reason {
+  display: flex; align-items: center; gap: 10px;
+  background: #2b2b32; border: 2px solid #f2f3e5; border-radius: 12px; padding: 10px 18px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500; color: #f2f3e5;
+}
+.mood-ov-reason-emoji { font-size: 18px; line-height: 1; }
+.mood-ov-edit {
+  height: 48px; padding: 0 32px; min-width: 220px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.mood-ov-edit:active { opacity: 0.8; }
+
+/* ─── Szuflada animation overlay ─────────────────────────────── */
+.szuf-anim-clone {
+  position: absolute;
+  width: 237px; height: 353px;
+  border-radius: 19px; overflow: hidden;
+  transform-origin: top left;
+  will-change: transform, opacity;
+}
+.szuf-anim-clone img { width: 100%; height: 100%; display: block; object-fit: fill; }
+.szuf-wrap-anim {
+  position: absolute;
+  left: 280px; top: 900px;
+  width: 635px; height: 817px;
+  transition: top 800ms cubic-bezier(0.4,0,0.2,1);
+  will-change: top;
+}
+.szuf-wrap-anim > img { width: 635px; height: 817px; display: block; }
+.szuf-mini {
+  position: absolute;
+  width: 114.136px; height: 170px;
+  border-radius: 9.26px; overflow: hidden;
+}
+.szuf-mini img { width: 100%; height: 100%; display: block; object-fit: fill; }
+
+/* Wins overlay */
+.wins-ov {
+  position: absolute; inset: 0; background: #1f1f25; z-index: 50;
+  opacity: 0; pointer-events: none;
+  transition: opacity 220ms ease;
+  display: flex; flex-direction: column;
+}
+.wins-ov.open { opacity: 1; pointer-events: all; }
+.wins-ov-back {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: #2b2b32; border: 1px solid #444450; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; z-index: 6; transition: opacity 120ms;
+}
+.wins-ov-back:active { opacity: 0.7; }
+.wins-ov-body {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  gap: 32px; padding: 0 48px;
+}
+.wins-ov-hdr { display: flex; align-items: center; gap: 12px; }
+.wins-ov-icon { width: 32px; height: 32px; display: block; }
+.wins-ov-title { font-family: var(--font-body); font-size: 20px; font-weight: 500; color: #f2f3e5; }
+.wins-ov-question {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #a4a59f; text-align: center; max-width: 500px; line-height: 1.5;
+}
+.wins-ov-answer {
+  background: #2b2b32; border: 1px solid #444450; border-radius: 16px;
+  padding: 24px; width: 100%; max-width: 560px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.6;
+}
+
+
+/* ── Support handle + panel ──────────────────────────────────── */
+.support-handle {
+  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  width: 64px; height: 72px;
+  background: #1f1f25; border: 1px solid #36363f; border-right: none;
+  border-radius: 14px 0 0 14px;
+  padding: 0; cursor: pointer; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 150ms;
+}
+.support-handle:hover { background: #252530; }
+.support-handle-label { font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #a4a59f; pointer-events: none; line-height: 1; }
+.support-panel.sp-open .support-handle { background: #2b2b32; }
+.sp-backdrop {
+  position: absolute; inset: 0; z-index: 34;
+  background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.sp-backdrop.sp-open { opacity: 1; pointer-events: all; }
+.support-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 380px; z-index: 35;
+  background: #2b2b32; border-left: 1px solid #36363f;
+  transform: translateX(100%); transition: transform 1200ms cubic-bezier(0.73, -0.01, 0.2, 0.98);
+  display: flex; flex-direction: column;
+}
+.support-panel.sp-open { transform: translateX(0); }
+.sp-header {
+  display: flex; flex-direction: column;
+  padding: 52px 24px 20px; border-bottom: 1px solid #36363f; flex-shrink: 0;
+}
+.sp-subtitle {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 6px 0 0; line-height: 1.4;
+}
+.sp-cta {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; padding: 16px 24px; line-height: 1.5;
+}
+.sp-cta strong { color: #f2f3e5; }
+.sp-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.1;
+  letter-spacing: 0.5px; color: #f2f3e5; margin: 0;
+}
+.sp-close {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.sp-close:hover { background: rgba(255,255,255,0.14); }
+.sp-items { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+.sp-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 24px; cursor: pointer; transition: background 120ms;
+}
+.sp-item:hover { background: rgba(255,255,255,0.04); }
+.sp-item-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: #36363f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sp-item-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; margin: 0 0 3px; letter-spacing: -0.1px;
+}
+.sp-item-sub {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
+
+@keyframes handle-nudge {
+  0%,100% { transform: translateY(-50%) translateX(0); }
+  40%     { transform: translateY(-50%) translateX(-10px); }
+  60%     { transform: translateY(-50%) translateX(-8px); }
+}
+.support-handle.tour-pulse { animation: handle-nudge 1.4s ease-in-out infinite; }
+
+/* Show overlay before JS runs to prevent flash of cards */
+html[data-success-incoming] #allDoneOv { display: block; }
+html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,-688px); }
+
+/* ─── All-done success screen ───────────────────────────────── */
+.all-done-ov {
+  position: absolute; inset: 0; z-index: 50;
+  background: #49aee1;
+  display: none;
+  pointer-events: none;
+}
+.ado-ellipse {
+  position: absolute;
+  left: -351px; top: 150px;
+  width: 1910px; height: 1910px;
+  border-radius: 50%; background: #1f1f25;
+  pointer-events: none; z-index: 0;
+}
+.ado-content {
+  position: absolute;
+  left: 291px; top: 253px;
+  width: 613px; z-index: 5; text-align: center;
+  opacity: 0;
+}
+.ado-reward-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; margin-bottom: 16px;
+}
+.ado-reward-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  line-height: 40px; letter-spacing: -0.8px; color: #f2f3e5;
+}
+.ado-spark-badge {
+  position: relative; width: 32px; height: 32px;
+  border-radius: 50%; overflow: hidden;
+}
+.ado-spark-badge img {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.ado-spark-badge img:nth-child(1) { animation: spark-c1 6400ms linear 1600ms infinite; }
+.ado-spark-badge img:nth-child(2) { opacity: 0; animation: spark-c2 6400ms linear 1600ms infinite; }
+.ado-spark-badge img:nth-child(3) { opacity: 0; animation: spark-c3 6400ms linear 1600ms infinite; }
+.ado-spark-badge img:nth-child(4) { opacity: 0; animation: spark-c4 6400ms linear 1600ms infinite; }
+.ado-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  line-height: 106%; letter-spacing: 0; color: #f2f3e5;
+  text-align: center; margin: 0;
+}
+.ado-bubble {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 511px; width: 395px;
+  background: #f08b31; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
+  z-index: 6; opacity: 0;
+}
+.ado-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5; overflow: hidden;
+}
+.ado-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ado-bubble-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 110%; padding-top: 4px; margin: 0;
+}
+.ado-cta-wrap {
+  position: absolute; bottom: 64px; left: 50%;
+  transform: translateX(-50%); z-index: 20;
+  opacity: 0;
+}
+.ado-btn {
+  width: 270px; height: 48px;
+  background: #f2f3e5; border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #1f1f25; cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.ado-btn:hover { opacity: 0.85; }
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <nav class="today-sidebar">
+    <div class="sidebar-logo" data-content="today_sidebar_logo">Sparkz</div>
+
+    <div class="sidebar-nav">
+      <div class="nav-item active">
+        <div class="nav-icon"><img src="./components/icon-02.svg" alt="Today"></div>
+        <span class="nav-label" data-content="nav_today">Today</span>
+      </div>
+      <div class="nav-item" onclick="goJournal()">
+        <div class="nav-icon"><img src="./components/icon-01.svg" alt="Journal"></div>
+        <span class="nav-label" data-content="nav_journal">Journal</span>
+      </div>
+      <div class="nav-item" onclick="goToolkit()">
+        <div class="nav-icon"><img src="./components/icon-03.svg" alt="My toolkit"></div>
+        <span class="nav-label" data-content="nav_my_toolkit">My toolkit</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journey.html'">
+        <div class="nav-icon"><img src="./components/icon-04.svg" alt="Journey"></div>
+        <span class="nav-label" data-content="nav_journey">Journey</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='grades.html'">
+        <div class="nav-icon"><img src="./components/icon-05.svg" alt="Grades"></div>
+        <span class="nav-label" data-content="nav_grades">Grades</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='sparks.html'">
+        <div class="nav-icon"><img src="./components/icon-06.svg" alt="Sparkz"></div>
+        <span class="nav-label" data-content="nav_sparkz">Sparkz</span>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar" onclick="window.location.href='settings.html'" style="cursor:pointer"></div>
+      <span class="user-name" id="sidebarName">Sophie</span>
+    </div>
+  </nav>
+
+  <!-- ── Main content ─────────────────────────────────── -->
+  <main class="today-main">
+
+    <div class="today-header">
+      <div class="today-greeting">
+        <h1 id="greetTitle">Hi Sophie!</h1>
+        <p id="greetSub">Complete your cards — and find out something new about you.</p>
+      </div>
+      <div class="today-sparks-widget">
+        <span class="sparks-label" data-content="today_sparks_label">Total</span>
+        <div class="sparks-total" id="sparksTotal">0<img class="spark-icon" src="./components/Spark-4.svg" alt="spark"></div>
+      </div>
+    </div>
+
+    <div class="today-cards" id="cardRow">
+
+      <!-- Write it out — hero (recommended) -->
+      <div class="t-card sleepy hero" id="card-write">
+        <img class="card-img" src="./components/sleepy-2.svg" alt="Write it out">
+        <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cp-write-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
+            <clipPath id="cp-write-R"><ellipse cx="137" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
+          </defs>
+          <ellipse id="ew-write-L" cx="101" cy="112.801" rx="13.4" ry="17.866" fill="#F2F3E5"/>
+          <circle  id="p-write-L"  cx="101" cy="119.8"   r="9.38" fill="#2B2B32" clip-path="url(#cp-write-L)"/>
+          <ellipse id="ew-write-R" cx="137" cy="112.801" rx="13.4" ry="17.866" fill="#F2F3E5"/>
+          <circle  id="p-write-R"  cx="137" cy="119.8"   r="9.38" fill="#2B2B32" clip-path="url(#cp-write-R)"/>
+        </svg>
+      </div>
+
+      <!-- Notice your wins — sleepy -->
+      <div class="t-card sleepy" id="card-wins">
+        <img class="card-img" src="./components/sleepy-1.svg" alt="Notice your wins">
+        <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cp-wins-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
+            <clipPath id="cp-wins-R"><ellipse cx="137" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
+          </defs>
+          <ellipse id="ew-wins-L" cx="101" cy="112.801" rx="13.4" ry="0" fill="#F2F3E5"/>
+          <circle  id="p-wins-L"  cx="101" cy="119.8"   r="0" fill="#2B2B32" clip-path="url(#cp-wins-L)"/>
+          <ellipse id="ew-wins-R" cx="137" cy="112.801" rx="13.4" ry="0" fill="#F2F3E5"/>
+          <circle  id="p-wins-R"  cx="137" cy="119.8"   r="0" fill="#2B2B32" clip-path="url(#cp-wins-R)"/>
+        </svg>
+      </div>
+
+      <!-- All about you — sleepy -->
+      <div class="t-card sleepy" id="card-about">
+        <img class="card-img" src="./components/sleepy-3.svg" alt="All about you">
+        <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cp-about-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
+            <clipPath id="cp-about-R"><ellipse cx="137" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
+          </defs>
+          <ellipse id="ew-about-L" cx="101" cy="112.801" rx="13.4" ry="0" fill="#F2F3E5"/>
+          <circle  id="p-about-L"  cx="101" cy="119.8"   r="0" fill="#2B2B32" clip-path="url(#cp-about-L)"/>
+          <ellipse id="ew-about-R" cx="137" cy="112.801" rx="13.4" ry="0" fill="#F2F3E5"/>
+          <circle  id="p-about-R"  cx="137" cy="119.8"   r="0" fill="#2B2B32" clip-path="url(#cp-about-R)"/>
+        </svg>
+      </div>
+
+      <!-- Mood check-in — done (completed in mood flow) -->
+      <div class="t-card done" id="card-mood" onclick="openMoodOverlay()">
+        <img class="card-img" src="./components/Mood-checkin-04.svg" alt="Mood check-in">
+      </div>
+
+    </div>
+
+    <div class="today-footer">
+      <button class="btn-summary" data-content="btn_summary" onclick="window.location.href='summary.html'">View summary</button>
+    </div>
+
+  </main>
+
+  <!-- Wins overlay -->
+  <div class="wins-ov" id="winsOv">
+    <div class="mood-ov-bar"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <button class="wins-ov-back" id="winsOvBack">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="wins-ov-body" id="winsOvBody"></div>
+  </div>
+
+  <!-- Mood overlay -->
+  <div class="mood-ov" id="moodOv">
+    <div class="mood-ov-bar"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <button class="mood-ov-back" id="moodOvBack">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="mood-ov-body" id="moodOvBody"></div>
+  </div>
+
+
+  <!-- All-done success screen -->
+  <div id="allDoneOv" class="all-done-ov">
+    <div class="ado-ellipse"></div>
+    <div class="ado-content">
+      <div class="ado-reward-row">
+        <span class="ado-reward-plus" data-content="today_success_reward">+10</span>
+        <div class="ado-spark-badge">
+          <img src="./components/Spark-4.svg" alt="">
+          <img src="./components/Spark-01.svg" alt="">
+          <img src="./components/Spark-02.svg" alt="">
+          <img src="./components/Spark-03.svg" alt="">
+        </div>
+      </div>
+      <p class="ado-title" data-content="today_success_title">You crushed<br>it today!</p>
+    </div>
+    <div class="ado-bubble">
+      <div class="ado-avatar"><img src="./components/monster-01.svg" alt=""></div>
+      <p class="ado-bubble-text" data-content="today_success_bubble_text">You collected all the cards and got to know yourself a little bit more!</p>
+    </div>
+    <div class="ado-cta-wrap">
+      <button class="ado-btn" data-content="today_success_btn_done" onclick="sessionStorage.setItem('bp_skip_success','1');sessionStorage.setItem('bp_enter_anim','1');window.location.href='today.html'">Done</button>
+    </div>
+  </div>
+
+  <!-- ── Support handle ──────────────────────────────────────── -->
+  <div class="support-handle" onclick="openSupport()">
+    <img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt="">
+    <span class="support-handle-label" data-content="today_support_handle_label">Talk</span>
+  </div>
+  <div class="sp-backdrop" id="spBackdrop" onclick="closeSupport()"></div>
+  <div class="support-panel" id="supportPanel">
+    <button class="support-handle" onclick="toggleSupport()"><img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt=""><span class="support-handle-label">Talk</span></button>
+        <div class="sp-header">
+      <h2 class="sp-title" data-content="today_support_title">Need to talk?</h2>
+      <p class="sp-subtitle" data-content="today_support_subtitle">When things are tough, you are not alone.</p>
+    </div>
+    <div class="sp-items">
+      <div class="sp-item">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="3.5" stroke="#f2f3e5" stroke-width="1.5"/>
+            <path d="M4 19c0-3.87 3.13-7 7-7h0c3.87 0 7 3.13 7 7" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="today_support_item1_title">Talk to someone.</p>
+          <p class="sp-item-sub" data-content="today_support_item1_sub">A trusted adult at your school is here to help.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <div class="sp-item" style="cursor:pointer" onclick="window.location.href='support-write.html'">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="today_support_item2_title">Write it out.</p>
+          <p class="sp-item-sub" data-content="today_support_item2_sub">We'll make sure someone sees it.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <p class="sp-cta" data-content="today_support_cta">Need to talk to someone right away? <strong>Call 988.</strong></p>
+    </div>
+  </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+// ─── Entry animation (coming from completed.html) ─────────────
+(function() {
+  if (sessionStorage.getItem('bp_enter_anim') !== '1') return;
+  sessionStorage.removeItem('bp_enter_anim');
+
+  const T = 'transform 800ms cubic-bezier(0.73,-0.01,0.2,0.98), opacity 800ms cubic-bezier(0.73,-0.01,0.2,0.98)';
+
+  setTimeout(() => {
+    // Set transitions first, then remove data-entry — CSS goes from off-screen to default
+    document.querySelector('.today-sidebar').style.transition = T;
+    document.querySelector('.today-header').style.transition  = T;
+    document.getElementById('cardRow').style.transition       = T;
+    document.querySelector('.today-footer').style.transition  = T;
+    document.querySelector('.support-handle').style.transition = T;
+    requestAnimationFrame(() => {
+      document.documentElement.removeAttribute('data-entry');
+    });
+  }, 300);
+})();
+
+// ─── Sparkz total ─────────────────────────────────────────────
+function updateSparks() {
+  if (!localStorage.getItem('bp_sparks')) localStorage.setItem('bp_sparks', '360');
+  const sparks = parseInt(localStorage.getItem('bp_sparks'), 10);
+  const el = document.getElementById('sparksTotal');
+  el.childNodes[0].textContent = sparks;
+}
+updateSparks();
+
+// Load username from onboarding
+(function(){
+  var name = localStorage.getItem('bp_username') || 'Sophie';
+  var greet = document.getElementById('greetTitle');
+  var sname = document.getElementById('sidebarName');
+  if (greet) greet.textContent = 'Hi ' + name + '!';
+  if (sname) sname.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+// Load selected avatar from onboarding
+(function(){
+  var src = localStorage.getItem('bp_avatar') || './foundations/assets/avatars/avatar-3.svg';
+  var bg  = localStorage.getItem('bp_avatar_bg') || '#b8c0ed';
+  var el  = document.getElementById('userAvatar');
+  if (el) el.style.background = bg + ' url("' + src + '") no-repeat center / cover';
+})();
+
+const MOOD_CHIPS = {
+  HAPPY:   ['Grateful', 'Loved', 'Content', 'Proud'],
+  EXCITED: ['Energetic', 'Inspired', 'Motivated', 'Eager'],
+  ANXIOUS: ['Nervous', 'Worried', 'Overwhelmed'],
+  SAD:     ['Lonely', 'Disappointed', 'Hurt'],
+  TIRED:   ['Drained', 'Exhausted', 'Unfocused'],
+  OKAY:    ['Balanced', 'Calm', 'Neutral'],
+  MEH:     ['Flat', 'Bored', 'Restless'],
+  GRATEFUL:['Thankful', 'Warm', 'Connected'],
+  CURIOUS: ['Engaged', 'Interested', 'Open'],
+  STRESSED:['Tense', 'Pressured', 'Overwhelmed'],
+  LONELY:  ['Isolated', 'Left out', 'Disconnected'],
+  ANGRY:   ['Frustrated', 'Irritated', 'Annoyed'],
+  HOPEFUL: ['Optimistic', 'Looking forward', 'Motivated'],
+};
+const ALL_REASONS = [
+  { emoji: '📚', label: 'School life' }, { emoji: '✍️', label: 'Exams' },
+  { emoji: '🏠', label: 'Home life' },   { emoji: '🤸', label: 'Activities' },
+  { emoji: '📱', label: 'Saw something online' }, { emoji: '👫', label: 'Friends' },
+  { emoji: '🚶', label: 'No friends' },  { emoji: '😩', label: 'Hungry' },
+];
+const REASON_MAP = Object.fromEntries(ALL_REASONS.map(r => [r.label, r]));
+
+function openMoodOverlay() {
+  const savedEmotions = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]');
+  const savedReasons  = JSON.parse(localStorage.getItem('bp_mood_reasons')  || '[]');
+  const emotions = savedEmotions.length
+    ? savedEmotions.map(k => ({ name: k.toUpperCase(), img: `emotion-${k}.svg` }))
+    : [];
+
+  const tiles = emotions.map(e =>
+    `<div class="mood-ov-tile">
+      <img src="./components/${e.img}" alt="">
+      <span class="mood-ov-label">${e.name}</span>
+    </div>`
+  ).join('');
+
+  const allChips = emotions.flatMap(e => MOOD_CHIPS[e.name] || []);
+  const chipsHtml = [...new Set(allChips)].slice(0, 6)
+    .map(c => `<span class="mood-ov-chip">${c}</span>`).join('');
+  const chipsSection = chipsHtml ? `<div class="mood-ov-chips">${chipsHtml}</div>` : '';
+
+  const reasonsHtml = savedReasons.length
+    ? `<div class="mood-ov-reasons">
+        <span class="mood-ov-reasons-label">What made you feel this way</span>
+        <div class="mood-ov-reasons-row">
+          ${savedReasons.map(r => {
+            const item = REASON_MAP[r] || { emoji: '•', label: r };
+            return `<div class="mood-ov-reason"><span class="mood-ov-reason-emoji">${item.emoji}</span>${item.label}</div>`;
+          }).join('')}
+        </div>
+      </div>`
+    : '';
+
+  document.getElementById('moodOvBody').innerHTML = `
+    <div class="mood-ov-hdr">
+      <img class="mood-ov-icon" src="./components/section-icon-mood.svg" alt="">
+      <span class="mood-ov-title">Mood check-in</span>
+    </div>
+    <div class="mood-ov-emotions">${tiles}</div>
+    ${chipsSection}
+    ${reasonsHtml}
+    <button class="mood-ov-edit" onclick="window.location.href='mood-checkin.html?edit=1'">Edit mood check-in</button>
+  `;
+  document.getElementById('moodOv').classList.add('open');
+}
+
+document.getElementById('moodOvBack').addEventListener('click', () => {
+  document.getElementById('moodOv').classList.remove('open');
+});
+
+function openWinsOverlay() {
+  const note     = localStorage.getItem('bp_wins_note') || '';
+  const question = localStorage.getItem('bp_wins_question') || "What's one small thing that happened this week that made you smile — even briefly?";
+  document.getElementById('winsOvBody').innerHTML = `
+    <div class="wins-ov-hdr">
+      <img class="wins-ov-icon" src="./components/section-icon-wins.svg" alt="">
+      <span class="wins-ov-title">Notice your wins</span>
+    </div>
+    <p class="wins-ov-question">${question}</p>
+    ${note ? `<div class="wins-ov-answer">${note}</div>` : ''}
+    <button class="mood-ov-edit" onclick="window.location.href='notice-wins.html'">Edit</button>
+  `;
+  document.getElementById('winsOv').classList.add('open');
+}
+
+document.getElementById('winsOvBack').addEventListener('click', () => {
+  document.getElementById('winsOv').classList.remove('open');
+});
+
+// ─── Card config ──────────────────────────────────────────────
+const CARD_CFG = {
+  'card-wins':  { svg: 'Notice-y-w',  sleepySvg: 'sleepy-1', flow: 'notice-wins.html',  overlay: 'openWinsOverlay()', section: 'wins'  },
+  'card-write': { svg: 'Write-i-o',   sleepySvg: 'sleepy-2', flow: 'write-it-out.html', overlay: 'goJournal()', section: 'write' },
+  'card-about': { svg: 'All-a-y',     sleepySvg: 'sleepy-3', flow: 'all-about-you.html',                              section: 'about' },
+};
+
+// Priority queue: wins first, then write, then about
+const queue = ['card-wins', 'card-write', 'card-about'];
+
+function openFlow(url) {
+  if (url) window.location.href = url;
+}
+
+function goToolkit() {
+  window.location.href = 'my-toolkit.html';
+}
+function goJournal() {
+  sessionStorage.setItem('bp_scale', document.getElementById('device').style.getPropertyValue('--s'));
+  const note = localStorage.getItem('bp_write_text');
+  if (note) sessionStorage.setItem('bp_write_text', note);
+  window.location.href = 'journal.html';
+}
+
+function setCardState(id, state) {
+  const card = document.getElementById(id);
+  const img  = card && card.querySelector('.card-img');
+  const cfg  = CARD_CFG[id];
+  if (!card || !img || !cfg) return;
+
+  const wasHero = card.classList.contains('hero');
+  card.className = 't-card ' + state + (wasHero && state !== 'done' ? ' hero' : '');
+  if (state === 'sleepy') {
+    img.src = `./components/${cfg.sleepySvg}.svg`;
+  } else {
+    const suffixMap = { recommended: '02', done: '04' };
+    img.src = `./components/${cfg.svg}-${suffixMap[state]}.svg`;
+  }
+
+  if (state === 'sleepy') {
+    card.setAttribute('onclick', `openFlow('${cfg.flow}')`);
+  } else if (state === 'done') {
+    if (cfg.overlay) card.setAttribute('onclick', cfg.overlay);
+    else             card.setAttribute('onclick', `openFlow('${cfg.flow}')`);
+  } else {
+    card.setAttribute('onclick', `openFlow('${cfg.flow}')`);
+  }
+}
+
+function promoteNextHero() {
+  document.querySelectorAll('#cardRow .t-card.hero').forEach(c => c.classList.remove('hero'));
+  const next = document.querySelector('#cardRow .t-card.sleepy');
+  if (!next) { heroSlug = null; return; }
+  next.classList.add('hero');
+  heroSlug = next.id.replace('card-', '');
+  heroCx = 0; heroCy = 0;
+  openEyes(heroSlug);
+}
+
+function completeCard(id) {
+  const card = document.getElementById(id);
+  if (!card || card.classList.contains('done')) return;
+
+  const wasHero = card.classList.contains('hero');
+  setCardState(id, 'done');
+
+  const row = document.getElementById('cardRow');
+  row.appendChild(card);
+
+  const sd = JSON.parse(sessionStorage.getItem('bp_session_done') || '[]');
+  if (!sd.includes(id)) { sd.push(id); sessionStorage.setItem('bp_session_done', JSON.stringify(sd)); }
+
+  const cfg = CARD_CFG[id];
+  if (cfg && cfg.section) {
+    const done = JSON.parse(localStorage.getItem('bp_today_sections') || '["mood"]');
+    if (!done.includes(cfg.section)) { done.push(cfg.section); localStorage.setItem('bp_today_sections', JSON.stringify(done)); }
+  }
+
+  if (wasHero) promoteNextHero();
+  checkAllDone();
+}
+
+function checkAllDone() {
+  const cards = document.querySelectorAll('#cardRow .t-card');
+  const allDone = [...cards].every(c => c.classList.contains('done'));
+  if (!allDone) return;
+
+  document.getElementById('greetTitle').textContent = 'Today crushed!';
+  document.getElementById('greetSub').textContent   = 'You woke them all up. Anything else on your mind today?';
+  document.getElementById('greetSub').style.color   = '#737472';
+
+  if (!_freshCompletion) return;
+  if (sessionStorage.getItem('bp_skip_success') === '1') {
+    sessionStorage.removeItem('bp_skip_success');
+    return;
+  }
+  showSuccessScreen();
+}
+
+function showSuccessScreen() {
+  const ov      = document.getElementById('allDoneOv');
+  const ellipse = ov.querySelector('.ado-ellipse');
+  const ease    = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
+
+  document.documentElement.removeAttribute('data-success-incoming');
+
+  // Set initial centered position before showing
+  ellipse.style.transition = 'none';
+  ellipse.style.transform  = 'translate(-7px,-688px)';
+
+  ov.style.display        = 'block';
+  ov.style.pointerEvents  = 'all';
+
+  // Force layout so browser commits the initial transform before transitioning
+  void ellipse.offsetWidth;
+
+  ellipse.style.transition = ease;
+  ellipse.style.transform  = 'translate(0,0)';
+
+  setTimeout(() => {
+    ['ado-content','ado-bubble','ado-cta-wrap'].forEach(cls => {
+      const el = ov.querySelector('.' + cls);
+      if (!el) return;
+      el.style.transition = 'opacity 400ms ease';
+      el.style.opacity    = '1';
+    });
+  }, 700);
+}
+
+// ─── Szuflada card-fly animation ─────────────────────────────
+const SZUF_CARD_CFG = {
+  'card-mood':  { svg: 'Mood-checkin-04.svg', col: 0 },
+  'card-wins':  { svg: 'Notice-y-w-04.svg',   col: 1 },
+  'card-write': { svg: 'Write-i-o-04.svg',     col: 2 },
+  'card-about': { svg: 'All-a-y-04.svg',       col: 3 },
+};
+const SZUF_COL_X  = [16, 138.136, 260.271, 382.408, 504.544];
+const SZUF_ROW_Y  = [16, 194, 372, 550];
+const SZUF_LEFT   = 280;
+const SZUF_TOP_IN = 96;
+const MINI_W      = 114.136;
+const MINI_H      = 170;
+const CARD_W      = 237;
+const MINI_SCALE  = MINI_W / CARD_W;
+
+function animateToDrawer(cardId, afterDone) {
+  const animCfg = SZUF_CARD_CFG[cardId];
+  if (!animCfg) { afterDone(); return; }
+
+  const device  = document.getElementById('device');
+  const devRect = device.getBoundingClientRect();
+  const s       = devRect.width / 1194;
+
+  const cardEl   = document.getElementById(cardId);
+  const cardRect = cardEl.getBoundingClientRect();
+  const cardDevLeft = (cardRect.left - devRect.left) / s;
+  const cardDevTop  = (cardRect.top  - devRect.top)  / s;
+
+  // Target slot within device (szuflada at SZUF_TOP_IN)
+  const slotLeft = SZUF_LEFT + SZUF_COL_X[animCfg.col];
+  const slotTop  = SZUF_TOP_IN + SZUF_ROW_Y[0];
+  const dx = slotLeft - cardDevLeft;
+  const dy = slotTop  - cardDevTop;
+
+  // Build overlay
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:absolute;inset:0;z-index:40;pointer-events:none;';
+
+  // Flying clone
+  const clone = document.createElement('div');
+  clone.className = 'szuf-anim-clone';
+  clone.style.left = cardDevLeft + 'px';
+  clone.style.top  = cardDevTop  + 'px';
+  clone.style.transition = 'none';
+  clone.innerHTML = `<img src="./components/${animCfg.svg}" alt="">`;
+  overlay.appendChild(clone);
+
+  // Szuflada wrapper
+  const szufWrap = document.createElement('div');
+  szufWrap.className = 'szuf-wrap-anim';
+  szufWrap.innerHTML = `<img src="./components/szuflada.svg" alt="">`;
+
+  // Pre-populate already-done mini cards
+  const sections = JSON.parse(localStorage.getItem('bp_today_sections') || '["mood"]');
+  const SECTION_OF = { 'card-mood': 'mood', 'card-wins': 'wins', 'card-write': 'write', 'card-about': 'about' };
+  Object.entries(SZUF_CARD_CFG).forEach(([cid, cfg]) => {
+    if (cid === cardId) return;
+    const sec = SECTION_OF[cid];
+    if (!sec || !sections.includes(sec)) return;
+    const mini = document.createElement('div');
+    mini.className = 'szuf-mini';
+    mini.style.left = SZUF_COL_X[cfg.col] + 'px';
+    mini.style.top  = SZUF_ROW_Y[0] + 'px';
+    mini.innerHTML  = `<img src="./components/${cfg.svg}" alt="">`;
+    szufWrap.appendChild(mini);
+  });
+  overlay.appendChild(szufWrap);
+
+  device.appendChild(overlay);
+
+  // 1. Slide szuflada in (800ms)
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    szufWrap.style.top = SZUF_TOP_IN + 'px';
+  }));
+
+  // 2. Fly card to slot (starts at t=750ms, so it lands just after szuflada arrives)
+  setTimeout(() => {
+    clone.style.transition = 'transform 620ms cubic-bezier(0.4,0,0.15,1)';
+    clone.style.transform  = `translate(${dx}px,${dy}px) scale(${MINI_SCALE})`;
+  }, 750);
+
+  // 3. Complete card + slide szuflada out (t=1600ms)
+  setTimeout(() => {
+    afterDone();
+    updateSparks();
+    szufWrap.style.top = '900px';
+    setTimeout(() => overlay.remove(), 900);
+  }, 1600);
+}
+
+// ─── Eye rest positions (needed before restore so openEyes works) ─
+const EYE_REST = {
+  wins:  { L: [101, 119.8], R: [137, 119.8], ry: 17.866 },
+  write: { L: [101, 119.8], R: [137, 119.8], ry: 17.866 },
+  about: { L: [101, 119.8], R: [137, 119.8], ry: 17.866 },
+};
+
+// ─── Restore state on page load ───────────────────────────────
+const doneFlags = {
+  'bp_wins_done':  'card-wins',
+  'bp_write_done': 'card-write',
+  'bp_about_done': 'card-about',
+};
+
+// Wire up onclick for all sleepy cards (HTML has no onclick by default)
+['card-wins', 'card-write', 'card-about'].forEach(id => {
+  const card = document.getElementById(id);
+  if (card && card.classList.contains('sleepy')) setCardState(id, 'sleepy');
+});
+
+// Coming back from mood check-in → fresh start, clear previous session queue
+if (localStorage.getItem('bp_fresh_start') === '1') {
+  localStorage.removeItem('bp_fresh_start');
+  sessionStorage.removeItem('bp_session_done');
+}
+
+// Restore cards done earlier in this tab session (keeps queue order across navigation)
+const sessionDone = JSON.parse(sessionStorage.getItem('bp_session_done') || '[]');
+sessionDone.forEach(id => {
+  const card = document.getElementById(id);
+  const cfg  = CARD_CFG[id];
+  if (!card || card.classList.contains('done') || !cfg) return;
+  setCardState(id, 'done');
+  document.getElementById('cardRow').appendChild(card);
+});
+
+// Process one-time flags set by flow pages, then clear them
+let _freshCompletion = false;
+Object.entries(doneFlags).forEach(([flag, cardId]) => {
+  if (localStorage.getItem(flag) !== '1') return;
+  localStorage.removeItem(flag);
+  _freshCompletion = true;
+  completeCard(cardId);
+});
+
+checkAllDone();
+updateSparks();
+
+
+// ─── Eye open/close animation on hover ────────────────────────
+const WANDER_MAX = 4;
+let eyeCx = 0, eyeCy = 0, eyeTx = 0, eyeTy = 0;
+let hoveredSlug = null;
+
+// Separate wander state for hero card (always animating)
+let heroCx = 0, heroCy = 0, heroTx = 0, heroTy = 0;
+let heroSlug = 'write';
+
+function pickWanderTarget() {
+  const angle = Math.random() * Math.PI * 2;
+  const dist  = Math.random() * WANDER_MAX;
+  eyeTx = Math.cos(angle) * dist;
+  eyeTy = Math.sin(angle) * dist;
+  setTimeout(pickWanderTarget, 1000 + Math.random() * 2200);
+}
+pickWanderTarget();
+
+function pickHeroTarget() {
+  const angle = Math.random() * Math.PI * 2;
+  const dist  = 2.5 + Math.random() * (WANDER_MAX - 2.5);
+  heroTx = Math.cos(angle) * dist;
+  heroTy = Math.sin(angle) * dist;
+  setTimeout(pickHeroTarget, 500 + Math.random() * 1200);
+}
+pickHeroTarget();
+
+(function eyeRaf() {
+  // Hero card pupils always wander (hover takes over when hovered)
+  if (heroSlug && hoveredSlug !== heroSlug) {
+    heroCx += (heroTx - heroCx) * 0.09;
+    heroCy += (heroTy - heroCy) * 0.09;
+    const rest = EYE_REST[heroSlug];
+    if (rest) {
+      ['L', 'R'].forEach(side => {
+        const p = document.getElementById(`p-${heroSlug}-${side}`);
+        if (p && parseFloat(p.getAttribute('r')) > 5) {
+          p.setAttribute('cx', rest[side][0] + heroCx);
+          p.setAttribute('cy', rest[side][1] + heroCy);
+        }
+      });
+    }
+  }
+
+  if (hoveredSlug) {
+    eyeCx += (eyeTx - eyeCx) * 0.04;
+    eyeCy += (eyeTy - eyeCy) * 0.04;
+    const rest = EYE_REST[hoveredSlug];
+    if (rest) {
+      ['L', 'R'].forEach(side => {
+        const p = document.getElementById(`p-${hoveredSlug}-${side}`);
+        if (p && parseFloat(p.getAttribute('r')) > 5) {
+          p.setAttribute('cx', rest[side][0] + eyeCx);
+          p.setAttribute('cy', rest[side][1] + eyeCy);
+        }
+      });
+    }
+  } else {
+    eyeCx += (0 - eyeCx) * 0.1;
+    eyeCy += (0 - eyeCy) * 0.1;
+  }
+  requestAnimationFrame(eyeRaf);
+})();
+
+function tween(from, to, ms, ease, onUpdate, onDone) {
+  const t0 = performance.now();
+  (function step(now) {
+    const p = Math.min((now - t0) / ms, 1);
+    onUpdate(from + (to - from) * ease(p));
+    if (p < 1) requestAnimationFrame(step);
+    else if (onDone) onDone();
+  })(t0);
+}
+const easeIn  = p => p * p * p;
+const easeOut = p => 1 - Math.pow(1 - p, 3);
+
+function openEyes(slug) {
+  const restRy = EYE_REST[slug].ry;
+  ['L', 'R'].forEach(side => {
+    const ew = document.getElementById(`ew-${slug}-${side}`);
+    const pu = document.getElementById(`p-${slug}-${side}`);
+    if (!ew || !pu) return;
+    const fromRy = parseFloat(ew.getAttribute('ry')) || 0;
+    tween(fromRy, restRy, 480, easeOut, v => {
+      ew.setAttribute('ry', v);
+      pu.setAttribute('r', v > restRy * 0.5 ? 9.38 : 0);
+    });
+  });
+}
+
+function closeEyes(slug) {
+  const restRy = EYE_REST[slug].ry;
+  ['L', 'R'].forEach(side => {
+    const ew = document.getElementById(`ew-${slug}-${side}`);
+    const pu = document.getElementById(`p-${slug}-${side}`);
+    if (!ew || !pu) return;
+    const fromRy = parseFloat(ew.getAttribute('ry')) || restRy;
+    pu.setAttribute('r', 0);
+    tween(fromRy, 0, 320, easeIn, v => ew.setAttribute('ry', v));
+  });
+}
+
+['wins', 'write', 'about'].forEach(slug => {
+  const card = document.getElementById('card-' + slug);
+  if (!card) return;
+  card.addEventListener('mouseenter', () => {
+    if (!card.classList.contains('sleepy')) return;
+    hoveredSlug = slug;
+    if (!card.classList.contains('hero')) openEyes(slug);
+  });
+  card.addEventListener('mouseleave', () => {
+    if (hoveredSlug === slug) hoveredSlug = null;
+    if (!card.classList.contains('hero')) closeEyes(slug);
+  });
+});
+
+// Sync hero to first sleepy card — runs after EYE_REST and all helpers are defined
+(function syncHeroState() {
+  document.querySelectorAll('#cardRow .t-card.hero').forEach(c => c.classList.remove('hero'));
+  heroSlug = null;
+  const next = document.querySelector('#cardRow .t-card.sleepy');
+  if (!next) return;
+  next.classList.add('hero');
+  heroSlug = next.id.replace('card-', '');
+  heroCx = 0; heroCy = 0;
+  const restRy = EYE_REST[heroSlug] && EYE_REST[heroSlug].ry;
+  if (restRy) {
+    ['L', 'R'].forEach(side => {
+      const ew = document.getElementById(`ew-${heroSlug}-${side}`);
+      const pu = document.getElementById(`p-${heroSlug}-${side}`);
+      if (ew) ew.setAttribute('ry', restRy);
+      if (pu) pu.setAttribute('r', 9.38);
+    });
+  }
+})();
+
+function toggleSupport() {
+  document.getElementById('supportPanel').classList.contains('sp-open') ? closeSupport() : openSupport();
+}
+function openSupport() {
+  document.getElementById('supportPanel').classList.add('sp-open');
+  document.getElementById('spBackdrop').classList.add('sp-open');
+}
+function closeSupport() {
+  document.getElementById('supportPanel').classList.remove('sp-open');
+  document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+
+// ─── First-launch spotlight tour ──────────────────────────────
+(function() {
+  try { if (localStorage.getItem('bp_tour_done')) return; } catch(e) {}
+  setTimeout(startTour, 1600);
+
+  function startTour() {
+    var device = document.querySelector('.bp-device');
+    if (!device) return;
+    var s  = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 1;
+    var dr = device.getBoundingClientRect();
+
+    function dc(el) {
+      var r = el.getBoundingClientRect();
+      return { x:(r.left-dr.left)/s, y:(r.top-dr.top)/s, w:r.width/s, h:r.height/s };
+    }
+
+    var STEPS = [
+      { sel:'#cardRow .t-card.hero', text:'These are your daily activities — a different check-in each day.', tip:'below', pulse:null },
+      { sel:'.sidebar-nav',          text:'Navigate between Today, your Journal, and more.', tip:'right', pulse:null },
+      // Handle is behind panel transform so hardcode device coords: x=1130, y=715, w=64, h=72
+      { sel:'.support-handle', text:'Need support? This button is always here for you.', tip:'left', pulse:'.support-handle',
+        coords:{x:1130, y:715, w:64, h:72} },
+    ];
+
+    var step = 0;
+    var handle = document.querySelector('.support-handle');
+
+    var ov = document.createElement('div');
+    ov.style.cssText = 'position:absolute;inset:0;z-index:200;cursor:pointer;';
+    ov.innerHTML =
+      '<div id="tSpot" style="position:absolute;border-radius:16px;box-shadow:0 0 0 2000px rgba(12,12,18,0.82);transition:left .3s,top .3s,width .3s,height .3s;pointer-events:none;"></div>' +
+      '<div id="tTip" style="position:absolute;background:#2b2b32;border:1px solid #444450;border-radius:16px;padding:20px 24px;width:264px;pointer-events:none;transition:left .3s,top .3s;">' +
+        '<p id="tTxt" style="font-family:var(--font-body);font-size:16px;font-weight:500;color:#f2f3e5;margin:0 0 10px;line-height:1.2;"></p>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+        '<p id="tHnt" style="font-family:var(--font-body);font-size:13px;font-weight:500;color:#737472;margin:0;"></p>' +
+        '<p id="tStep" style="font-family:var(--font-body);font-size:13px;font-weight:500;color:#737472;margin:0;"></p>' +
+      '</div>' +
+      '</div>';
+
+    device.appendChild(ov);
+
+    var spot = document.getElementById('tSpot');
+    var tip  = document.getElementById('tTip');
+    var txt  = document.getElementById('tTxt');
+    var hnt  = document.getElementById('tHnt');
+    var stp  = document.getElementById('tStep');
+
+    function show(i) {
+      var st = STEPS[i];
+      var pad = 14, c;
+      if (st.coords) {
+        c = st.coords;
+      } else {
+        var el = document.querySelector(st.sel);
+        if (!el) { done(); return; }
+        c = dc(el);
+      }
+      var x = c.x-pad, y = c.y-pad, w = c.w+pad*2, h = c.h+pad*2;
+      spot.style.left = x+'px'; spot.style.top = y+'px';
+      spot.style.width = w+'px'; spot.style.height = h+'px';
+
+      txt.textContent = st.text;
+      hnt.textContent = 'Tap anywhere to continue';
+      if (stp) stp.textContent = (i+1) + ' / ' + STEPS.length;
+
+      tip.style.left = ''; tip.style.right = ''; tip.style.top = '';
+      if (st.tip === 'left') {
+        // Tooltip to the left of the spotlight, vertically centred
+        tip.style.left = Math.max(8, x - 264 - 24) + 'px';
+        tip.style.top  = Math.max(8, y + h/2 - 60) + 'px';
+      } else if (st.tip === 'right') {
+        // Tooltip to the right of the spotlight, vertically centred
+        tip.style.left = (x + w + 20) + 'px';
+        tip.style.top  = Math.max(8, y + h/2 - 60) + 'px';
+      } else {
+        // Below
+        tip.style.left = Math.max(8, x) + 'px';
+        tip.style.top  = (y + h + 16) + 'px';
+      }
+
+      if (handle) handle.classList.toggle('tour-pulse', !!st.pulse);
+    }
+
+    function done() {
+      if (handle) handle.classList.remove('tour-pulse');
+      ov.remove();
+      try { localStorage.setItem('bp_tour_done', '1'); } catch(e) {}
+    }
+
+    ov.addEventListener('click', function() {
+      step++;
+      if (step >= STEPS.length) done(); else show(step);
+    });
+
+    show(0);
+  }
+})();
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

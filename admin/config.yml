@@ -1,0 +1,1999 @@
+backend:
+  name: github
+  repo: widelab-design/blueprint-prototype-cms
+  branch: main
+
+# Sveltia CMS — edits /content.json only. Design/layout is untouched.
+media_folder: components
+public_folder: /components
+
+collections:
+  - name: content
+    label: Prototype texts
+    editor:
+      preview: false
+    files:
+      - name: all
+        label: All screens
+        file: content.json
+        format: json
+        fields:
+          - name: "global"
+            label: "Global / shared (menu, buttons)"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "btn_save"
+                label: "Btn save"
+                widget: string
+                required: false
+              - name: "nav_today"
+                label: "Nav today"
+                widget: string
+                required: false
+              - name: "nav_journal"
+                label: "Nav journal"
+                widget: string
+                required: false
+              - name: "nav_my_toolkit"
+                label: "Nav my toolkit"
+                widget: string
+                required: false
+              - name: "nav_journey"
+                label: "Nav journey"
+                widget: string
+                required: false
+              - name: "nav_grades"
+                label: "Nav grades"
+                widget: string
+                required: false
+              - name: "nav_sparkz"
+                label: "Nav sparkz"
+                widget: string
+                required: false
+              - name: "btn_continue"
+                label: "Btn continue"
+                widget: string
+                required: false
+              - name: "btn_done"
+                label: "Btn done"
+                widget: string
+                required: false
+          - name: "all-about-you"
+            label: "All About You"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "all_about_title"
+                label: "All about title"
+                widget: string
+                required: false
+              - name: "all_about_msg_bubble"
+                label: "All about msg bubble"
+                widget: string
+                required: false
+              - name: "all_about_reward_text"
+                label: "All about reward text"
+                widget: string
+                required: false
+              - name: "all_about_completed_title"
+                label: "All about completed title"
+                widget: string
+                required: false
+          - name: "category"
+            label: "Category"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "category_status_time"
+                label: "Category status time"
+                widget: string
+                required: false
+              - name: "category_status_battery"
+                label: "Category status battery"
+                widget: string
+                required: false
+          - name: "collection"
+            label: "Collection"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "collection_status_time"
+                label: "Collection status time"
+                widget: string
+                required: false
+              - name: "collection_count_denom"
+                label: "Collection count denom"
+                widget: string
+                required: false
+              - name: "collection_desc"
+                label: "Collection desc"
+                widget: text
+                required: false
+          - name: "completed"
+            label: "Completed"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "completed_completed_text"
+                label: "Completed completed text"
+                widget: string
+                required: false
+              - name: "completed_ad_plus"
+                label: "Completed ad plus"
+                widget: string
+                required: false
+              - name: "completed_ad_title"
+                label: "Completed ad title"
+                widget: text
+                required: false
+          - name: "grades"
+            label: "Grades"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "grades_sidebar_logo"
+                label: "Grades sidebar logo"
+                widget: string
+                required: false
+              - name: "grades_title"
+                label: "Grades title"
+                widget: string
+                required: false
+              - name: "grades_desc"
+                label: "Grades desc"
+                widget: string
+                required: false
+              - name: "grades_tab_grades"
+                label: "Grades tab grades"
+                widget: string
+                required: false
+              - name: "grades_tab_attendance"
+                label: "Grades tab attendance"
+                widget: string
+                required: false
+              - name: "grades_subject_math_name"
+                label: "Grades subject math name"
+                widget: string
+                required: false
+              - name: "grades_subject_math_teacher"
+                label: "Grades subject math teacher"
+                widget: string
+                required: false
+              - name: "grades_subject_math_grade"
+                label: "Grades subject math grade"
+                widget: string
+                required: false
+              - name: "grades_subject_math_pct"
+                label: "Grades subject math pct"
+                widget: string
+                required: false
+              - name: "grades_subject_art_name"
+                label: "Grades subject art name"
+                widget: string
+                required: false
+              - name: "grades_subject_art_teacher"
+                label: "Grades subject art teacher"
+                widget: string
+                required: false
+              - name: "grades_subject_art_grade"
+                label: "Grades subject art grade"
+                widget: string
+                required: false
+              - name: "grades_subject_art_pct"
+                label: "Grades subject art pct"
+                widget: string
+                required: false
+              - name: "grades_subject_biology_name"
+                label: "Grades subject biology name"
+                widget: string
+                required: false
+              - name: "grades_subject_biology_teacher"
+                label: "Grades subject biology teacher"
+                widget: string
+                required: false
+              - name: "grades_subject_biology_grade"
+                label: "Grades subject biology grade"
+                widget: string
+                required: false
+              - name: "grades_subject_biology_pct"
+                label: "Grades subject biology pct"
+                widget: string
+                required: false
+              - name: "grades_subject_music_name"
+                label: "Grades subject music name"
+                widget: string
+                required: false
+              - name: "grades_subject_music_teacher"
+                label: "Grades subject music teacher"
+                widget: string
+                required: false
+              - name: "grades_subject_music_grade"
+                label: "Grades subject music grade"
+                widget: string
+                required: false
+              - name: "grades_subject_music_pct"
+                label: "Grades subject music pct"
+                widget: string
+                required: false
+              - name: "grades_subject_physics_name"
+                label: "Grades subject physics name"
+                widget: string
+                required: false
+              - name: "grades_subject_physics_teacher"
+                label: "Grades subject physics teacher"
+                widget: string
+                required: false
+              - name: "grades_subject_physics_grade"
+                label: "Grades subject physics grade"
+                widget: string
+                required: false
+              - name: "grades_subject_physics_pct"
+                label: "Grades subject physics pct"
+                widget: string
+                required: false
+              - name: "grades_subject_history_name"
+                label: "Grades subject history name"
+                widget: string
+                required: false
+              - name: "grades_subject_history_teacher"
+                label: "Grades subject history teacher"
+                widget: string
+                required: false
+              - name: "grades_subject_history_grade"
+                label: "Grades subject history grade"
+                widget: string
+                required: false
+              - name: "grades_subject_history_pct"
+                label: "Grades subject history pct"
+                widget: string
+                required: false
+              - name: "grades_att_stat_label"
+                label: "Grades att stat label"
+                widget: string
+                required: false
+              - name: "grades_att_stat_number"
+                label: "Grades att stat number"
+                widget: string
+                required: false
+              - name: "grades_att_badge"
+                label: "Grades att badge"
+                widget: string
+                required: false
+              - name: "grades_att_month_feb"
+                label: "Grades att month feb"
+                widget: string
+                required: false
+              - name: "grades_att_month_mar"
+                label: "Grades att month mar"
+                widget: string
+                required: false
+              - name: "grades_att_month_apr"
+                label: "Grades att month apr"
+                widget: string
+                required: false
+              - name: "grades_att_month_may"
+                label: "Grades att month may"
+                widget: string
+                required: false
+              - name: "grades_video_duration_grades"
+                label: "Grades video duration grades"
+                widget: string
+                required: false
+              - name: "grades_video_title_grades"
+                label: "Grades video title grades"
+                widget: text
+                required: false
+              - name: "grades_remember_label"
+                label: "Grades remember label"
+                widget: string
+                required: false
+              - name: "grades_remember"
+                label: "Grades remember"
+                widget: text
+                required: false
+              - name: "btn_journal"
+                label: "Btn journal"
+                widget: string
+                required: false
+              - name: "btn_get_support"
+                label: "Btn get support"
+                widget: string
+                required: false
+              - name: "grades_video_duration_attend"
+                label: "Grades video duration attend"
+                widget: string
+                required: false
+              - name: "grades_video_title_attend"
+                label: "Grades video title attend"
+                widget: string
+                required: false
+              - name: "grades_attend_remember_label"
+                label: "Grades attend remember label"
+                widget: string
+                required: false
+              - name: "grades_attend_remember"
+                label: "Grades attend remember"
+                widget: text
+                required: false
+              - name: "grades_drw_stat_homework"
+                label: "Grades drw stat homework"
+                widget: string
+                required: false
+              - name: "grades_drw_stat_quizzes"
+                label: "Grades drw stat quizzes"
+                widget: string
+                required: false
+              - name: "grades_drw_stat_midterm"
+                label: "Grades drw stat midterm"
+                widget: string
+                required: false
+              - name: "grades_drw_stat_final"
+                label: "Grades drw stat final"
+                widget: string
+                required: false
+              - name: "grades_drw_stat_na"
+                label: "Grades drw stat na"
+                widget: string
+                required: false
+              - name: "btn_see_all_assignments"
+                label: "Btn see all assignments"
+                widget: string
+                required: false
+              - name: "btn_calculate_target_grade"
+                label: "Btn calculate target grade"
+                widget: string
+                required: false
+              - name: "grades_drw_assign_hw_label"
+                label: "Grades drw assign hw label"
+                widget: string
+                required: false
+              - name: "grades_drw_assign_qz_label"
+                label: "Grades drw assign qz label"
+                widget: string
+                required: false
+              - name: "grades_drw_assign_mt_label"
+                label: "Grades drw assign mt label"
+                widget: string
+                required: false
+              - name: "grades_drw_calc_question"
+                label: "Grades drw calc question"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_a"
+                label: "Grades drw grade pill a"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_aminus"
+                label: "Grades drw grade pill aminus"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_bplus"
+                label: "Grades drw grade pill bplus"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_b"
+                label: "Grades drw grade pill b"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_bminus"
+                label: "Grades drw grade pill bminus"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_cplus"
+                label: "Grades drw grade pill cplus"
+                widget: string
+                required: false
+              - name: "grades_drw_grade_pill_c"
+                label: "Grades drw grade pill c"
+                widget: string
+                required: false
+              - name: "grades_drw_calc_needed"
+                label: "Grades drw calc needed"
+                widget: string
+                required: false
+              - name: "grades_drw_calc_context"
+                label: "Grades drw calc context"
+                widget: string
+                required: false
+              - name: "grades_gj_title"
+                label: "Grades gj title"
+                widget: string
+                required: false
+              - name: "grades_gj_bubble_text"
+                label: "Grades gj bubble text"
+                widget: text
+                required: false
+              - name: "grades_gj_textarea_placeholder"
+                label: "Grades gj textarea placeholder"
+                widget: string
+                required: false
+              - name: "grades_gj_done_plus"
+                label: "Grades gj done plus"
+                widget: string
+                required: false
+              - name: "grades_gj_done_title"
+                label: "Grades gj done title"
+                widget: string
+                required: false
+              - name: "grades_gj_done_bubble_text"
+                label: "Grades gj done bubble text"
+                widget: string
+                required: false
+              - name: "btn_not_really"
+                label: "Btn not really"
+                widget: string
+                required: false
+              - name: "btn_yes_a_bit"
+                label: "Btn yes a bit"
+                widget: string
+                required: false
+              - name: "grades_support_handle_label"
+                label: "Grades support handle label"
+                widget: string
+                required: false
+              - name: "grades_sp_title"
+                label: "Grades sp title"
+                widget: string
+                required: false
+              - name: "grades_sp_subtitle"
+                label: "Grades sp subtitle"
+                widget: string
+                required: false
+              - name: "grades_sp_item_talk_title"
+                label: "Grades sp item talk title"
+                widget: string
+                required: false
+              - name: "grades_sp_item_talk_sub"
+                label: "Grades sp item talk sub"
+                widget: string
+                required: false
+              - name: "grades_sp_item_write_title"
+                label: "Grades sp item write title"
+                widget: string
+                required: false
+              - name: "grades_sp_item_write_sub"
+                label: "Grades sp item write sub"
+                widget: string
+                required: false
+              - name: "grades_sp_cta"
+                label: "Grades sp cta"
+                widget: text
+                required: false
+                hint: "Keeps formatting — don't delete tags like <strong> or images."
+          - name: "helpful-content"
+            label: "Helpful Content"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "helpful_intro_heading"
+                label: "Helpful intro heading"
+                widget: string
+                required: false
+              - name: "helpful_intro_sub"
+                label: "Helpful intro sub"
+                widget: string
+                required: false
+              - name: "helpful_btn_maybe_later"
+                label: "Helpful btn maybe later"
+                widget: string
+                required: false
+              - name: "helpful_btn_yes_show_me"
+                label: "Helpful btn yes show me"
+                widget: string
+                required: false
+              - name: "helpful_vid_hint"
+                label: "Helpful vid hint"
+                widget: string
+                required: false
+              - name: "helpful_fb_spark"
+                label: "Helpful fb spark"
+                widget: string
+                required: false
+              - name: "helpful_fb_title"
+                label: "Helpful fb title"
+                widget: string
+                required: false
+              - name: "helpful_bubble"
+                label: "Helpful bubble"
+                widget: string
+                required: false
+              - name: "helpful_btn_not_really"
+                label: "Helpful btn not really"
+                widget: string
+                required: false
+              - name: "helpful_btn_yes_a_bit"
+                label: "Helpful btn yes a bit"
+                widget: string
+                required: false
+          - name: "journal-past-notes"
+            label: "Journal Past Notes"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "journal_past_page_title"
+                label: "Journal past page title"
+                widget: string
+                required: false
+              - name: "journal_past_section_this_month"
+                label: "Journal past section this month"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_1"
+                label: "Journal past note date 1"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_1"
+                label: "Journal past note text 1"
+                widget: text
+                required: false
+              - name: "journal_past_note_date_2"
+                label: "Journal past note date 2"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_2"
+                label: "Journal past note text 2"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_3"
+                label: "Journal past note date 3"
+                widget: string
+                required: false
+              - name: "journal_past_note_question_1"
+                label: "Journal past note question 1"
+                widget: string
+                required: false
+              - name: "journal_past_note_answer_1"
+                label: "Journal past note answer 1"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_4"
+                label: "Journal past note date 4"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_4"
+                label: "Journal past note text 4"
+                widget: text
+                required: false
+              - name: "journal_past_section_older_notes"
+                label: "Journal past section older notes"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_5"
+                label: "Journal past note date 5"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_5"
+                label: "Journal past note text 5"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_6"
+                label: "Journal past note date 6"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_6"
+                label: "Journal past note text 6"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_7"
+                label: "Journal past note date 7"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_7"
+                label: "Journal past note text 7"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_8"
+                label: "Journal past note date 8"
+                widget: string
+                required: false
+              - name: "journal_past_note_question_2"
+                label: "Journal past note question 2"
+                widget: string
+                required: false
+              - name: "journal_past_note_answer_2"
+                label: "Journal past note answer 2"
+                widget: string
+                required: false
+              - name: "journal_past_note_date_9"
+                label: "Journal past note date 9"
+                widget: string
+                required: false
+              - name: "journal_past_note_text_9"
+                label: "Journal past note text 9"
+                widget: text
+                required: false
+              - name: "journal_past_col_right_label"
+                label: "Journal past col right label"
+                widget: string
+                required: false
+              - name: "journal_past_stat_label_this_month"
+                label: "Journal past stat label this month"
+                widget: string
+                required: false
+              - name: "journal_past_stat_number_this_month"
+                label: "Journal past stat number this month"
+                widget: string
+                required: false
+              - name: "journal_past_stat_label_total"
+                label: "Journal past stat label total"
+                widget: string
+                required: false
+              - name: "journal_past_stat_number_total"
+                label: "Journal past stat number total"
+                widget: string
+                required: false
+          - name: "journal-question"
+            label: "Journal Question"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "journal_q_write_btn"
+                label: "Journal q write btn"
+                widget: string
+                required: false
+              - name: "journal_q_textarea_placeholder"
+                label: "Journal q textarea placeholder"
+                widget: string
+                required: false
+              - name: "journal_q_save_btn"
+                label: "Journal q save btn"
+                widget: string
+                required: false
+              - name: "journal_q_saved_title"
+                label: "Journal q saved title"
+                widget: string
+                required: false
+              - name: "journal_q_saved_message"
+                label: "Journal q saved message"
+                widget: string
+                required: false
+              - name: "journal_q_btn_not_really"
+                label: "Journal q btn not really"
+                widget: string
+                required: false
+              - name: "journal_q_btn_yes"
+                label: "Journal q btn yes"
+                widget: string
+                required: false
+          - name: "journal"
+            label: "Journal"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "journal_page_title"
+                label: "Journal page title"
+                widget: string
+                required: false
+              - name: "journal_page_desc"
+                label: "Journal page desc"
+                widget: string
+                required: false
+              - name: "journal_section_notes"
+                label: "Journal section notes"
+                widget: string
+                required: false
+              - name: "journal_write_cta_label"
+                label: "Journal write cta label"
+                widget: string
+                required: false
+              - name: "journal_note_card_date"
+                label: "Journal note card date"
+                widget: string
+                required: false
+              - name: "btn_edit_note"
+                label: "Btn edit note"
+                widget: string
+                required: false
+              - name: "journal_past_notes_title"
+                label: "Journal past notes title"
+                widget: string
+                required: false
+              - name: "journal_section_topics"
+                label: "Journal section topics"
+                widget: string
+                required: false
+              - name: "journal_anim_write_btn"
+                label: "Journal anim write btn"
+                widget: string
+                required: false
+              - name: "journal_wov_title"
+                label: "Journal wov title"
+                widget: string
+                required: false
+              - name: "journal_wov_textarea_placeholder"
+                label: "Journal wov textarea placeholder"
+                widget: string
+                required: false
+              - name: "journal_wov_done_plus"
+                label: "Journal wov done plus"
+                widget: string
+                required: false
+              - name: "journal_wov_done_title"
+                label: "Journal wov done title"
+                widget: string
+                required: false
+              - name: "journal_qov_prompt_write_btn"
+                label: "Journal qov prompt write btn"
+                widget: string
+                required: false
+              - name: "journal_qov_textarea_placeholder"
+                label: "Journal qov textarea placeholder"
+                widget: string
+                required: false
+              - name: "journal_qov_save_btn"
+                label: "Journal qov save btn"
+                widget: string
+                required: false
+              - name: "journal_qov_done_plus"
+                label: "Journal qov done plus"
+                widget: string
+                required: false
+              - name: "journal_qov_done_title"
+                label: "Journal qov done title"
+                widget: string
+                required: false
+              - name: "journal_qov_done_bubble"
+                label: "Journal qov done bubble"
+                widget: string
+                required: false
+              - name: "journal_qov_btn_secondary"
+                label: "Journal qov btn secondary"
+                widget: string
+                required: false
+              - name: "journal_qov_btn_primary"
+                label: "Journal qov btn primary"
+                widget: string
+                required: false
+              - name: "journal_support_handle_label"
+                label: "Journal support handle label"
+                widget: string
+                required: false
+              - name: "journal_support_title"
+                label: "Journal support title"
+                widget: string
+                required: false
+              - name: "journal_support_subtitle"
+                label: "Journal support subtitle"
+                widget: string
+                required: false
+              - name: "journal_support_item1_title"
+                label: "Journal support item1 title"
+                widget: string
+                required: false
+              - name: "journal_support_item1_sub"
+                label: "Journal support item1 sub"
+                widget: string
+                required: false
+              - name: "journal_support_item2_title"
+                label: "Journal support item2 title"
+                widget: string
+                required: false
+              - name: "journal_support_item2_sub"
+                label: "Journal support item2 sub"
+                widget: string
+                required: false
+              - name: "journal_support_cta"
+                label: "Journal support cta"
+                widget: text
+                required: false
+                hint: "Keeps formatting — don't delete tags like <strong> or images."
+          - name: "journey"
+            label: "Journey"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "journey_logo"
+                label: "Journey logo"
+                widget: string
+                required: false
+              - name: "journey_title"
+                label: "Journey title"
+                widget: string
+                required: false
+              - name: "journey_sub"
+                label: "Journey sub"
+                widget: string
+                required: false
+              - name: "journey_tab_this_month"
+                label: "Journey tab this month"
+                widget: string
+                required: false
+              - name: "journey_tab_over_time"
+                label: "Journey tab over time"
+                widget: string
+                required: false
+              - name: "journey_stat_feelings_label"
+                label: "Journey stat feelings label"
+                widget: string
+                required: false
+              - name: "journey_stat_feelings_value"
+                label: "Journey stat feelings value"
+                widget: string
+                required: false
+              - name: "journey_stat_checkins_label"
+                label: "Journey stat checkins label"
+                widget: string
+                required: false
+              - name: "journey_stat_checkins_value"
+                label: "Journey stat checkins value"
+                widget: string
+                required: false
+              - name: "journey_stat_sparks_label"
+                label: "Journey stat sparks label"
+                widget: string
+                required: false
+              - name: "journey_stat_activities_label"
+                label: "Journey stat activities label"
+                widget: string
+                required: false
+              - name: "journey_stat_activities_value"
+                label: "Journey stat activities value"
+                widget: string
+                required: false
+              - name: "btn_open_monthly_recap"
+                label: "Btn open monthly recap"
+                widget: string
+                required: false
+              - name: "journey_card_activity_1_title"
+                label: "Journey card activity 1 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_1_date"
+                label: "Journey card activity 1 date"
+                widget: string
+                required: false
+              - name: "journey_card_activity_2_title"
+                label: "Journey card activity 2 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_2_date"
+                label: "Journey card activity 2 date"
+                widget: string
+                required: false
+              - name: "journey_card_activity_3_title"
+                label: "Journey card activity 3 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_3_date"
+                label: "Journey card activity 3 date"
+                widget: string
+                required: false
+              - name: "journey_card_activity_4_title"
+                label: "Journey card activity 4 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_4_date"
+                label: "Journey card activity 4 date"
+                widget: string
+                required: false
+              - name: "journey_card_activity_5_title"
+                label: "Journey card activity 5 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_5_date"
+                label: "Journey card activity 5 date"
+                widget: string
+                required: false
+              - name: "journey_card_activity_6_title"
+                label: "Journey card activity 6 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_6_date"
+                label: "Journey card activity 6 date"
+                widget: string
+                required: false
+              - name: "journey_card_activity_7_title"
+                label: "Journey card activity 7 title"
+                widget: string
+                required: false
+              - name: "journey_card_activity_7_date"
+                label: "Journey card activity 7 date"
+                widget: string
+                required: false
+              - name: "btn_recap_skip"
+                label: "Btn recap skip"
+                widget: string
+                required: false
+              - name: "recap_slide1_date_label"
+                label: "Recap slide1 date label"
+                widget: string
+                required: false
+              - name: "recap_slide1_title"
+                label: "Recap slide1 title"
+                widget: text
+                required: false
+              - name: "btn_recap_start"
+                label: "Btn recap start"
+                widget: string
+                required: false
+              - name: "recap_slide2_label"
+                label: "Recap slide2 label"
+                widget: string
+                required: false
+              - name: "recap_slide2_title"
+                label: "Recap slide2 title"
+                widget: text
+                required: false
+              - name: "btn_recap_next_slide2"
+                label: "Btn recap next slide2"
+                widget: string
+                required: false
+              - name: "recap_slide3_label"
+                label: "Recap slide3 label"
+                widget: string
+                required: false
+              - name: "recap_slide3_title"
+                label: "Recap slide3 title"
+                widget: string
+                required: false
+              - name: "btn_recap_next_slide3"
+                label: "Btn recap next slide3"
+                widget: string
+                required: false
+              - name: "recap_slide4_label"
+                label: "Recap slide4 label"
+                widget: string
+                required: false
+              - name: "recap_slide4_title"
+                label: "Recap slide4 title"
+                widget: text
+                required: false
+              - name: "btn_recap_next_slide4"
+                label: "Btn recap next slide4"
+                widget: string
+                required: false
+              - name: "recap_slide5_label"
+                label: "Recap slide5 label"
+                widget: string
+                required: false
+              - name: "recap_slide5_title"
+                label: "Recap slide5 title"
+                widget: text
+                required: false
+              - name: "btn_recap_next_slide5"
+                label: "Btn recap next slide5"
+                widget: string
+                required: false
+              - name: "recap_slide6_label"
+                label: "Recap slide6 label"
+                widget: string
+                required: false
+              - name: "recap_slide6_title"
+                label: "Recap slide6 title"
+                widget: string
+                required: false
+              - name: "btn_recap_share"
+                label: "Btn recap share"
+                widget: string
+                required: false
+              - name: "btn_recap_back_to_journey"
+                label: "Btn recap back to journey"
+                widget: string
+                required: false
+              - name: "journey_support_handle_label"
+                label: "Journey support handle label"
+                widget: string
+                required: false
+              - name: "journey_support_title"
+                label: "Journey support title"
+                widget: string
+                required: false
+              - name: "journey_support_subtitle"
+                label: "Journey support subtitle"
+                widget: string
+                required: false
+              - name: "journey_support_item1_title"
+                label: "Journey support item1 title"
+                widget: string
+                required: false
+              - name: "journey_support_item1_sub"
+                label: "Journey support item1 sub"
+                widget: string
+                required: false
+              - name: "journey_support_item2_title"
+                label: "Journey support item2 title"
+                widget: string
+                required: false
+              - name: "journey_support_item2_sub"
+                label: "Journey support item2 sub"
+                widget: string
+                required: false
+              - name: "journey_support_cta"
+                label: "Journey support cta"
+                widget: text
+                required: false
+                hint: "Keeps formatting — don't delete tags like <strong> or images."
+          - name: "mood-checkin"
+            label: "Mood Checkin"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "mood_title"
+                label: "Mood title"
+                widget: string
+                required: false
+              - name: "mood_subtitle"
+                label: "Mood subtitle"
+                widget: string
+                required: false
+              - name: "mood_em_curious"
+                label: "Mood em curious"
+                widget: string
+                required: false
+              - name: "mood_em_okay"
+                label: "Mood em okay"
+                widget: string
+                required: false
+              - name: "mood_em_meh"
+                label: "Mood em meh"
+                widget: string
+                required: false
+              - name: "mood_em_sad"
+                label: "Mood em sad"
+                widget: string
+                required: false
+              - name: "mood_em_angry"
+                label: "Mood em angry"
+                widget: string
+                required: false
+              - name: "mood_em_happy"
+                label: "Mood em happy"
+                widget: string
+                required: false
+              - name: "mood_em_grateful"
+                label: "Mood em grateful"
+                widget: string
+                required: false
+              - name: "mood_em_neutral"
+                label: "Mood em neutral"
+                widget: string
+                required: false
+              - name: "mood_em_tired"
+                label: "Mood em tired"
+                widget: string
+                required: false
+              - name: "mood_em_stressed"
+                label: "Mood em stressed"
+                widget: string
+                required: false
+              - name: "mood_em_excited"
+                label: "Mood em excited"
+                widget: string
+                required: false
+              - name: "mood_em_hopeful"
+                label: "Mood em hopeful"
+                widget: string
+                required: false
+              - name: "mood_em_idontknow"
+                label: "Mood em idontknow"
+                widget: text
+                required: false
+              - name: "mood_em_lonely"
+                label: "Mood em lonely"
+                widget: string
+                required: false
+              - name: "mood_em_anxious"
+                label: "Mood em anxious"
+                widget: string
+                required: false
+              - name: "mood_sleep_sub"
+                label: "Mood sleep sub"
+                widget: string
+                required: false
+              - name: "mood_sleep_title"
+                label: "Mood sleep title"
+                widget: string
+                required: false
+              - name: "btn_sleep_next"
+                label: "Btn sleep next"
+                widget: string
+                required: false
+              - name: "mood_done_reward_plus"
+                label: "Mood done reward plus"
+                widget: string
+                required: false
+          - name: "my-toolkit"
+            label: "My Toolkit"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "toolkit_sidebar_logo"
+                label: "Toolkit sidebar logo"
+                widget: string
+                required: false
+              - name: "toolkit_title_simple"
+                label: "Toolkit title simple"
+                widget: string
+                required: false
+              - name: "toolkit_desc"
+                label: "Toolkit desc"
+                widget: string
+                required: false
+              - name: "toolkit_video_duration_simple"
+                label: "Toolkit video duration simple"
+                widget: string
+                required: false
+              - name: "toolkit_video_title_calming_breath_simple"
+                label: "Toolkit video title calming breath simple"
+                widget: string
+                required: false
+              - name: "btn_explore"
+                label: "Btn explore"
+                widget: string
+                required: false
+              - name: "toolkit_desc_full"
+                label: "Toolkit desc full"
+                widget: string
+                required: false
+              - name: "btn_filter_recommended"
+                label: "Btn filter recommended"
+                widget: string
+                required: false
+              - name: "btn_filter_browse"
+                label: "Btn filter browse"
+                widget: string
+                required: false
+              - name: "btn_filter_doitagain"
+                label: "Btn filter doitagain"
+                widget: string
+                required: false
+              - name: "btn_filter_saved"
+                label: "Btn filter saved"
+                widget: string
+                required: false
+              - name: "toolkit_video_duration_hero"
+                label: "Toolkit video duration hero"
+                widget: string
+                required: false
+              - name: "toolkit_video_title_hard_things"
+                label: "Toolkit video title hard things"
+                widget: string
+                required: false
+              - name: "toolkit_video_duration_calming"
+                label: "Toolkit video duration calming"
+                widget: string
+                required: false
+              - name: "toolkit_video_title_calming_breath"
+                label: "Toolkit video title calming breath"
+                widget: string
+                required: false
+              - name: "toolkit_video_duration_resilience"
+                label: "Toolkit video duration resilience"
+                widget: string
+                required: false
+              - name: "toolkit_video_title_resilience"
+                label: "Toolkit video title resilience"
+                widget: string
+                required: false
+              - name: "toolkit_video_duration_doitagain_1"
+                label: "Toolkit video duration doitagain 1"
+                widget: string
+                required: false
+              - name: "toolkit_video_title_karl"
+                label: "Toolkit video title karl"
+                widget: string
+                required: false
+              - name: "toolkit_video_duration_doitagain_2"
+                label: "Toolkit video duration doitagain 2"
+                widget: string
+                required: false
+              - name: "toolkit_video_title_calming_breath_doitagain"
+                label: "Toolkit video title calming breath doitagain"
+                widget: string
+                required: false
+              - name: "toolkit_saved_empty"
+                label: "Toolkit saved empty"
+                widget: string
+                required: false
+              - name: "toolkit_category_calm_down"
+                label: "Toolkit category calm down"
+                widget: string
+                required: false
+              - name: "toolkit_category_boost_energy"
+                label: "Toolkit category boost energy"
+                widget: string
+                required: false
+              - name: "toolkit_category_feel_good"
+                label: "Toolkit category feel good"
+                widget: string
+                required: false
+              - name: "toolkit_category_focus"
+                label: "Toolkit category focus"
+                widget: string
+                required: false
+              - name: "toolkit_category_wind_down"
+                label: "Toolkit category wind down"
+                widget: string
+                required: false
+              - name: "toolkit_support_handle_label"
+                label: "Toolkit support handle label"
+                widget: string
+                required: false
+              - name: "toolkit_support_title"
+                label: "Toolkit support title"
+                widget: string
+                required: false
+              - name: "toolkit_support_subtitle"
+                label: "Toolkit support subtitle"
+                widget: string
+                required: false
+              - name: "toolkit_support_item1_title"
+                label: "Toolkit support item1 title"
+                widget: string
+                required: false
+              - name: "toolkit_support_item1_sub"
+                label: "Toolkit support item1 sub"
+                widget: string
+                required: false
+              - name: "toolkit_support_item2_title"
+                label: "Toolkit support item2 title"
+                widget: string
+                required: false
+              - name: "toolkit_support_item2_sub"
+                label: "Toolkit support item2 sub"
+                widget: string
+                required: false
+              - name: "toolkit_support_cta"
+                label: "Toolkit support cta"
+                widget: text
+                required: false
+                hint: "Keeps formatting — don't delete tags like <strong> or images."
+              - name: "toolkit_video_close_btn"
+                label: "Toolkit video close btn"
+                widget: string
+                required: false
+          - name: "notice-wins"
+            label: "Notice Wins"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "notice_wins_status_time"
+                label: "Notice wins status time"
+                widget: string
+                required: false
+              - name: "notice_wins_title"
+                label: "Notice wins title"
+                widget: string
+                required: false
+              - name: "notice_wins_msg_bubble"
+                label: "Notice wins msg bubble"
+                widget: text
+                required: false
+              - name: "notice_wins_textarea_placeholder"
+                label: "Notice wins textarea placeholder"
+                widget: string
+                required: false
+              - name: "notice_wins_reward_text"
+                label: "Notice wins reward text"
+                widget: string
+                required: false
+              - name: "notice_wins_completed"
+                label: "Notice wins completed"
+                widget: string
+                required: false
+          - name: "onboarding"
+            label: "Onboarding"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "onboarding_trans_s1_title"
+                label: "Onboarding trans s1 title"
+                widget: string
+                required: false
+              - name: "onboarding_trans_s1_body"
+                label: "Onboarding trans s1 body"
+                widget: text
+                required: false
+              - name: "onboarding_trans_btn_next"
+                label: "Onboarding trans btn next"
+                widget: string
+                required: false
+              - name: "onboarding_badge"
+                label: "Onboarding badge"
+                widget: string
+                required: false
+              - name: "onboarding_welcome_title"
+                label: "Onboarding welcome title"
+                widget: string
+                required: false
+              - name: "onboarding_name_label"
+                label: "Onboarding name label"
+                widget: string
+                required: false
+              - name: "onboarding_name_placeholder"
+                label: "Onboarding name placeholder"
+                widget: string
+                required: false
+              - name: "onboarding_btn_lets_go"
+                label: "Onboarding btn lets go"
+                widget: string
+                required: false
+              - name: "onboarding_s0_title"
+                label: "Onboarding s0 title"
+                widget: text
+                required: false
+              - name: "onboarding_s0_body"
+                label: "Onboarding s0 body"
+                widget: text
+                required: false
+              - name: "onboarding_btn_get_started"
+                label: "Onboarding btn get started"
+                widget: string
+                required: false
+              - name: "onboarding_s1_title"
+                label: "Onboarding s1 title"
+                widget: text
+                required: false
+              - name: "onboarding_s1_body"
+                label: "Onboarding s1 body"
+                widget: string
+                required: false
+              - name: "onboarding_btn_next_s1"
+                label: "Onboarding btn next s1"
+                widget: string
+                required: false
+              - name: "onboarding_s2_subtitle"
+                label: "Onboarding s2 subtitle"
+                widget: string
+                required: false
+              - name: "onboarding_pcard_mood_label"
+                label: "Onboarding pcard mood label"
+                widget: string
+                required: false
+              - name: "onboarding_pcard_classstats_label"
+                label: "Onboarding pcard classstats label"
+                widget: string
+                required: false
+              - name: "onboarding_pcard_journal_label"
+                label: "Onboarding pcard journal label"
+                widget: string
+                required: false
+              - name: "onboarding_pcard_journal_body"
+                label: "Onboarding pcard journal body"
+                widget: string
+                required: false
+              - name: "onboarding_s2_footer"
+                label: "Onboarding s2 footer"
+                widget: string
+                required: false
+              - name: "onboarding_btn_next_s2"
+                label: "Onboarding btn next s2"
+                widget: string
+                required: false
+              - name: "onboarding_s3_title"
+                label: "Onboarding s3 title"
+                widget: text
+                required: false
+              - name: "onboarding_btn_next_s3"
+                label: "Onboarding btn next s3"
+                widget: string
+                required: false
+              - name: "onboarding_s4_title"
+                label: "Onboarding s4 title"
+                widget: text
+                required: false
+              - name: "onboarding_btn_next_s4"
+                label: "Onboarding btn next s4"
+                widget: string
+                required: false
+              - name: "onboarding_s5_title"
+                label: "Onboarding s5 title"
+                widget: text
+                required: false
+              - name: "onboarding_fc_good_sleep"
+                label: "Onboarding fc good sleep"
+                widget: string
+                required: false
+              - name: "onboarding_fc_friends"
+                label: "Onboarding fc friends"
+                widget: string
+                required: false
+              - name: "onboarding_fc_good_food"
+                label: "Onboarding fc good food"
+                widget: string
+                required: false
+              - name: "onboarding_fc_sports"
+                label: "Onboarding fc sports"
+                widget: string
+                required: false
+              - name: "onboarding_fc_art_music"
+                label: "Onboarding fc art music"
+                widget: string
+                required: false
+              - name: "onboarding_fc_talk"
+                label: "Onboarding fc talk"
+                widget: string
+                required: false
+              - name: "onboarding_btn_next_s5"
+                label: "Onboarding btn next s5"
+                widget: string
+                required: false
+              - name: "onboarding_s6_title"
+                label: "Onboarding s6 title"
+                widget: text
+                required: false
+              - name: "onboarding_pb_friend"
+                label: "Onboarding pb friend"
+                widget: string
+                required: false
+              - name: "onboarding_pb_parent"
+                label: "Onboarding pb parent"
+                widget: string
+                required: false
+              - name: "onboarding_pb_family"
+                label: "Onboarding pb family"
+                widget: string
+                required: false
+              - name: "onboarding_pb_teacher"
+                label: "Onboarding pb teacher"
+                widget: string
+                required: false
+              - name: "onboarding_pb_counselor"
+                label: "Onboarding pb counselor"
+                widget: string
+                required: false
+              - name: "onboarding_pb_no_one"
+                label: "Onboarding pb no one"
+                widget: string
+                required: false
+              - name: "onboarding_pb_ai"
+                label: "Onboarding pb ai"
+                widget: string
+                required: false
+              - name: "onboarding_btn_next_s6"
+                label: "Onboarding btn next s6"
+                widget: string
+                required: false
+              - name: "onboarding_s7_reward_plus"
+                label: "Onboarding s7 reward plus"
+                widget: string
+                required: false
+              - name: "onboarding_s7_title"
+                label: "Onboarding s7 title"
+                widget: text
+                required: false
+              - name: "onboarding_s7_bubble_green"
+                label: "Onboarding s7 bubble green"
+                widget: text
+                required: false
+              - name: "onboarding_btn_start_mood"
+                label: "Onboarding btn start mood"
+                widget: string
+                required: false
+              - name: "onboarding_support_handle_label"
+                label: "Onboarding support handle label"
+                widget: string
+                required: false
+              - name: "onboarding_support_panel_title"
+                label: "Onboarding support panel title"
+                widget: string
+                required: false
+              - name: "onboarding_sp_item1_title"
+                label: "Onboarding sp item1 title"
+                widget: string
+                required: false
+              - name: "onboarding_sp_item1_sub"
+                label: "Onboarding sp item1 sub"
+                widget: string
+                required: false
+              - name: "onboarding_sp_item2_title"
+                label: "Onboarding sp item2 title"
+                widget: string
+                required: false
+              - name: "onboarding_sp_item2_sub"
+                label: "Onboarding sp item2 sub"
+                widget: string
+                required: false
+              - name: "onboarding_sp_item3_title"
+                label: "Onboarding sp item3 title"
+                widget: string
+                required: false
+              - name: "onboarding_sp_item3_sub"
+                label: "Onboarding sp item3 sub"
+                widget: string
+                required: false
+          - name: "recap"
+            label: "Recap"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "recap_status_time"
+                label: "Recap status time"
+                widget: string
+                required: false
+              - name: "recap_intro_month"
+                label: "Recap intro month"
+                widget: string
+                required: false
+              - name: "recap_intro_title"
+                label: "Recap intro title"
+                widget: text
+                required: false
+              - name: "btn_start"
+                label: "Btn start"
+                widget: string
+                required: false
+              - name: "recap_cloud_label"
+                label: "Recap cloud label"
+                widget: string
+                required: false
+              - name: "recap_emotions_heading"
+                label: "Recap emotions heading"
+                widget: text
+                required: false
+              - name: "recap_emotions_sub"
+                label: "Recap emotions sub"
+                widget: string
+                required: false
+              - name: "recap_sleep_heading"
+                label: "Recap sleep heading"
+                widget: string
+                required: false
+              - name: "recap_sleep_sub"
+                label: "Recap sleep sub"
+                widget: string
+                required: false
+              - name: "recap_stat_sleep_num"
+                label: "Recap stat sleep num"
+                widget: string
+                required: false
+              - name: "recap_stat_sleep_desc"
+                label: "Recap stat sleep desc"
+                widget: string
+                required: false
+              - name: "recap_stat_mood_num"
+                label: "Recap stat mood num"
+                widget: string
+                required: false
+              - name: "recap_stat_mood_desc"
+                label: "Recap stat mood desc"
+                widget: string
+                required: false
+              - name: "recap_care_sub"
+                label: "Recap care sub"
+                widget: string
+                required: false
+              - name: "recap_care_heading"
+                label: "Recap care heading"
+                widget: string
+                required: false
+              - name: "recap_card_journal_label"
+                label: "Recap card journal label"
+                widget: string
+                required: false
+              - name: "recap_card_journal_num"
+                label: "Recap card journal num"
+                widget: string
+                required: false
+              - name: "recap_card_videos_label"
+                label: "Recap card videos label"
+                widget: string
+                required: false
+              - name: "recap_card_videos_num"
+                label: "Recap card videos num"
+                widget: string
+                required: false
+              - name: "recap_card_activities_label"
+                label: "Recap card activities label"
+                widget: string
+                required: false
+              - name: "recap_card_activities_num"
+                label: "Recap card activities num"
+                widget: string
+                required: false
+              - name: "recap_label"
+                label: "Recap label"
+                widget: string
+                required: false
+              - name: "recap_heading"
+                label: "Recap heading"
+                widget: string
+                required: false
+          - name: "session-feedback"
+            label: "Session Feedback"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "feedback_subtitle"
+                label: "Feedback subtitle"
+                widget: text
+                required: false
+              - name: "feedback_title"
+                label: "Feedback title"
+                widget: string
+                required: false
+              - name: "feedback_answer_yes"
+                label: "Feedback answer yes"
+                widget: string
+                required: false
+              - name: "feedback_answer_not_really"
+                label: "Feedback answer not really"
+                widget: string
+                required: false
+              - name: "feedback_answer_didnt"
+                label: "Feedback answer didnt"
+                widget: string
+                required: false
+              - name: "feedback_reward_yes"
+                label: "Feedback reward yes"
+                widget: string
+                required: false
+              - name: "feedback_response_yes"
+                label: "Feedback response yes"
+                widget: string
+                required: false
+              - name: "feedback_btn_start_yes"
+                label: "Feedback btn start yes"
+                widget: string
+                required: false
+              - name: "feedback_reward_not_really"
+                label: "Feedback reward not really"
+                widget: string
+                required: false
+              - name: "feedback_response_not_really"
+                label: "Feedback response not really"
+                widget: text
+                required: false
+              - name: "feedback_btn_start_not_really"
+                label: "Feedback btn start not really"
+                widget: string
+                required: false
+              - name: "feedback_reward_didnt"
+                label: "Feedback reward didnt"
+                widget: string
+                required: false
+              - name: "feedback_response_didnt"
+                label: "Feedback response didnt"
+                widget: string
+                required: false
+              - name: "feedback_btn_start_didnt"
+                label: "Feedback btn start didnt"
+                widget: string
+                required: false
+          - name: "settings"
+            label: "Settings"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "settings_title"
+                label: "Settings title"
+                widget: string
+                required: false
+              - name: "settings_tab_avatar"
+                label: "Settings tab avatar"
+                widget: string
+                required: false
+              - name: "settings_tab_privacy"
+                label: "Settings tab privacy"
+                widget: string
+                required: false
+              - name: "settings_privacy_label_mood"
+                label: "Settings privacy label mood"
+                widget: string
+                required: false
+              - name: "settings_privacy_desc_mood"
+                label: "Settings privacy desc mood"
+                widget: string
+                required: false
+              - name: "settings_privacy_hint_mood"
+                label: "Settings privacy hint mood"
+                widget: string
+                required: false
+              - name: "settings_privacy_label_class_stats"
+                label: "Settings privacy label class stats"
+                widget: string
+                required: false
+              - name: "settings_privacy_desc_class_stats"
+                label: "Settings privacy desc class stats"
+                widget: string
+                required: false
+              - name: "settings_privacy_hint_class_stats"
+                label: "Settings privacy hint class stats"
+                widget: string
+                required: false
+              - name: "settings_privacy_label_journal"
+                label: "Settings privacy label journal"
+                widget: string
+                required: false
+              - name: "settings_privacy_desc_journal"
+                label: "Settings privacy desc journal"
+                widget: string
+                required: false
+              - name: "settings_privacy_hint_journal"
+                label: "Settings privacy hint journal"
+                widget: string
+                required: false
+          - name: "sleeping"
+            label: "Sleeping"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "sleeping_status_time"
+                label: "Sleeping status time"
+                widget: string
+                required: false
+              - name: "sleeping_title"
+                label: "Sleeping title"
+                widget: text
+                required: false
+              - name: "sleeping_bubble_text"
+                label: "Sleeping bubble text"
+                widget: text
+                required: false
+          - name: "sparks"
+            label: "Sparks"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "sparks_sidebar_logo"
+                label: "Sparks sidebar logo"
+                widget: string
+                required: false
+              - name: "sparks_title"
+                label: "Sparks title"
+                widget: string
+                required: false
+              - name: "sparks_subtitle"
+                label: "Sparks subtitle"
+                widget: string
+                required: false
+              - name: "sparks_total_label"
+                label: "Sparks total label"
+                widget: string
+                required: false
+              - name: "btn_view_cards_collection"
+                label: "Btn view cards collection"
+                widget: string
+                required: false
+              - name: "btn_buy_collectible"
+                label: "Btn buy collectible"
+                widget: string
+                required: false
+              - name: "sparks_success_label"
+                label: "Sparks success label"
+                widget: string
+                required: false
+              - name: "sparks_support_handle_label"
+                label: "Sparks support handle label"
+                widget: string
+                required: false
+              - name: "sparks_support_title"
+                label: "Sparks support title"
+                widget: string
+                required: false
+              - name: "sparks_support_subtitle"
+                label: "Sparks support subtitle"
+                widget: string
+                required: false
+              - name: "sparks_support_item1_title"
+                label: "Sparks support item1 title"
+                widget: string
+                required: false
+              - name: "sparks_support_item1_sub"
+                label: "Sparks support item1 sub"
+                widget: string
+                required: false
+              - name: "sparks_support_item2_title"
+                label: "Sparks support item2 title"
+                widget: string
+                required: false
+              - name: "sparks_support_item2_sub"
+                label: "Sparks support item2 sub"
+                widget: string
+                required: false
+              - name: "sparks_support_cta"
+                label: "Sparks support cta"
+                widget: text
+                required: false
+                hint: "Keeps formatting — don't delete tags like <strong> or images."
+          - name: "summary"
+            label: "Summary"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "summary_status_time"
+                label: "Summary status time"
+                widget: string
+                required: false
+              - name: "summary_status_battery"
+                label: "Summary status battery"
+                widget: string
+                required: false
+              - name: "summary_mood_ov_status_time"
+                label: "Summary mood ov status time"
+                widget: string
+                required: false
+              - name: "summary_mood_ov_status_battery"
+                label: "Summary mood ov status battery"
+                widget: string
+                required: false
+          - name: "support-write"
+            label: "Support Write"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "support_write_title"
+                label: "Support write title"
+                widget: string
+                required: false
+              - name: "support_write_bubble"
+                label: "Support write bubble"
+                widget: text
+                required: false
+              - name: "support_write_textarea_placeholder"
+                label: "Support write textarea placeholder"
+                widget: string
+                required: false
+              - name: "support_done_title"
+                label: "Support done title"
+                widget: text
+                required: false
+              - name: "support_done_bubble"
+                label: "Support done bubble"
+                widget: text
+                required: false
+          - name: "today"
+            label: "Today"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "today_sidebar_logo"
+                label: "Today sidebar logo"
+                widget: string
+                required: false
+              - name: "today_sparks_label"
+                label: "Today sparks label"
+                widget: string
+                required: false
+              - name: "btn_summary"
+                label: "Btn summary"
+                widget: string
+                required: false
+              - name: "today_success_reward"
+                label: "Today success reward"
+                widget: string
+                required: false
+              - name: "today_success_title"
+                label: "Today success title"
+                widget: text
+                required: false
+              - name: "today_success_bubble_text"
+                label: "Today success bubble text"
+                widget: text
+                required: false
+              - name: "today_success_btn_done"
+                label: "Today success btn done"
+                widget: string
+                required: false
+              - name: "today_support_handle_label"
+                label: "Today support handle label"
+                widget: string
+                required: false
+              - name: "today_support_title"
+                label: "Today support title"
+                widget: string
+                required: false
+              - name: "today_support_subtitle"
+                label: "Today support subtitle"
+                widget: string
+                required: false
+              - name: "today_support_item1_title"
+                label: "Today support item1 title"
+                widget: string
+                required: false
+              - name: "today_support_item1_sub"
+                label: "Today support item1 sub"
+                widget: string
+                required: false
+              - name: "today_support_item2_title"
+                label: "Today support item2 title"
+                widget: string
+                required: false
+              - name: "today_support_item2_sub"
+                label: "Today support item2 sub"
+                widget: string
+                required: false
+              - name: "today_support_cta"
+                label: "Today support cta"
+                widget: text
+                required: false
+                hint: "Keeps formatting — don't delete tags like <strong> or images."
+          - name: "toolkit-video"
+            label: "Toolkit Video"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "toolkit_video_btn_replay"
+                label: "Toolkit video btn replay"
+                widget: string
+                required: false
+              - name: "toolkit_video_btn_complete"
+                label: "Toolkit video btn complete"
+                widget: string
+                required: false
+              - name: "toolkit_video_notif_label_learned"
+                label: "Toolkit video notif label learned"
+                widget: text
+                required: false
+              - name: "toolkit_video_did_try_title"
+                label: "Toolkit video did try title"
+                widget: string
+                required: false
+              - name: "toolkit_video_block_yes"
+                label: "Toolkit video block yes"
+                widget: string
+                required: false
+              - name: "toolkit_video_block_not_this_time"
+                label: "Toolkit video block not this time"
+                widget: string
+                required: false
+              - name: "toolkit_video_block_not_sure"
+                label: "Toolkit video block not sure"
+                widget: string
+                required: false
+              - name: "toolkit_video_helpful_label"
+                label: "Toolkit video helpful label"
+                widget: string
+                required: false
+              - name: "toolkit_video_helpful_title"
+                label: "Toolkit video helpful title"
+                widget: string
+                required: false
+              - name: "toolkit_video_block_very_much"
+                label: "Toolkit video block very much"
+                widget: string
+                required: false
+              - name: "toolkit_video_block_a_little"
+                label: "Toolkit video block a little"
+                widget: string
+                required: false
+              - name: "toolkit_video_block_not_really"
+                label: "Toolkit video block not really"
+                widget: string
+                required: false
+              - name: "toolkit_video_why_label"
+                label: "Toolkit video why label"
+                widget: string
+                required: false
+              - name: "toolkit_video_why_title"
+                label: "Toolkit video why title"
+                widget: string
+                required: false
+              - name: "toolkit_video_why_placeholder"
+                label: "Toolkit video why placeholder"
+                widget: string
+                required: false
+              - name: "toolkit_video_thanks_title"
+                label: "Toolkit video thanks title"
+                widget: string
+                required: false
+              - name: "toolkit_video_notif_label_feedback"
+                label: "Toolkit video notif label feedback"
+                widget: text
+                required: false
+          - name: "write-it-out"
+            label: "Write It Out"
+            widget: object
+            collapsed: true
+            fields:
+              - name: "write_out_title"
+                label: "Write out title"
+                widget: string
+                required: false
+              - name: "write_out_msg_bubble"
+                label: "Write out msg bubble"
+                widget: text
+                required: false
+              - name: "write_out_textarea_placeholder"
+                label: "Write out textarea placeholder"
+                widget: string
+                required: false
+              - name: "write_out_reward_text"
+                label: "Write out reward text"
+                widget: string
+                required: false
+              - name: "write_out_completed"
+                label: "Write out completed"
+                widget: string
+                required: false

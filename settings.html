@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Settings</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Back button ───────────────────────────────────────────── */
+.back-btn {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 120ms; z-index: 10;
+}
+.back-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* ─── Main layout ───────────────────────────────────────────── */
+.settings-main {
+  position: absolute; left: 0; right: 0; top: 52px;
+  display: flex; flex-direction: column; align-items: center; gap: 48px;
+  pointer-events: none;
+}
+.settings-main > * { pointer-events: auto; }
+
+/* ─── Panel wrapper (centered between tabs and save btn) ─────── */
+.settings-panel-wrap {
+  position: absolute; left: 0; right: 0;
+  top: 211px; bottom: 79px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── Title ─────────────────────────────────────────────────── */
+.settings-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  color: #f2f3e5; letter-spacing: 1.5px; text-align: center; margin: 0;
+}
+
+/* ─── Tabs ──────────────────────────────────────────────────── */
+.settings-tabs {
+  display: flex; gap: 8px;
+}
+.stab {
+  height: 43px; padding: 0 20px; border-radius: 12px; border: none;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  cursor: pointer; transition: background 120ms, color 120ms;
+}
+.stab-active   { background: #f2f3e5; color: #2b2b35; }
+.stab-inactive { background: #2b2b35; color: rgba(242,243,229,0.5); }
+
+/* ─── Panels ────────────────────────────────────────────────── */
+.settings-panel { display: none; }
+.settings-panel.active { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; justify-content: center; }
+
+/* ─── Avatar panel ──────────────────────────────────────────── */
+.avatar-card {
+  width: 730px; height: 350px; border-radius: 20px;
+  border: 1px solid #444450; background: #1f1f25;
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  padding: 24px; box-sizing: border-box;
+}
+.avatar-opt {
+  width: 140px; height: 140px; border-radius: 99px;
+  border: none; overflow: hidden;
+  cursor: pointer; flex-shrink: 0; position: relative;
+  transition: transform 120ms cubic-bezier(0.34,1.56,0.64,1);
+}
+.avatar-opt::after {
+  content: ''; position: absolute; inset: 0;
+  border-radius: 99px;
+  border: 10px solid #444450;
+  pointer-events: none;
+  transition: border-color 160ms;
+}
+.avatar-opt:hover { transform: scale(1.06); }
+.avatar-opt.selected::after { border-color: #f2f3e5; }
+.avatar-opt img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  pointer-events: none;
+}
+
+/* ─── Privacy panel ─────────────────────────────────────────── */
+.privacy-card {
+  width: 500px; border-radius: 20px;
+  border: 1px solid #444450; background: #1f1f25;
+  padding: 24px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.privacy-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 12px; border-bottom: 1px solid #444450;
+}
+.privacy-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #a4a59f; letter-spacing: -0.1px; margin: 0;
+}
+.privacy-toggle-wrap {
+  display: flex; align-items: center; gap: 8px;
+}
+.toggle-state {
+  font-family: var(--font-body); font-size: 10px; font-weight: 500;
+  color: #a4a59f; letter-spacing: 0.1px;
+}
+.toggle {
+  width: 32px; height: 20px; border-radius: 10px;
+  background: #219653; position: relative; cursor: pointer;
+  border: none; padding: 0; transition: background 160ms; flex-shrink: 0;
+}
+.toggle::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; top: 2px; right: 2px;
+  transition: right 160ms, left 160ms;
+}
+.toggle.off { background: #444450; }
+.toggle.off::after { right: auto; left: 2px; }
+
+.lock-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: #444450; border: none; cursor: default;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.privacy-body { display: flex; flex-direction: column; gap: 12px; }
+.privacy-desc {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.1px; line-height: 1.25; margin: 0;
+}
+.privacy-hint {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; letter-spacing: 0; margin: 0;
+}
+
+/* ─── Save button ───────────────────────────────────────────── */
+.save-btn {
+  position: absolute; bottom: 31px; left: 50%; transform: translateX(-50%);
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #1f1f25; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.save-btn:active { opacity: 0.85; }
+.save-btn:disabled { background: #2b2b35; color: rgba(242,243,229,0.3); cursor: default; }
+
+</style>
+</head>
+<body>
+<div class="bp-stage">
+<div class="bp-device">
+
+  <!-- Status bar -->
+  <div class="sb">
+    <span>9:41</span>
+    <span>100%</span>
+  </div>
+
+  <!-- Back button -->
+  <button class="back-btn" onclick="history.back()">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M12.5 15L7.5 10L12.5 5" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- Header: title + tabs -->
+  <div class="settings-main">
+    <h1 class="settings-title" data-content="settings_title">Settings</h1>
+    <div class="settings-tabs">
+      <button class="stab stab-active"   id="stab-avatar"   onclick="switchTab('avatar')" data-content="settings_tab_avatar">Avatar</button>
+      <button class="stab stab-inactive" id="stab-privacy"  onclick="switchTab('privacy')" data-content="settings_tab_privacy">Privacy</button>
+    </div>
+  </div>
+
+  <!-- Panels — centered between tabs and save button -->
+  <div class="settings-panel-wrap">
+
+    <!-- Avatar panel -->
+    <div class="settings-panel active" id="panel-avatar">
+      <div class="avatar-card">
+        <div class="avatar-opt" id="av1" style="background:#b38aff;" onclick="selectAvatar(1)">
+          <img src="./foundations/assets/avatars/avatar-1.svg" alt="avatar 1">
+        </div>
+        <div class="avatar-opt" id="av2" style="background:#f3beaf;" onclick="selectAvatar(2)">
+          <img src="./foundations/assets/avatars/avatar-2.svg" alt="avatar 2">
+        </div>
+        <div class="avatar-opt" id="av3" style="background:#b8c0ed;" onclick="selectAvatar(3)">
+          <img src="./foundations/assets/avatars/avatar-3.svg" alt="avatar 3">
+        </div>
+        <div class="avatar-opt" id="av4" style="background:#58b880;" onclick="selectAvatar(4)">
+          <img src="./foundations/assets/avatars/avatar-4.svg" alt="avatar 4">
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy panel -->
+    <div class="settings-panel" id="panel-privacy">
+      <div class="privacy-card">
+        <div class="privacy-row">
+          <p class="privacy-label" data-content="settings_privacy_label_mood">Mood</p>
+          <div class="privacy-toggle-wrap">
+            <span class="toggle-state" id="tstate1">ON</span>
+            <button class="toggle" id="toggle1" onclick="togglePrivacy(1)"></button>
+          </div>
+        </div>
+        <div class="privacy-body">
+          <p class="privacy-desc" data-content="settings_privacy_desc_mood">Sharing weekly patterns, not daily moods.</p>
+          <p class="privacy-hint" data-content="settings_privacy_hint_mood">Weekly overview only · No daily details</p>
+        </div>
+      </div>
+      <div class="privacy-card">
+        <div class="privacy-row">
+          <p class="privacy-label" data-content="settings_privacy_label_class_stats">Class stats</p>
+          <div class="privacy-toggle-wrap">
+            <span class="toggle-state" id="tstate2">ON</span>
+            <button class="toggle" id="toggle2" onclick="togglePrivacy(2)"></button>
+          </div>
+        </div>
+        <div class="privacy-body">
+          <p class="privacy-desc" data-content="settings_privacy_desc_class_stats">Helping your teacher understand the class.</p>
+          <p class="privacy-hint" data-content="settings_privacy_hint_class_stats">Class average only · Your answers are anonymous</p>
+        </div>
+      </div>
+      <div class="privacy-card">
+        <div class="privacy-row">
+          <p class="privacy-label" data-content="settings_privacy_label_journal">Journal</p>
+          <div class="lock-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="3" y="7" width="10" height="8" rx="2" fill="#f2f3e5"/>
+              <path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="privacy-body">
+          <p class="privacy-desc" data-content="settings_privacy_desc_journal">Always private.</p>
+          <p class="privacy-hint" data-content="settings_privacy_hint_journal">Only you can see your notes — ever</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Save button -->
+  <button class="save-btn" onclick="saveSettings()" data-content="btn_save">Save</button>
+
+</div>
+</div>
+
+<script>
+const AVATAR_DATA = {
+  1: { src: './foundations/assets/avatars/avatar-1.svg', bg: '#b38aff' },
+  2: { src: './foundations/assets/avatars/avatar-2.svg', bg: '#f3beaf' },
+  3: { src: './foundations/assets/avatars/avatar-3.svg', bg: '#b8c0ed' },
+  4: { src: './foundations/assets/avatars/avatar-4.svg', bg: '#58b880' },
+};
+
+let selectedAvatar = 3;
+const toggleStates = { 1: true, 2: true };
+let initialAvatar, initialToggles;
+
+const BG_TO_ID  = { '#b38aff': 1, '#f3beaf': 2, '#b8c0ed': 3, '#58b880': 4 };
+const SRC_TO_ID = {
+  './foundations/assets/avatars/avatar-1.svg': 1,
+  './foundations/assets/avatars/avatar-2.svg': 2,
+  './foundations/assets/avatars/avatar-3.svg': 3,
+  './foundations/assets/avatars/avatar-4.svg': 4,
+};
+
+// Init from localStorage
+(function() {
+  try {
+    const savedId  = localStorage.getItem('bp_avatar_id');
+    const savedBg  = localStorage.getItem('bp_avatar_bg');
+    const savedSrc = localStorage.getItem('bp_avatar');
+    if (savedId && parseInt(savedId)) {
+      selectedAvatar = parseInt(savedId);
+    } else if (savedBg && BG_TO_ID[savedBg]) {
+      selectedAvatar = BG_TO_ID[savedBg];
+    } else if (savedSrc && SRC_TO_ID[savedSrc]) {
+      selectedAvatar = SRC_TO_ID[savedSrc];
+    }
+    const t1 = localStorage.getItem('bp_privacy_1');
+    const t2 = localStorage.getItem('bp_privacy_2');
+    if (t1 !== null) toggleStates[1] = t1 === 'true';
+    if (t2 !== null) toggleStates[2] = t2 === 'true';
+  } catch(e) {}
+  initialAvatar  = selectedAvatar;
+  initialToggles = { 1: toggleStates[1], 2: toggleStates[2] };
+  renderAvatars();
+  renderToggles();
+  checkDirty();
+})();
+
+function switchTab(tab) {
+  document.getElementById('panel-avatar').classList.toggle('active', tab === 'avatar');
+  document.getElementById('panel-privacy').classList.toggle('active', tab === 'privacy');
+  document.getElementById('stab-avatar').className  = 'stab ' + (tab === 'avatar'  ? 'stab-active' : 'stab-inactive');
+  document.getElementById('stab-privacy').className = 'stab ' + (tab === 'privacy' ? 'stab-active' : 'stab-inactive');
+}
+
+function selectAvatar(id) {
+  selectedAvatar = id;
+  renderAvatars();
+  checkDirty();
+}
+
+function renderAvatars() {
+  for (var i = 1; i <= 4; i++) {
+    document.getElementById('av' + i).classList.toggle('selected', i === selectedAvatar);
+  }
+}
+
+function togglePrivacy(id) {
+  toggleStates[id] = !toggleStates[id];
+  renderToggles();
+  checkDirty();
+}
+
+function renderToggles() {
+  for (var i = 1; i <= 2; i++) {
+    var on = toggleStates[i];
+    document.getElementById('toggle' + i).classList.toggle('off', !on);
+    document.getElementById('tstate' + i).textContent = on ? 'ON' : 'OFF';
+  }
+}
+
+function checkDirty() {
+  var dirty = selectedAvatar !== initialAvatar ||
+              toggleStates[1] !== initialToggles[1] ||
+              toggleStates[2] !== initialToggles[2];
+  document.querySelector('.save-btn').disabled = !dirty;
+}
+
+function saveSettings() {
+  try {
+    var av = AVATAR_DATA[selectedAvatar];
+    localStorage.setItem('bp_avatar', av.src);
+    localStorage.setItem('bp_avatar_bg', av.bg);
+    localStorage.setItem('bp_avatar_id', selectedAvatar);
+    localStorage.setItem('bp_privacy_1', toggleStates[1]);
+    localStorage.setItem('bp_privacy_2', toggleStates[2]);
+  } catch(e) {}
+  var ret = sessionStorage.getItem('bp_settings_from') || 'today.html';
+  window.location.href = ret;
+}
+
+// Store where we came from
+try { if (document.referrer) sessionStorage.setItem('bp_settings_from', document.referrer); } catch(e) {}
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

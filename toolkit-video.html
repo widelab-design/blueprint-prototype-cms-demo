@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Toolkit video</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center;
+  transform: scale(var(--s,1));
+}
+
+/* ─── Screen switcher ───────────────────────────────────────── */
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── S-VIDEO ───────────────────────────────────────────────── */
+#s-video { background: #000; }
+.vid-thumb {
+  position: absolute; inset: 0;
+}
+.vid-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vid-overlay { position: absolute; inset: 0; background: linear-gradient(183deg, rgba(0,0,0,0) 44%, rgba(0,0,0,0.5) 84%); }
+.vid-play-btn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 88px; height: 88px; border-radius: 50%;
+  background: rgba(0,0,0,0.6); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 120ms, opacity 120ms;
+}
+.vid-play-btn:hover { transform: translate(-50%, -50%) scale(1.08); }
+.vid-play-btn:active { opacity: 0.8; }
+.vid-play-btn svg { margin-left: 5px; }
+.vid-hint {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-body); font-size: 14px; color: rgba(255,255,255,0.6);
+  pointer-events: none;
+}
+
+/* ─── Feedback screens shared ───────────────────────────────── */
+.fb-screen { background: #1179ad; }
+.fb-content { position: absolute; inset: 0; z-index: 2; }
+
+/* Dark dome — large circle creating the dark half */
+.fb-dome {
+  position: absolute;
+  width: 1910px; height: 1910px;
+  left: -352px; top: 150px;
+  border-radius: 50%;
+  background: #1f1f25;
+  pointer-events: none;
+}
+
+/* Message notification boxes */
+.fb-notif, .thanks-notif {
+  position: absolute; right: 0;
+  width: 390px; height: 68px;
+  background: #58b880;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px; box-sizing: border-box;
+}
+.fb-notif { top: 180px; width: 350px; right: 100px; }
+.fb-notif-monster {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5;
+  display: flex; align-items: center; justify-content: center;
+}
+.fb-notif-label {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+}
+
+/* Big title */
+.fb-title {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 285px;
+  width: 613px;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center; margin: 0;
+}
+
+/* Subtitle label above title */
+.fb-label {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 253px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(242,243,229,0.6); text-align: center; white-space: nowrap;
+}
+
+/* 3-block choice row */
+.fb-blocks {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 520px;
+  display: flex; gap: 16px;
+}
+.fb-block {
+  width: 179px; height: 94px;
+  background: #2f2f37;
+  border: 1px solid rgba(92,92,101,0.3);
+  border-radius: 8px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px;
+  cursor: pointer;
+  transition: background 140ms, border-color 140ms;
+}
+.fb-block:hover { background: #3a3a44; }
+.fb-block.selected { background: #444454; border-color: rgba(242,243,229,0.4); }
+.fb-block-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #2b2b32; border: 1px solid rgba(92,92,101,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; line-height: 1;
+}
+.fb-block-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; text-align: center; white-space: nowrap;
+}
+
+/* Primary save/continue button */
+.fb-btn {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 710px;
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: -0.1px;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  transition: opacity 120ms;
+}
+.fb-btn:active { opacity: 0.8; }
+.fb-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ─── S-WHY — textarea screen ───────────────────────────────── */
+.why-textarea {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 466px; width: 439px; height: 160px;
+  background: #2b2b32; border: 1px solid #444450; border-radius: 12px;
+  padding: 16px; box-sizing: border-box;
+  font-family: var(--font-body); font-size: 15px; color: #f2f3e5;
+  resize: none; outline: none;
+}
+.why-textarea::placeholder { color: #6b6b76; }
+.why-skip {
+  position: absolute;
+  left: 467px; top: 709px;
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.12); border: none; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: opacity 120ms;
+}
+.why-skip:active { opacity: 0.7; }
+.why-continue {
+  position: absolute;
+  left: 527px; top: 709px;
+  width: 200px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.why-continue:active { opacity: 0.8; }
+
+/* ─── S-THANKS ──────────────────────────────────────────────── */
+#s-thanks { background: #1179ad; }
+.thanks-dome { position: absolute; width: 1910px; height: 1910px; left: -352px; top: 150px; border-radius: 50%; background: #1f1f25; pointer-events: none; }
+.thanks-reward {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 253px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 400; font-size: 40px; color: #f2f3e5; white-space: nowrap;
+}
+.thanks-reward img { width: 32px; height: 32px; display: block; }
+.thanks-title {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 317px; width: 613px;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center; margin: 0;
+}
+.thanks-notif {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 426px; right: auto;
+}
+
+/* ─── Feedback screen entry animations ─────────────────────── */
+/* S-DID-TRY */
+#s-did-try .fb-title  { transform: translateX(-50%) translateY(400px); opacity: 0; }
+#s-did-try .fb-blocks { transform: translateX(-50%) translateY(400px); opacity: 0; }
+#s-did-try .fb-notif  { transform: translateX(500px); opacity: 0; }
+#s-did-try .fb-btn    { transform: translateX(-50%) translateY(200px); opacity: 0; }
+
+#s-did-try.fb-entered .fb-title,
+#s-did-try.fb-entered .fb-blocks {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-did-try.fb-phase2 .fb-notif {
+  transform: translateX(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-did-try.fb-phase2 .fb-btn {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+
+
+/* S-THANKS entry animation */
+#s-thanks .thanks-reward,
+#s-thanks .thanks-title { transform: translateX(-50%) translateY(400px); opacity: 0; }
+#s-thanks .thanks-notif  { transform: translateX(700px); opacity: 0; }
+#s-thanks .fb-btn        { transform: translateX(-50%) translateY(200px); opacity: 0; }
+
+#s-thanks.st-entered .thanks-reward,
+#s-thanks.st-entered .thanks-title {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-thanks.st-phase2 .thanks-notif {
+  transform: translateX(-50%); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-thanks.st-phase2 .fb-btn {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+
+#vid-progress-wrap { opacity: 0; transition: opacity 200ms; }
+#vid-overlay:hover #vid-progress-wrap { opacity: 1; }
+#vid-progress::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer;
+  margin-top: -5px;
+}
+#vid-progress::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #fff var(--pct, 0%), rgba(255,255,255,0.25) var(--pct, 0%));
+  border-radius: 2px; height: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+
+<!-- Video overlay lives OUTSIDE bp-device to avoid transform: scale() rendering bug -->
+<div id="vid-overlay" style="display:none; position:fixed; inset:0; background:#000; z-index:999;" onclick="togglePause(event)">
+  <video id="vid-player" style="width:100%; height:100%; object-fit:contain; display:block;" playsinline preload="metadata"></video>
+  <div id="vid-progress-wrap" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()" style="position:absolute; bottom:0; left:0; right:0; padding:16px 32px 20px; box-sizing:border-box;">
+    <input id="vid-progress" type="range" min="0" max="100" value="0" step="0.1"
+      onpointerdown="_isSeeking=true; _wasPlaying=!document.getElementById('vid-player').paused; document.getElementById('vid-player').pause();"
+      oninput="var b=this; b.style.setProperty('--pct',b.value+'%');"
+      onpointerup="_isSeeking=false; seekVideo(this.value); if(_wasPlaying) document.getElementById('vid-player').play();"
+      onpointercancel="_isSeeking=false;"
+      style="width:100%; height:14px; -webkit-appearance:none; appearance:none; background:transparent; outline:none; cursor:pointer;">
+  </div>
+  <div id="vid-pause-icon" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; border-radius:50%; background:rgba(0,0,0,0.55); align-items:center; justify-content:center; pointer-events:none;">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="4" width="7" height="20" rx="2" fill="#fff"/><rect x="16" y="4" width="7" height="20" rx="2" fill="#fff"/></svg>
+  </div>
+  <button id="vid-back-btn" onclick="event.stopPropagation(); history.back()" style="position:absolute; top:24px; left:32px; width:48px; height:48px; background:rgba(255,255,255,0.16); border:none; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div id="vid-end-btns" style="display:none; position:absolute; bottom:100px; right:32px; gap:12px;">
+    <button data-content="toolkit_video_btn_replay" onclick="event.stopPropagation(); playAgain()" style="background:rgba(255,255,255,0.16); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Replay</button>
+    <button data-content="toolkit_video_btn_complete" onclick="event.stopPropagation(); skipVideo()" style="background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
+  </div>
+</div>
+
+<div class="bp-device" id="device">
+
+<!-- ═══ S-VIDEO ═══════════════════════════════════════════════ -->
+<div class="screen active" id="s-video">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Thumbnail + play button -->
+  <div class="vid-thumb"><img id="vid-thumb-img" src="./components/video-thumbnail.jpg" alt=""></div>
+  <div class="vid-overlay"></div>
+  <button class="vid-play-btn" onclick="onPlay()">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M10 6L26 16L10 26V6Z" fill="#f2f3e5"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ═══ S-DID-TRY ════════════════════════════════════════════ -->
+<div class="screen fb-screen" id="s-did-try">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="fb-dome"></div>
+
+  <div class="fb-content">
+    <div class="fb-notif">
+      <div class="fb-notif-monster">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M19.8931 37.566C8.7883 37.566 -0.2139 28.6003 -0.2139 17.5408C5.8012 17.5408 10.6774 12.6843 10.6774 6.6937C10.6774 4.5059 10.6774 2.4341 10.6774 2.4341L29.1087 2.4341C29.1087 2.4341 29.1087 4.5059 29.1087 6.6937C29.1087 12.6843 33.9849 17.5408 40 17.5408C40 28.6004 30.9979 37.566 19.8931 37.566Z" fill="#E65800"/>
+          <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 19.053 15.9763)" fill="#F2F3E5"/>
+          <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 18.1058 19.9985)" fill="#36363F"/>
+          <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 26.6295 15.9763)" fill="#F2F3E5"/>
+          <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 25.6825 19.9986)" fill="#36363F"/>
+        </svg>
+      </div>
+      <span class="fb-notif-label" data-content="toolkit_video_notif_label_learned">New technique<br>learned!</span>
+    </div>
+
+    <h1 class="fb-title" data-content="toolkit_video_did_try_title" style="top:310px;">Did you try it?</h1>
+
+    <div class="fb-blocks" style="top:459px;">
+      <button class="fb-block" onclick="selectBlock(this,'did-try'); didTryNext='s-helpful'">
+        <div class="fb-block-icon">🙋</div>
+        <span class="fb-block-label" data-content="toolkit_video_block_yes">Yes, I did it</span>
+      </button>
+      <button class="fb-block" onclick="selectBlock(this,'did-try'); didTryNext='s-thanks'">
+        <div class="fb-block-icon">🙅</div>
+        <span class="fb-block-label" data-content="toolkit_video_block_not_this_time">Not this time</span>
+      </button>
+      <button class="fb-block" onclick="selectBlock(this,'did-try'); didTryNext='s-thanks'">
+        <div class="fb-block-icon">🤷</div>
+        <span class="fb-block-label" data-content="toolkit_video_block_not_sure">I'm not sure</span>
+      </button>
+    </div>
+
+    <button class="fb-btn" id="btn-did-try" data-content="btn_save" onclick="slideTo(didTryNext)">Save</button>
+  </div>
+</div>
+
+<!-- ═══ S-HELPFUL ════════════════════════════════════════════ -->
+<div class="screen fb-screen" id="s-helpful">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="fb-dome"></div>
+
+  <div class="fb-content">
+    <p class="fb-label" data-content="toolkit_video_helpful_label">In your opinion</p>
+    <h1 class="fb-title" data-content="toolkit_video_helpful_title" style="top:297px; font-size:72px;">Was the exercise helpful?</h1>
+
+    <div class="fb-blocks" style="top:514px;">
+      <button class="fb-block" onclick="selectBlock(this,'helpful'); setTimeout(()=>slideTo('s-why'),500)">
+        <div class="fb-block-icon">😄</div>
+        <span class="fb-block-label" data-content="toolkit_video_block_very_much">Very much</span>
+      </button>
+      <button class="fb-block" onclick="selectBlock(this,'helpful'); setTimeout(()=>slideTo('s-why'),500)">
+        <div class="fb-block-icon">😐</div>
+        <span class="fb-block-label" data-content="toolkit_video_block_a_little">A little</span>
+      </button>
+      <button class="fb-block" onclick="selectBlock(this,'helpful'); setTimeout(()=>slideTo('s-why'),500)">
+        <div class="fb-block-icon">😕</div>
+        <span class="fb-block-label" data-content="toolkit_video_block_not_really">Not really</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S-WHY ════════════════════════════════════════════════ -->
+<div class="screen fb-screen" id="s-why">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="fb-dome"></div>
+
+  <div class="fb-content">
+    <p class="fb-label" data-content="toolkit_video_why_label" style="top:253px;">This is optional</p>
+    <h1 class="fb-title" data-content="toolkit_video_why_title" style="top:277px; font-size:72px;">Do you want to tell why?</h1>
+
+    <textarea class="why-textarea" data-content-placeholder="toolkit_video_why_placeholder" placeholder="Write your thoughts…"></textarea>
+
+    <button class="why-skip" onclick="goTo('s-thanks')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="why-continue" data-content="btn_continue" onclick="goTo('s-thanks')">Continue</button>
+  </div>
+</div>
+
+<!-- ═══ S-THANKS ═════════════════════════════════════════════ -->
+<div class="screen" id="s-thanks">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="thanks-dome"></div>
+
+  <div class="thanks-reward" data-content="toolkit_video_thanks_reward">
+    +1 <img src="./components/Spark-4.svg" alt="spark">
+  </div>
+  <h1 class="thanks-title" data-content="toolkit_video_thanks_title">Thanks for sharing</h1>
+
+  <div class="thanks-notif">
+    <div class="fb-notif-monster">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <path d="M19.8931 37.566C8.7883 37.566 -0.2139 28.6003 -0.2139 17.5408C5.8012 17.5408 10.6774 12.6843 10.6774 6.6937C10.6774 4.5059 10.6774 2.4341 10.6774 2.4341L29.1087 2.4341C29.1087 2.4341 29.1087 4.5059 29.1087 6.6937C29.1087 12.6843 33.9849 17.5408 40 17.5408C40 28.6004 30.9979 37.566 19.8931 37.566Z" fill="#E65800"/>
+        <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 19.053 15.9763)" fill="#F2F3E5"/>
+        <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 18.1058 19.9985)" fill="#36363F"/>
+        <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 26.6295 15.9763)" fill="#F2F3E5"/>
+        <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 25.6825 19.9986)" fill="#36363F"/>
+      </svg>
+    </div>
+    <span class="fb-notif-label" data-content="toolkit_video_notif_label_feedback">Your feedback helps us make<br>things better for you.</span>
+  </div>
+
+  <button class="fb-btn" data-content="btn_done" style="top:721px;" onclick="finish()">Done</button>
+</div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+const urlParams = new URLSearchParams(location.search);
+const fromWrite   = urlParams.get('from') === 'write';
+const fromGrades  = urlParams.get('from') === 'grades';
+const fromAttend  = urlParams.get('from') === 'grades-attend';
+const destAfter   = fromWrite ? 'today.html' : (fromGrades || fromAttend) ? 'grades.html' + (fromAttend ? '?tab=attend' : '') : 'my-toolkit.html';
+const videoSlug = urlParams.get('video') || '';
+
+const VIDEO_CFG = {
+  'calming-breath': {
+    src:   './components/calming-breath.mp4',
+    thumb: './components/calming-breath-cover.png',
+  },
+  'youve-done-hard-things': {
+    src:   './components/youve-done-hard-things.mp4',
+    thumb: './components/youve-done-hard-things-cover.png',
+  },
+};
+
+const cfg = VIDEO_CFG[videoSlug] || null;
+
+// Set thumbnail
+if (cfg) {
+  document.getElementById('vid-thumb-img').src = cfg.thumb;
+}
+
+let cur = 's-video';
+let didTryNext = 's-thanks';
+function goTo(id) {
+  document.getElementById(cur).classList.remove('active');
+  var el = document.getElementById(id);
+  el.classList.add('active');
+  cur = id;
+  if (id === 's-did-try') {
+    el.classList.remove('fb-entered', 'fb-phase2');
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        el.classList.add('fb-entered');
+        setTimeout(function() { el.classList.add('fb-phase2'); }, 300);
+      });
+    });
+  }
+  if (id === 's-thanks') {
+    el.classList.remove('st-entered', 'st-phase2');
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        el.classList.add('st-entered');
+        setTimeout(function() { el.classList.add('st-phase2'); }, 300);
+      });
+    });
+  }
+}
+
+var _vidDur = 0;
+
+function _onEnded() {
+  document.getElementById('vid-pause-icon').style.display = 'none';
+  document.getElementById('vid-end-btns').style.display = 'flex';
+  document.getElementById('vid-back-btn').style.display = 'none';
+}
+
+function onPlay() {
+  localStorage.setItem('bp_video_watched', '1');
+
+  if (cfg) {
+    const overlay = document.getElementById('vid-overlay');
+    const player  = document.getElementById('vid-player');
+    _vidDur = 0;
+    player.src = cfg.src;
+    player.load();
+    player.addEventListener('loadedmetadata', function() { _vidDur = player.duration; }, { once: true });
+    overlay.style.display = 'block';
+    document.getElementById('vid-end-btns').style.display = 'none';
+    document.getElementById('vid-back-btn').style.display = 'flex';
+    player.addEventListener('canplay', function() { player.play(); }, { once: true });
+    player.addEventListener('ended', _onEnded, { once: true });
+  } else {
+    goTo('s-did-try');
+  }
+}
+
+function playAgain() {
+  var player = document.getElementById('vid-player');
+  var icon   = document.getElementById('vid-pause-icon');
+  player.currentTime = 0;
+  player.play();
+  icon.style.display = 'none';
+  document.getElementById('vid-end-btns').style.display = 'none';
+  document.getElementById('vid-back-btn').style.display = 'flex';
+  player.addEventListener('ended', _onEnded, { once: true });
+}
+
+var _isSeeking  = false;
+var _wasPlaying = false;
+
+function seekVideo(val) {
+  var player = document.getElementById('vid-player');
+  var dur = _vidDur || player.duration;
+  if (dur && isFinite(dur) && !isNaN(dur)) {
+    player.currentTime = (val / 100) * dur;
+  }
+}
+
+(function() {
+  function updateProgress() {
+    if (!_isSeeking) {
+      var player = document.getElementById('vid-player');
+      var bar    = document.getElementById('vid-progress');
+      if (player && bar && player.duration) {
+        var pct = (player.currentTime / player.duration) * 100;
+        bar.value = pct;
+        bar.style.setProperty('--pct', pct + '%');
+      }
+    }
+    requestAnimationFrame(updateProgress);
+  }
+  updateProgress();
+})();
+
+function togglePause(e) {
+  var player = document.getElementById('vid-player');
+  var icon   = document.getElementById('vid-pause-icon');
+  if (player.paused) {
+    player.play();
+    icon.style.display = 'none';
+  } else {
+    player.pause();
+    icon.style.display = 'flex';
+  }
+}
+
+function skipVideo() {
+  const overlay = document.getElementById('vid-overlay');
+  const player  = document.getElementById('vid-player');
+  overlay.style.display = 'none';
+  player.pause();
+  goTo('s-did-try');
+}
+
+function slideTo(id) {
+  var BEZIER = 'cubic-bezier(0.75,0,0.3,0.99)';
+  var DUR = 800;
+  var oldEl = document.getElementById(cur);
+  var newEl = document.getElementById(id);
+  var oldContent = oldEl.querySelector('.fb-content');
+  var newContent = newEl.querySelector('.fb-content');
+  if (!newContent) { goTo(id); return; }
+
+  // Show new screen behind old, content starts off-screen right
+  newEl.classList.add('active');
+  newContent.style.transform = 'translateX(1194px)';
+  newContent.style.transition = 'none';
+  oldContent.style.transition = 'none';
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var T = DUR + 'ms ' + BEZIER;
+      oldContent.style.transition = 'transform ' + T;
+      oldContent.style.transform = 'translateX(-1194px)';
+      oldContent.style.pointerEvents = 'none';
+      newContent.style.transition = 'transform ' + T;
+      newContent.style.transform = 'translateX(0)';
+      cur = id;
+
+      setTimeout(function() {
+        oldEl.classList.remove('active');
+        oldContent.style.cssText = '';
+        newContent.style.transform = '';
+        newContent.style.transition = '';
+
+        if (id === 's-thanks') {
+          newEl.classList.remove('st-entered', 'st-phase2');
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              newEl.classList.add('st-entered');
+              setTimeout(function() { newEl.classList.add('st-phase2'); }, 300);
+            });
+          });
+        }
+      }, DUR + 60);
+    });
+  });
+}
+
+function selectBlock(btn, group) {
+  btn.closest('.fb-blocks').querySelectorAll('.fb-block').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function finish() {
+  localStorage.setItem('bp_video_watched', '1');
+  if (fromWrite) sessionStorage.setItem('bp_enter_anim', '1');
+  window.location.href = destAfter;
+}
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Summary</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Back button ───────────────────────────────────────────────── */
+.back-btn {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: #2b2b32; border: 1px solid #444450; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 10; box-sizing: border-box;
+  transition: opacity 120ms;
+}
+.back-btn:active { opacity: 0.7; }
+
+/* ─── Date navigator ────────────────────────────────────────────── */
+.date-nav {
+  position: absolute; top: 52px; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 50px;
+  background: #2b2b32; border: 1px solid #444450; border-radius: 100px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px; z-index: 10;
+}
+.date-arrow {
+  background: none; border: none;
+  color: #a4a59f; font-size: 20px;
+  cursor: pointer; width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; flex-shrink: 0;
+  transition: background 100ms; line-height: 1;
+}
+.date-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.06); }
+.date-arrow:disabled { opacity: 0.22; cursor: default; }
+.date-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; text-align: center; flex: 1;
+}
+
+/* ─── Content area ──────────────────────────────────────────────── */
+.sum-content {
+  position: absolute; top: 166px; left: 100px; width: 994px; bottom: 80px;
+  overflow: hidden;
+}
+
+/* ─── Grid ──────────────────────────────────────────────────────── */
+.sum-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px; height: 100%;
+}
+
+/* ─── View collection button ────────────────────────────────────── */
+.sum-collection-btn {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 50;
+  padding: 13px 28px; white-space: nowrap;
+  background: #2b2b32; border: 1px solid #444450;
+  border-radius: 10px; cursor: pointer;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #f2f3e5; transition: background 140ms;
+}
+.sum-collection-btn:hover { background: #36363f; }
+
+/* ─── Cards ─────────────────────────────────────────────────────── */
+.sum-card {
+  background: #2b2b32; border: 1px solid #444450; border-radius: 20px;
+  padding: 36px; box-sizing: border-box; min-width: 0;
+}
+
+/* Card header */
+.sum-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 16px; border-bottom: 1px solid #444450;
+  margin-bottom: 24px;
+}
+.sum-hdr-left { display: flex; align-items: center; gap: 12px; }
+.sum-icon { width: 24px; height: 24px; display: block; flex-shrink: 0; }
+.sum-section-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; line-height: 20px;
+}
+.sum-edit {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #a4a59f; background: none; border: none; cursor: pointer; padding: 0;
+}
+
+/* ─── Mood: emotion tiles ───────────────────────────────────────── */
+.emotions-row { display: flex; gap: 24px; align-items: center; }
+.emotion-tile {
+  position: relative; width: 120px; height: 120px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.emotion-tile img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; object-fit: contain;
+}
+.emotion-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-display); font-weight: 400; font-size: 16px;
+  color: #1f1f25; text-align: center; line-height: 1.1;
+  pointer-events: none;
+}
+
+/* ─── Text sections ─────────────────────────────────────────────── */
+.sum-question {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #a4a59f; line-height: 1.45; margin: 0 0 16px;
+}
+.sum-answer {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.5; margin: 0;
+}
+.sum-text {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.5; margin: 0;
+}
+
+/* Emoji */
+.emoji-circle {
+  width: 78px; height: 78px; border-radius: 50%;
+  background: #36363f; border: 2px solid #444450;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; margin-top: 8px;
+}
+
+/* Mood card — clickable */
+.sum-card.mood-card { cursor: pointer; }
+.sum-card.mood-card:hover { border-color: #5a5a6a; }
+.sum-card.sum-card-empty { opacity: 0.5; }
+
+/* ─── Mood overlay ──────────────────────────────────────────────── */
+.mood-ov {
+  position: absolute; inset: 0; background: #1f1f25; z-index: 50;
+  opacity: 0; pointer-events: none;
+  transition: opacity 220ms ease;
+  display: flex; flex-direction: column;
+}
+.mood-ov.open { opacity: 1; pointer-events: all; }
+
+.mood-ov-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+.mood-ov-back {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: #2b2b32; border: 1px solid #444450; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 6;
+  transition: opacity 120ms;
+}
+.mood-ov-back:active { opacity: 0.7; }
+
+.mood-ov-body {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 48px;
+}
+.mood-ov-hdr {
+  display: flex; align-items: center; gap: 12px;
+}
+.mood-ov-icon { width: 32px; height: 32px; display: block; }
+.mood-ov-title {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5;
+}
+.mood-ov-date {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #a4a59f;
+}
+.mood-ov-emotions {
+  display: flex; gap: 40px; align-items: center; justify-content: center;
+}
+.mood-ov-tile {
+  position: relative; width: 160px; height: 160px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.mood-ov-tile img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; object-fit: contain;
+}
+.mood-ov-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px;
+  color: #1f1f25; text-align: center;
+}
+.mood-ov-chips {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 600px;
+}
+.mood-ov-chip {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #f2f3e5; background: #2b2b32; border: 1px solid #444450;
+  border-radius: 100px; padding: 8px 16px;
+}
+.mood-ov-reasons {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;
+}
+.mood-ov-reasons-label {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; text-transform: uppercase; letter-spacing: 0.8px;
+}
+.mood-ov-reasons-row {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+}
+.mood-ov-reason {
+  display: flex; align-items: center; gap: 10px;
+  background: #2b2b32; border: 2px solid #f2f3e5;
+  border-radius: 12px; padding: 10px 18px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #f2f3e5; pointer-events: none;
+}
+.mood-ov-reason-emoji { font-size: 18px; line-height: 1; }
+
+.mood-ov-edit {
+  height: 48px; padding: 0 32px; min-width: 220px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.mood-ov-edit:active { opacity: 0.8; }
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span data-content="summary_status_time">9:41 Mon Jun 6</span><span data-content="summary_status_battery">100% 🔋</span></div>
+
+  <!-- Back button -->
+  <button class="back-btn" onclick="window.location.href='today.html'">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- Date navigator -->
+  <div class="date-nav">
+    <button class="date-arrow" id="prevBtn">&#8249;</button>
+    <span class="date-label" id="dateLabel">Today</span>
+    <button class="date-arrow" id="nextBtn">&#8250;</button>
+  </div>
+
+  <!-- Content -->
+  <div class="sum-content">
+    <div class="sum-grid" id="sumGrid"></div>
+  </div>
+
+  <!-- Mood detail overlay -->
+  <div class="mood-ov" id="moodOv">
+    <div class="mood-ov-bar"><span data-content="summary_mood_ov_status_time">9:41 Mon Jun 6</span><span data-content="summary_mood_ov_status_battery">100% 🔋</span></div>
+    <button class="mood-ov-back" id="moodOvBack">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="mood-ov-body" id="moodOvBody"></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ── Scale ──────────────────────────────────────────────────────────
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+// ── Mood overlay ───────────────────────────────────────────────────
+const MOOD_CHIPS = {
+  HAPPY:   ['Grateful', 'Loved', 'Content', 'Proud'],
+  EXCITED: ['Energetic', 'Inspired', 'Motivated', 'Eager'],
+  ANXIOUS: ['Nervous', 'Worried', 'Overwhelmed'],
+  SAD:     ['Lonely', 'Disappointed', 'Hurt'],
+  TIRED:   ['Drained', 'Exhausted', 'Unfocused'],
+  OKAY:    ['Balanced', 'Calm', 'Neutral'],
+  MEH:     ['Flat', 'Bored', 'Restless'],
+};
+
+const ALL_REASONS = [
+  { emoji: '📚', label: 'School life' },
+  { emoji: '✍️', label: 'Exams' },
+  { emoji: '🏠', label: 'Home life' },
+  { emoji: '🤸', label: 'Activities' },
+  { emoji: '📱', label: 'Saw something online' },
+  { emoji: '👫', label: 'Friends' },
+  { emoji: '🚶', label: 'No friends' },
+  { emoji: '😩', label: 'Hungry' },
+];
+const REASON_MAP = Object.fromEntries(ALL_REASONS.map(r => [r.label, r]));
+
+function openMoodOverlay(day, isToday) {
+  const ov   = document.getElementById('moodOv');
+  const body = document.getElementById('moodOvBody');
+
+  const tiles = day.mood.emotions.map(e =>
+    `<div class="mood-ov-tile">
+      <img src="./components/${e.img}" alt="">
+      <span class="mood-ov-label">${e.name}</span>
+    </div>`
+  ).join('');
+
+  const allChips = day.mood.emotions.flatMap(e => MOOD_CHIPS[e.name] || []);
+  const chipsHtml = [...new Set(allChips)].slice(0, 6)
+    .map(c => `<span class="mood-ov-chip">${c}</span>`).join('');
+  const chipsSection = chipsHtml
+    ? `<div class="mood-ov-chips">${chipsHtml}</div>` : '';
+
+  const reasonsHtml = (day.mood.reasons || []).length
+    ? `<div class="mood-ov-reasons">
+        <span class="mood-ov-reasons-label">What made you feel this way</span>
+        <div class="mood-ov-reasons-row">
+          ${(day.mood.reasons).map(r => {
+            const item = REASON_MAP[r] || { emoji: '•', label: r };
+            return `<div class="mood-ov-reason"><span class="mood-ov-reason-emoji">${item.emoji}</span>${item.label}</div>`;
+          }).join('')}
+        </div>
+      </div>`
+    : '';
+
+  const editBtn = isToday
+    ? `<button class="mood-ov-edit" onclick="window.location.href='mood-checkin.html'">Edit mood check-in</button>`
+    : '';
+
+  body.innerHTML = `
+    <div class="mood-ov-hdr">
+      <img class="mood-ov-icon" src="./components/section-icon-mood.svg" alt="">
+      <span class="mood-ov-title">Mood</span>
+      <span class="mood-ov-date" style="margin-left:8px;">${day.label}</span>
+    </div>
+    <div class="mood-ov-emotions">${tiles}</div>
+    ${chipsSection}
+    ${reasonsHtml}
+    ${editBtn}
+  `;
+
+  ov.classList.add('open');
+}
+
+document.getElementById('moodOvBack').addEventListener('click', () => {
+  document.getElementById('moodOv').classList.remove('open');
+});
+
+// ── Data ───────────────────────────────────────────────────────────
+// Only days where something was filled in (not necessarily consecutive)
+const PAST_DAYS = [
+  {
+    label: '19.05.26',
+    sections: ['mood', 'wins'],
+    // write and about not done that day
+    mood: { emotions: [
+      { name: 'ANXIOUS', img: 'emotion-anxious.svg' },
+      { name: 'TIRED',   img: 'emotion-tired.svg' },
+    ], reasons: ['Exams', 'School life'] },
+    wins: {
+      question: "What's one thing you did today that you're proud of — even if it feels small?",
+      answer:   "I pushed through a task I'd been avoiding for days. It wasn't perfect but I actually did it."
+    },
+  },
+  {
+    label: '22.05.26',
+    sections: ['mood', 'write', 'about', 'wins'],
+    mood: { emotions: [
+      { name: 'HAPPY', img: 'emotion-happy.svg' },
+      { name: 'OKAY',  img: 'emotion-okay.svg' },
+      { name: 'MEH',   img: 'emotion-meh.svg' },
+    ], reasons: ['Friends', 'Activities'] },
+    wins: {
+      question: "What's one small thing that happened this week that made you smile — even briefly?",
+      answer:   "I noticed I was actually pretty focused this morning, which doesn't happen that often. It felt good."
+    },
+    write: { text: "Had a decent day overall. Felt more grounded than usual, which was refreshing. Still some low moments but nothing major." },
+    about: { question: "Pick the emoji that best captures how you've felt for most of this week.", emoji: "🙂" }
+  },
+  {
+    label: '24.05.26',
+    sections: ['mood', 'write'],
+    // wins and about not done that day
+    mood: { emotions: [
+      { name: 'SAD',   img: 'emotion-sad.svg' },
+      { name: 'TIRED', img: 'emotion-tired.svg' },
+    ], reasons: ['Home life', 'Hungry'] },
+    write: { text: "Today my mood was okay. Felt a bit low on energy and not very motivated at times, but nothing too overwhelming. There were small moments when I felt calm and a bit more present, which helped." },
+  },
+];
+
+// Today: mood always done; other sections tracked via localStorage
+const todaySections = JSON.parse(localStorage.getItem('bp_today_sections') || '["mood"]');
+const savedEmotions = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]');
+const savedReasons  = JSON.parse(localStorage.getItem('bp_mood_reasons')  || '[]');
+const todayEmotions = savedEmotions.length
+  ? savedEmotions.map(k => ({ name: k.toUpperCase(), img: `emotion-${k}.svg` }))
+  : [{ name: 'HAPPY', img: 'emotion-happy.svg' }];
+const TODAY_DATA = {
+  label: 'Today',
+  sections: todaySections,
+  mood: { emotions: todayEmotions, reasons: savedReasons },
+  wins: {
+    question: localStorage.getItem('bp_wins_question') || "What's one small thing that happened this week that made you smile — even briefly?",
+    answer:   localStorage.getItem('bp_wins_note') || ''
+  },
+  write: { text: localStorage.getItem('bp_write_text') || '' },
+  about: { question: localStorage.getItem('bp_about_question') || '', emoji: localStorage.getItem('bp_about_emoji') || '' }
+};
+
+// Past days all have all 4 sections
+PAST_DAYS.forEach(d => { d.sections = ['mood', 'write', 'about', 'wins']; });
+
+const ALL_DAYS = [...PAST_DAYS, TODAY_DATA];
+let dayIdx = ALL_DAYS.length - 1; // start at today
+
+// ── Asset mapping ──────────────────────────────────────────────────
+const ICONS = {
+  mood:  './components/section-icon-mood.svg',
+  wins:  './components/section-icon-wins.svg',
+  write: './components/section-icon-write.svg',
+  about: './components/section-icon-about.svg',
+};
+const TITLES = {
+  mood: 'Mood', wins: 'Notice your wins',
+  write: 'Write it out', about: 'All about you',
+};
+const EDIT_URLS = {
+  wins:  'notice-wins.html',
+  write: 'write-it-out.html',
+  about: 'all-about-you.html',
+};
+// Grid column order: Mood top-left, Write top-right, All about you bottom-left, Wins bottom-right
+const ORDER = ['mood', 'write', 'about', 'wins'];
+
+// ── Card renderers ─────────────────────────────────────────────────
+function cardMood(data) {
+  const tiles = data.emotions.map(e =>
+    `<div class="emotion-tile">
+      <img src="./components/${e.img}" alt="">
+      <span class="emotion-label">${e.name}</span>
+    </div>`
+  ).join('');
+  return `<div class="emotions-row">${tiles}</div>`;
+}
+
+function cardWrite(data) {
+  return data.text ? `<p class="sum-text">${data.text}</p>` : '';
+}
+
+function cardAbout(data) {
+  if (!data.question && !data.emoji) return '';
+  if (data.emoji) {
+    return `<p class="sum-question">${data.question}</p><div class="emoji-circle">${data.emoji}</div>`;
+  }
+  const ans = data.answer ? `<p class="sum-answer">${data.answer}</p>` : '';
+  return `<p class="sum-question">${data.question}</p>${ans}`;
+}
+
+function cardWins(data) {
+  const ans = data.answer ? `<p class="sum-answer">${data.answer}</p>` : '';
+  return `<p class="sum-question">${data.question}</p>${ans}`;
+}
+
+function renderCard(key, day, isToday) {
+  const contentMap = { mood: cardMood, write: cardWrite, about: cardAbout, wins: cardWins };
+  const data = day[key];
+  const body = data ? contentMap[key](data) : '';
+  const isEmpty = !body;
+
+  // Today: skip empty cards entirely
+  if (isToday && isEmpty && key !== 'mood') return '';
+
+  const editUrl = EDIT_URLS[key];
+  const editBtn = (isToday && !isEmpty && editUrl)
+    ? `<button class="sum-edit" onclick="window.location.href='${editUrl}'">Edit</button>`
+    : '';
+  const isMood = key === 'mood';
+  const cardClass = ['sum-card', isMood ? 'mood-card' : '', isEmpty ? 'sum-card-empty' : ''].filter(Boolean).join(' ');
+  const clickAttr = (isMood && !isEmpty) ? `onclick="openMoodOverlay(ALL_DAYS[dayIdx], ${isToday})"` : '';
+  return `
+    <div class="${cardClass}" ${clickAttr}>
+      <div class="sum-hdr">
+        <div class="sum-hdr-left">
+          <img class="sum-icon" src="${ICONS[key]}" alt="">
+          <span class="sum-section-title">${TITLES[key]}</span>
+        </div>
+        ${editBtn}
+      </div>
+      ${body}
+    </div>`;
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function render() {
+  const day     = ALL_DAYS[dayIdx];
+  const isToday = dayIdx === ALL_DAYS.length - 1;
+  const grid    = document.getElementById('sumGrid');
+
+  document.getElementById('dateLabel').textContent = day.label;
+  document.getElementById('prevBtn').disabled = dayIdx === 0;
+  document.getElementById('nextBtn').disabled = isToday;
+
+  // Today: only show completed sections; past days: always show all 4
+  const sections = isToday ? ORDER.filter(k => day.sections.includes(k)) : ORDER;
+  grid.className = 'sum-grid';
+  grid.innerHTML = sections.map(k => renderCard(k, day, isToday)).join('');
+
+  // Cards stretch to fill grid rows via align-items: stretch
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => { dayIdx--; render(); });
+document.getElementById('nextBtn').addEventListener('click', () => { dayIdx++; render(); });
+
+render();
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

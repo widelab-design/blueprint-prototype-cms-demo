@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Mood Check-in</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px;
+  position: relative; overflow: hidden;
+  border-radius: 20px;
+  transform-origin: center center;
+  transform: scale(var(--s, 1));
+  background: #1f1f25;
+}
+
+/* ─── Screen transitions ────────────────────────────────────── */
+.screen {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity 260ms cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); z-index: 20; pointer-events: none;
+}
+
+/* ─── Progress bar ──────────────────────────────────────────── */
+.prog {
+  position: absolute; top: 36px; left: 219px;
+  width: 756px; height: 4px;
+  background: #444450; border-radius: 99px;
+  overflow: hidden; z-index: 50; pointer-events: none;
+}
+.prog-fill {
+  height: 100%; background: #f2f3e5; border-radius: 99px;
+  transition: width 600ms cubic-bezier(0.22,1,0.36,1);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   S0 — Emotion picker
+   ══════════════════════════════════════════════════════════════ */
+#s0 { background: #1f1f25; }
+
+.mc-wrap {
+  position: absolute; top: 76px; left: 50%;
+  transform: translateX(-50%); width: 770px; text-align: center;
+}
+.mc-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: 64px; line-height: var(--title-large-lh); letter-spacing: 0;
+  font-weight: 400;
+  color: #f2f3e5; margin: 0 0 10px;
+}
+.mc-sub {
+  font-family: var(--font-body); font-size: var(--label-medium-size); font-weight: var(--fw-bold);
+  color: #a4a59f; margin: 0 0 61px;
+}
+
+.em-grid {
+  display: grid; grid-template-columns: repeat(5, 120px); gap: 20px;
+  width: 680px; margin: 0 auto;
+}
+.em-btn {
+  position: relative; border: none; background: none; padding: 0;
+  cursor: pointer; width: 120px; height: 120px;
+}
+.em-btn img {
+  width: 100%; height: 100%; display: block; object-fit: contain;
+  transition: filter 180ms;
+}
+.em-btn span {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; font-weight: 400;
+  letter-spacing: 0; line-height: 1.05;
+  text-transform: uppercase; color: #1f1f25;
+  text-align: center; padding: 0 8px; pointer-events: none;
+}
+.em-check {
+  position: absolute; top: 11px; right: 11px;
+  width: 36px; height: 36px;
+  display: none; place-items: center; z-index: 5; pointer-events: none;
+}
+.em-check img { width: 100%; height: 100%; display: block; }
+.em-btn.sel .em-check { display: grid; }
+.em-btn[data-key="curious"] span { padding-bottom: 5px; }
+.em-btn[data-key="angry"] span { padding-top: 10px; }
+.em-btn[data-key="sad"] span { padding-bottom: 5px; }
+.em-btn[data-key="grateful"] span { padding-bottom: 5px; }
+.em-btn[data-key="stressed"] span { padding-bottom: 40px; }
+.em-btn[data-key="tired"] span { padding-top: 10px; }
+
+.em-grid.maxed .em-btn:not(.sel) { pointer-events: none; cursor: default; }
+.em-grid.maxed .em-btn:not(.sel) img { filter: brightness(0.35) saturate(0.4); }
+
+
+.mc-cta {
+  position: absolute; bottom: 56px; left: 50%;
+  transform: translateX(-50%); z-index: 20;
+}
+
+@keyframes mc-enter {
+  from { transform: translateX(-50%) translateY(300px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
+}
+@keyframes mc-enter-grid {
+  from { opacity: 0; transform: translateX(-50%) translateY(300px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.mc-wrap {
+  animation: mc-enter-grid 800ms cubic-bezier(0.75,0,0.3,0.99) both;
+}
+.mc-cta {
+  animation: mc-enter 800ms cubic-bezier(0.75,0,0.3,0.99) 100ms both;
+}
+.btn-continue {
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: var(--label-medium-size); font-weight: var(--fw-bold);
+  border-radius: var(--radius-sm); border: none; cursor: pointer; transition: opacity 120ms;
+}
+.btn-continue:active { opacity: 0.85; }
+@keyframes em-shake {
+  0%,100% { transform: translateY(0); }
+  15%      { transform: translateY(-8px); }
+  30%      { transform: translateY(6px); }
+  45%      { transform: translateY(-5px); }
+  60%      { transform: translateY(4px); }
+  75%      { transform: translateY(-2px); }
+}
+.em-grid.shake { animation: em-shake 480ms cubic-bezier(0.36,0.07,0.19,0.97) both; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   Detail screens
+   ══════════════════════════════════════════════════════════════ */
+.ed-screen { background: #1f1f25; }
+
+/* Full-screen emotion shape background */
+.ed-shape {
+  position: absolute; left: -1px; top: -264px;
+  width: 1196px; height: 1196px;
+  pointer-events: none; z-index: 0;
+}
+.ed-shape img { width: 100%; height: 100%; display: block; }
+
+/* Title */
+.ed-title {
+  position: absolute; top: 104px; left: 0; right: 0;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: var(--title-large-size); line-height: var(--title-large-lh); letter-spacing: 0;
+  font-weight: 400;
+  color: var(--colors-neutral-warm-50);
+  text-align: center; margin: 0; z-index: 5;
+}
+
+/* Arc slider */
+.arc-slider {
+  position: relative; width: 532px; height: 310px;
+  overflow: visible; outline: none;
+  cursor: grab; -webkit-user-select: none; user-select: none;
+}
+.arc-slider.is-dragging { cursor: grabbing; }
+.arc-slider svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
+.arc-slider__hit { position: absolute; inset: 0; }
+.arc-slider__thumb {
+  position: absolute; width: 104px; height: 104px; border-radius: 50%;
+  background: #2f2f37; border: 10px solid #2f2f37;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; line-height: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none; will-change: left, top, transform;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,.5));
+  transition: none;
+}
+.arc-slider__thumb.is-snapping {
+  transition: left .4s cubic-bezier(.34,1.56,.64,1), top .4s cubic-bezier(.34,1.56,.64,1);
+}
+.arc-slider.is-dragging .arc-slider__thumb {
+  transform: translate(-50%, -50%) scale(1.06);
+  transition: transform .12s ease;
+}
+.arc-slider__pill {
+  position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%);
+  background: #2f2f37; border-radius: 99px; padding: 0 24px;
+  min-width: 160px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.arc-slider__pill span {
+  color: var(--colors-neutral-warm-50); font-family: var(--font-body);
+  font-size: var(--label-medium-size); font-weight: var(--fw-bold); line-height: var(--lh-normal); text-align: center;
+}
+
+.ed-slider-wrap {
+  position: absolute; top: 304px; left: 50%;
+  transform: translateX(-50%); z-index: 5;
+}
+
+/* More specifically + chips — hidden for now, layout preserved */
+.ed-chips-section {
+  position: absolute; top: 568px; left: 50%;
+  transform: translateX(-50%); text-align: center; z-index: 5;
+  width: 700px; display: none;
+}
+.ed-chips-label {
+  font-family: var(--font-body); font-size: var(--label-small-size); font-weight: var(--fw-semi);
+  color: var(--colors-gray-100); margin: 0 0 12px;
+}
+.ed-chips-label span { color: #a4a59f; }
+.ed-chips {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.chip {
+  height: 36px; padding: 0 16px;
+  border: 1px solid #444450; border-radius: 99px;
+  background: #2f2f37; color: #f2f3e5;
+  font-family: var(--font-body); font-size: var(--label-small-size); font-weight: var(--fw-semi);
+  cursor: pointer; white-space: nowrap;
+  transition: background 160ms, color 160ms, border-color 160ms;
+}
+.chip.sel { border-color: transparent; color: #1f1f25; }
+
+/* Navigation */
+.ed-nav {
+  position: absolute; bottom: 56px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; z-index: 20;
+}
+.btn-back-dark {
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.12);
+  border: none; cursor: pointer; display: grid; place-items: center;
+  transition: opacity 120ms;
+}
+.btn-back-dark:active { opacity: 0.75; }
+.btn-next-em {
+  width: 200px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: var(--label-medium-size); font-weight: var(--fw-bold);
+  border-radius: 8px; border: none; cursor: pointer; transition: opacity 120ms;
+}
+.btn-next-em:active { opacity: 0.85; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   Why screen
+   ══════════════════════════════════════════════════════════════ */
+.why-screen { background: #1f1f25; overflow: hidden; }
+
+.why-deco {
+  position: absolute; pointer-events: none; z-index: 0;
+}
+.why-deco img { width: 100%; height: 100%; display: block; object-fit: contain; }
+/* top-left — emotion 1 in all cases */
+.why-deco-tl { left: -245px; top: -130px; width: 425px; height: 425px; }
+/* mid-right — emotion 2 in 3-emotion case */
+.why-deco-mr { left: 1033px; top: 251px; width: 492px; height: 492px; }
+/* bottom-left — emotion 3 in 3-emotion case, and only shape in 1-emotion case */
+.why-deco-bl { left: -4px; top: 722px; width: 467px; height: 467px; transform: rotate(30deg); }
+/* bottom-right — emotion 2 in 2-emotion case */
+.why-deco-br { left: 919px; top: 537px; width: 492px; height: 492px; }
+
+/* Also style the unused static ed-bg decorations */
+.ed-bg {
+  position: absolute; width: 380px; height: 380px;
+  pointer-events: none; z-index: 0; opacity: 0.9;
+}
+.ed-bg img { width: 100%; height: 100%; display: block; object-fit: contain; }
+.ed-bg-tl { top: -80px; left: -80px; }
+.ed-bg-br { bottom: -80px; right: -80px; }
+
+.why-title {
+  position: absolute; top: 116px; left: 0; right: 0; padding: 0 200px;
+  font-family: var(--font-display); font-weight: 400; font-size: var(--title-medium-size); line-height: var(--title-medium-lh);
+  font-weight: 400;
+  letter-spacing: 1px; color: #f2f3e5;
+  text-align: center; margin: 0; z-index: 5;
+}
+.why-grid {
+  position: absolute; top: 248px; left: 50%; transform: translateX(-50%);
+  width: 764px; z-index: 5;
+  display: grid; grid-template-columns: repeat(4, 179px); gap: 16px;
+}
+.why-block {
+  background: #2f2f37; border: 1px solid rgba(92,92,101,0.3); border-radius: 8px;
+  height: 94px; width: 179px; padding: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer;
+  transition: background 160ms, border-color 160ms;
+}
+.why-block:hover { background: #3a3a44; }
+.why-block.sel { background: #3a3a44; border: 3px solid #f2f3e5; }
+.why-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: #2b2b32; border: 1px solid rgba(92,92,101,0.3);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.why-emoji { font-size: 18px; line-height: 1; }
+.why-label {
+  font-family: var(--font-body); font-size: 14px; font-weight: 600;
+  color: #f2f3e5; text-align: center; line-height: 1.3;
+}
+.why-block--add .why-label { color: #a4a59f; }
+.why-block--input {
+  grid-column: span 2; width: auto;
+  flex-direction: row; gap: 10px; padding: 0 12px; cursor: default;
+}
+.why-block--input:hover { background: #2f2f37; }
+.why-input-field {
+  flex: 1; background: none; border: none; outline: none;
+  color: #f2f3e5; font-family: var(--font-body); font-size: 14px; font-weight: 600; min-width: 0;
+}
+.why-input-field::placeholder { color: #a4a59f; }
+.why-confirm-btn {
+  width: 36px; height: 36px; background: none; border: none; padding: 0;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: opacity 120ms;
+}
+.why-confirm-btn:active { opacity: 0.75; }
+.why-picker-overlay { position: absolute; inset: 0; z-index: 150; display: none; }
+.why-emoji-picker {
+  position: absolute; background: #2b2b32; border: 1px solid #444450;
+  border-radius: 12px; width: 282px; z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7); display: none; overflow: hidden;
+}
+.why-picker-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  padding: 8px; max-height: 228px; overflow-y: auto;
+}
+.why-picker-grid button {
+  background: none; border: none; font-size: 24px; line-height: 1;
+  padding: 5px 2px; border-radius: 6px; cursor: pointer;
+  transition: background 80ms; text-align: center;
+}
+.why-picker-grid button:hover { background: #3a3a44; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   Support offer screen
+   ══════════════════════════════════════════════════════════════ */
+.support-content {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 760px; text-align: center; z-index: 5;
+  display: flex; flex-direction: column; gap: 20px; align-items: center;
+}
+.support-sub {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #a4a59f; margin: 0; line-height: 1.4;
+}
+.support-heading {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 1px; color: #f2f3e5; margin: 0;
+}
+.support-btns {
+  position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 16px; z-index: 5;
+}
+.btn-maybe {
+  width: 260px; height: 48px; background: #2b2b32;
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; cursor: pointer; transition: opacity 120ms;
+}
+.btn-show {
+  width: 260px; height: 48px; background: #f2f3e5;
+  border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #1f1f25; cursor: pointer; transition: opacity 120ms;
+}
+.btn-maybe:active, .btn-show:active { opacity: 0.75; }
+
+/* ══════════════════════════════════════════════════════════════
+   Help / Support screens — blue Pillow design
+   ══════════════════════════════════════════════════════════════ */
+.help-back {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.16);
+  border: none; border-radius: 8px; cursor: pointer;
+  display: grid; place-items: center; z-index: 20;
+}
+.help-content {
+  position: absolute; top: 293px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: 16px; align-items: center;
+  z-index: 5; text-align: center;
+}
+.help-sub {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.1px; margin: 0; width: 357px;
+}
+.help-heading {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; margin: 0; width: 613px;
+}
+.help-btns {
+  position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 24px; z-index: 20;
+}
+.btn-help-secondary {
+  width: 270px; height: 48px; border-radius: 8px; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.16);
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #ededed; transition: opacity 120ms;
+}
+.btn-help-primary {
+  width: 270px; height: 48px; border-radius: 8px; border: none; cursor: pointer;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03); transition: opacity 120ms;
+}
+.btn-help-secondary:active, .btn-help-primary:active { opacity: 0.8; }
+
+/* Showing up counts screen */
+.scounts-spark {
+  position: absolute; top: 274px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 12px; align-items: center; z-index: 5;
+}
+.scounts-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  line-height: 40px; letter-spacing: -0.8px; color: #f2f3e5;
+}
+.scounts-title {
+  position: absolute; top: 326px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center;
+  width: 406px; margin: 0; z-index: 5;
+}
+.scounts-bubble {
+  position: absolute; top: 512px; left: 50%; transform: translateX(-50%);
+  width: 439px; padding: 10px;
+  background: #58b880;
+  display: flex; align-items: flex-start; gap: 12px;
+  z-index: 5;
+}
+.scounts-bubble-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5; overflow: hidden;
+  display: grid; place-items: center;
+}
+.scounts-bubble-avatar img { width: 40px; height: 40px; display: block; object-fit: cover; }
+.scounts-bubble-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  flex: 1; padding-top: 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Video player screen
+   ══════════════════════════════════════════════════════════════ */
+.video-play-wrap {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 5;
+}
+.video-play-btn {
+  background: none; border: none; cursor: pointer; padding: 0;
+  transition: opacity 120ms;
+}
+.video-play-btn:active { opacity: 0.7; }
+.video-tap-hint {
+  font-family: var(--font-body); font-size: 13px; color: rgba(255,255,255,0.4);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Video feedback screen
+   ══════════════════════════════════════════════════════════════ */
+.vfb-ellipse {
+  position: absolute; left: -351px; top: 150px;
+  width: 1910px; height: 1910px; border-radius: 50%;
+  background: #1f1f25; pointer-events: none; z-index: 0;
+}
+.vfb-main-content {
+  position: absolute; left: 291px; top: 230px;
+  width: 613px; z-index: 5; text-align: center;
+}
+.vfb-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 56px; line-height: 1.06;
+  letter-spacing: 1px; color: #f2f3e5; margin: 16px 0 0;
+}
+.vfb-bubble {
+  position: absolute; z-index: 6;
+  width: 370px; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.vfb-bubble-green  { background: #58b880; left: 50%; top: 452px; transform: translateX(-50%); }
+.vfb-bubble-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  overflow: hidden; background: #f2f3e5;
+}
+.vfb-bubble-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vfb-bubble-text {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #2f2f37; line-height: 1.4; padding-top: 4px;
+}
+.vfb-cta-wrap {
+  position: absolute; bottom: 64px; left: 50%;
+  transform: translateX(-50%); z-index: 20;
+  display: flex; gap: 12px;
+}
+.vfb-btn-no {
+  height: 44px; padding: 0 28px; background: #2b2b32;
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #f2f3e5; cursor: pointer; transition: opacity 120ms;
+}
+.vfb-btn-yes {
+  height: 44px; padding: 0 28px; background: #f2f3e5;
+  border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #1f1f25; cursor: pointer; transition: opacity 120ms;
+}
+.vfb-btn-no:active, .vfb-btn-yes:active { opacity: 0.75; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   Sleep screen
+   ══════════════════════════════════════════════════════════════ */
+#s-sleep { background: #3f50b8; }
+
+.sleep-sub {
+  position: absolute; top: 76px; left: 0; right: 0;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: #a4a59f; text-align: center; z-index: 5;
+}
+.sleep-title {
+  position: absolute; top: 116px; left: 0; right: 0;
+  font-family: var(--font-display); font-weight: 400; font-size: var(--title-medium-size); line-height: var(--title-medium-lh);
+  letter-spacing: 1px; color: #f2f3e5;
+  text-align: center; margin: 0; z-index: 5;
+}
+.sleep-slider-wrap {
+  position: absolute; top: 308px; left: 50%; transform: translateX(-50%); z-index: 5;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   Done screen
+   ══════════════════════════════════════════════════════════════ */
+#s-done { background: #3f50b8; transition: none; }
+
+.done-blob {
+  position: absolute; pointer-events: none; z-index: 0;
+  left: -33px; top: -390px; width: 1188px; height: 1599px;
+}
+
+/* ── Sleep exit — content slides down ──────────────────────── */
+#s-sleep.s-sleep-exiting .sleep-sub,
+#s-sleep.s-sleep-exiting .sleep-title {
+  transform: translateY(400px); opacity: 0;
+  transition: transform 700ms cubic-bezier(0.75,0,0.3,0.99),
+              opacity 400ms ease;
+}
+#s-sleep.s-sleep-exiting .sleep-slider-wrap {
+  transform: translateX(-50%) translateY(400px); opacity: 0;
+  transition: transform 700ms cubic-bezier(0.75,0,0.3,0.99),
+              opacity 400ms ease;
+}
+#s-sleep.s-sleep-exiting .ed-nav {
+  transform: translateX(-50%) translateY(400px); opacity: 0;
+  transition: transform 700ms cubic-bezier(0.75,0,0.3,0.99) 60ms,
+              opacity 400ms ease 60ms;
+}
+
+
+.done-center {
+  position: absolute; left: 50%; top: calc(50% - 17px);
+  transform: translate(-50%, calc(-50% + 200px));
+  display: flex; flex-direction: column; align-items: center; gap: 36px; z-index: 5;
+  opacity: 0;
+}
+.done-top-group {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.reward-row {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.reward-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  line-height: 40px; letter-spacing: -0.8px; color: #f2f3e5;
+}
+.spark-badge {
+  position: relative; width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+}
+.spark-badge img {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.spark-badge img:nth-child(1) { animation: spark-c1 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(2) { opacity: 0; animation: spark-c2 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(3) { opacity: 0; animation: spark-c3 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(4) { opacity: 0; animation: spark-c4 6400ms linear 1600ms infinite; }
+@keyframes spark-c1 {
+  0%   { opacity: 1; } 25%  { opacity: 0; } 75%  { opacity: 0; } 100% { opacity: 1; }
+}
+@keyframes spark-c2 {
+  0%   { opacity: 0; } 25%  { opacity: 1; } 50%  { opacity: 0; } 100% { opacity: 0; }
+}
+@keyframes spark-c3 {
+  0%   { opacity: 0; } 50%  { opacity: 1; } 75%  { opacity: 0; } 100% { opacity: 0; }
+}
+@keyframes spark-c4 {
+  0%   { opacity: 0; } 75%  { opacity: 1; } 100% { opacity: 0; }
+}
+.done-card {
+  width: 200px; height: 298px; border-radius: 19px;
+  overflow: hidden; position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5); flex-shrink: 0;
+}
+.done-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center; margin: 0;
+}
+.done-cta {
+  position: absolute; top: 721px; left: 50%; transform: translateX(-50%); z-index: 20;
+  opacity: 0;
+}
+
+/* ── Entrance ──────────────────────────────────────────────── */
+#s-done.done-entered .done-center {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  transition: transform 700ms cubic-bezier(0.75,0,0.3,0.99) 200ms,
+              opacity 400ms ease 200ms;
+}
+#s-done.done-entered .done-cta {
+  opacity: 1;
+  transition: opacity 500ms ease 450ms;
+}
+
+/* ── Exit ──────────────────────────────────────────────────── */
+#s-done.done-exiting .done-center {
+  transform: translate(-50%, calc(-50% - 300px));
+  opacity: 0;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99),
+              opacity 500ms ease;
+}
+#s-done.done-exiting .done-cta {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+<!-- Shared progress bar — lives above all screens, updated by animateScreen -->
+<div class="prog" id="globalProg"><div class="prog-fill" id="globalProgFill" style="width:120px"></div></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     S0 — Emotion picker
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="s0" data-prog-width="120">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <div class="mc-wrap">
+    <h1 class="mc-title" data-content="mood_title">How do you feel today?</h1>
+    <p class="mc-sub" data-content="mood_subtitle">Pick up to 3</p>
+    <div class="em-grid" id="emGrid">
+
+      <button class="em-btn" data-key="curious" onclick="toggleEm(this)">
+        <img src="./components/emotion-curious.svg" alt=""><span data-content="mood_em_curious">Curious</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="okay" onclick="toggleEm(this)">
+        <img src="./components/emotion-okay.svg" alt=""><span data-content="mood_em_okay">Okay</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="meh" onclick="toggleEm(this)">
+        <img src="./components/emotion-meh.svg" alt=""><span data-content="mood_em_meh">Meh</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="sad" onclick="toggleEm(this)">
+        <img src="./components/emotion-sad.svg" alt=""><span data-content="mood_em_sad">Sad</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="angry" onclick="toggleEm(this)">
+        <img src="./components/emotion-angry.svg" alt=""><span data-content="mood_em_angry">Angry</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+
+      <button class="em-btn" data-key="happy" onclick="toggleEm(this)">
+        <img src="./components/emotion-happy.svg" alt=""><span data-content="mood_em_happy">Happy</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="grateful" onclick="toggleEm(this)">
+        <img src="./components/emotion-grateful.svg" alt=""><span data-content="mood_em_grateful">Grateful</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="neutral" onclick="toggleEm(this)">
+        <img src="./components/emotion-neutral.svg" alt=""><span data-content="mood_em_neutral">Neutral</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="tired" onclick="toggleEm(this)">
+        <img src="./components/emotion-tired.svg" alt=""><span data-content="mood_em_tired">Tired</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="stressed" onclick="toggleEm(this)">
+        <img src="./components/emotion-stressed.svg" alt=""><span data-content="mood_em_stressed">Stressed</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+
+      <button class="em-btn" data-key="excited" onclick="toggleEm(this)">
+        <img src="./components/emotion-excited.svg" alt=""><span data-content="mood_em_excited">Excited</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="hopeful" onclick="toggleEm(this)">
+        <img src="./components/emotion-hopeful.svg" alt=""><span data-content="mood_em_hopeful">Hopeful</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="idontknow" onclick="toggleEm(this)">
+        <img src="./components/emotion-idontknow.svg" alt=""><span data-content="mood_em_idontknow">I don't<br>know</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="lonely" onclick="toggleEm(this)">
+        <img src="./components/emotion-lonely.svg" alt=""><span data-content="mood_em_lonely">Lonely</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+      <button class="em-btn" data-key="anxious" onclick="toggleEm(this)">
+        <img src="./components/emotion-anxious.svg" alt=""><span data-content="mood_em_anxious">Anxious</span>
+        <div class="em-check"><img src="./components/checkbox.svg" alt=""></div>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="mc-cta">
+    <button class="btn-continue" data-content="btn_continue" onclick="startDetailFlow()">Continue</button>
+  </div>
+</div>
+
+
+<!-- Why screens are built dynamically as wh-0, wh-1, wh-2 in startDetailFlow() -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     S-SLEEP — How was your sleep?
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s-sleep" style="background:#3f50b8" data-prog-width="726">
+  <img src="./components/survey-shape.svg" style="position:absolute;left:-33px;top:-390px;width:1188px;height:1599px;pointer-events:none;z-index:0;" alt="">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <p class="sleep-sub" data-content="mood_sleep_sub">Almost done! Last question for today.</p>
+  <h2 class="sleep-title" data-content="mood_sleep_title">How did you sleep?</h2>
+
+  <div class="sleep-slider-wrap">
+    <div class="arc-slider" id="arc-sleep" tabindex="0">
+      <svg viewBox="0 0 532 310" width="532" height="310" overflow="visible">
+        <defs>
+          <linearGradient id="grad-sleep" gradientUnits="userSpaceOnUse" x1="48" y1="247" x2="480" y2="247">
+            <stop offset="0%" stop-color="#2A315D"/>
+            <stop offset="100%" stop-color="#3F50B8"/>
+          </linearGradient>
+        </defs>
+        <path id="arcTrack-sleep" fill="none" stroke="#2f2f37" stroke-width="68" stroke-linecap="round"/>
+        <path id="arcFill-sleep"  fill="none" stroke="url(#grad-sleep)" stroke-width="48" stroke-linecap="round"/>
+        <g id="arcDots-sleep"></g>
+      </svg>
+      <div class="arc-slider__hit" id="arcHit-sleep"></div>
+      <div class="arc-slider__thumb" id="arcThumb-sleep" style="background:#3f50b8"><span id="arcEmoji-sleep">😩</span></div>
+      <div class="arc-slider__pill"><span id="arcLabel-sleep"></span></div>
+    </div>
+  </div>
+
+  <div class="ed-nav">
+    <button class="btn-back-dark" onclick="goBackFromSleep()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="btn-next-em" data-content="btn_sleep_next" onclick="goToDone()">Next</button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     S-DONE — Check-in complete!
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s-done">
+  <img class="done-blob" src="./components/survey-shape.svg" alt="">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <div class="done-center">
+    <div class="done-top-group">
+      <div class="reward-row">
+        <span class="reward-plus" data-content="mood_done_reward_plus">+10</span>
+        <div class="spark-badge">
+          <img src="./components/Spark-4.svg" alt="spark">
+          <img src="./components/Spark-01.svg" alt="spark">
+          <img src="./components/Spark-02.svg" alt="spark">
+          <img src="./components/Spark-03.svg" alt="spark">
+        </div>
+      </div>
+      <div class="done-card">
+        <img src="./components/card-2.svg" alt="Mood check-in" style="width:100%;height:100%;display:block;border-radius:19px;">
+        <img src="./components/Property 1=M04, Type=Default.svg" alt="" style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:160px;height:160px;">
+      </div>
+    </div>
+    <p class="done-title" id="doneTitle">Mood check-in<br>Completed!</p>
+  </div>
+
+  <div class="done-cta">
+    <button class="btn-next-em" style="width:270px" id="doneBtn" onclick="finishMoodCheckin()">Start your day</button>
+  </div>
+</div>
+
+
+</div><!-- /bp-device -->
+</div><!-- /bp-stage -->
+
+<script>
+// ─── Scale ────────────────────────────────────────────────────
+let _deviceScale = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+function scale() {
+  _deviceScale = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', _deviceScale);
+}
+scale(); addEventListener('resize', scale);
+
+if (new URLSearchParams(location.search).get('edit') === '1') {
+  document.getElementById('doneTitle').innerHTML = 'Check-in<br>updated!';
+  document.querySelector('#s-done .reward-row').style.display = 'none';
+  document.getElementById('doneBtn').textContent = 'Back to your day';
+}
+
+
+// ─── Emotion data ─────────────────────────────────────────────
+const EMOTIONS = {
+  curious:   { name:'Curious',      color:'#FDDA3C', gradDark:'#5A4518', emoji:'🤔', emojis:['🤔','🧐','😲'], levels:['Interested','Curious','Have to know!'],          chips:['Interested','Intrigued','Fascinated','Nosy','Wonder-Filled'],  shape:{ size:1454, left:-130, top:-460 } },
+  happy:     { name:'Happy',        color:'#FFAF25', gradDark:'#5A4518', emoji:'😊', emojis:['🙂','😊','😄'], levels:['Good','Happy','Joyful'],                          chips:['Joyful','Content','Pleased','Cheerful','Elated'],              shape:{ size:1495, left:-151, top:-331 } },
+  excited:   { name:'Excited',      color:'#E65800', gradDark:'#633315', emoji:'🤩', emojis:['😌','🤩','🎉'], levels:['Looking forward to it','Excited','Pumped'],       chips:['Enthusiastic','Eager','Thrilled','Energised','Pumped'],         shape:{ size:1495, left:-151, top:-331 } },
+  okay:      { name:'Okay',         color:'#68DCC6', gradDark:'#284B44', emoji:'🙂', emojis:['😌','🙂','😀'], levels:['Fine','Okay','Pretty good'],                      chips:['Fine','Comfortable','Satisfied','Steady','Relieved'],           shape:{ size:1511, left:-159, top:-339 } },
+  grateful:  { name:'Grateful',     color:'#2CD573', gradDark:'#295D3F', emoji:'🙏', emojis:['🥰','🙏','💝'], levels:['Warm inside','Grateful','Thankful'],              chips:['Appreciative','Thankful','Touched','Lucky','Warm Inside'],       shape:{ size:1405, left:-106, top:-286 } },
+  hopeful:   { name:'Hopeful',      color:'#D1F00B', gradDark:'#414815', emoji:'😇', emojis:['🌱','😇','✨'], levels:['A little hopeful','Hopeful','Optimistic'],        chips:['Optimistic','Encouraged','Wishing','Inspired','Looking forward'], shape:{ size:1495, left:-151, top:-331 } },
+  meh:       { name:'Meh',          color:'#F2F3E5', gradDark:'#828282', emoji:'😑', emojis:['😑','🙄','😒'], levels:['Blah','Meh','Over it'],                           chips:['Unimpressed','Bored','Flat','Disengaged','Apathetic'],           shape:{ size:1108, left:43,   top:-262 } },
+  neutral:   { name:'Neutral',      color:'#BFBFBF', gradDark:'#555555', emoji:'😐', emojis:['😐','😶','🫤'], levels:['Just okay','Neutral','Normal'],                   chips:['Indifferent','Detached','Composed','Shoulder Shrug','Neither'],  shape:{ size:1244, left:-25,  top:-205 } },
+  idontknow: { name:"I Don't Know", color:'#8C8C8C', gradDark:'#404040', emoji:'🤷', emojis:['😕','🤷','😵'], levels:['Unsure','Not sure','Confused'],                   chips:['Confused','Uncertain','Overwhelmed','Numb','Conflicted'],        shape:{ size:1555, left:-181, top:-361 } },
+  sad:       { name:'Sad',          color:'#56CCF2', gradDark:'#1C4958', emoji:'😢', emojis:['😔','😢','💔'], levels:['Down','Sad','Hurt'],                              chips:['Sorrowful','Left Out','Let Down','Disappointed','Heartbroken'],  shape:{ size:1281, left:-44,  top:-74  } },
+  tired:     { name:'Tired',        color:'#6A7EFF', gradDark:'#2A315D', emoji:'😴', emojis:['🥱','😴','😪'], levels:['Low energy','Tired','Exhausted'],                 chips:['Exhausted','Drained','Fatigued','Sleepy','Checked Out'],         shape:{ size:1495, left:-151, top:-286 } },
+  lonely:    { name:'Lonely',       color:'#C4A3FF', gradDark:'#645387', emoji:'😔', emojis:['😔','🥺','😿'], levels:['A little alone','Lonely','Isolated'],             chips:['Isolated','Disconnected','Left Out','Longing','Forgotten'],      shape:{ size:1495, left:-151, top:-331 } },
+  angry:     { name:'Angry',        color:'#EC3E23', gradDark:'#6A251A', emoji:'😠', emojis:['😒','😠','🤬'], levels:['Annoyed','Angry','Furious'],                      chips:['Frustrated','Irritated','Furious','Annoyed','Jealous'],          shape:{ size:1615, left:-211, top:-591 } },
+  stressed:  { name:'Stressed',     color:'#C12A67', gradDark:'#5A253B', emoji:'😤', emojis:['😬','😤','🤯'], levels:['Tense','Stressed','Overwhelmed'],                 chips:['Overwhelmed','Pressured','Tense','Rushed','Snappy'],             shape:{ size:1495, left:-151, top:-131 } },
+  anxious:   { name:'Anxious',      color:'#BD67FF', gradDark:'#3B1B54', emoji:'😰', emojis:['😟','😰','😱'], levels:['Uneasy','Anxious','Panicked'],                    chips:['Worried','Nervous','Scared','Fearful','Panicked'],               shape:{ size:1495, left:-151, top:-331 } },
+};
+
+// ─── Screen nav ───────────────────────────────────────────────
+let cur = 's0';
+let detailOrder = [];
+
+function goToDone() {
+  const sleep    = document.getElementById('s-sleep');
+  const done     = document.getElementById('s-done');
+  const doneBlob = done.querySelector('.done-blob');
+  const BEZ      = 'cubic-bezier(0.81,0,0.26,0.98)';
+
+  sleep.classList.add('s-sleep-exiting');
+  var gp = document.getElementById('globalProg');
+  if (gp) { gp.style.transition = 'opacity 400ms ease'; gp.style.opacity = '0'; }
+
+  // done-blob starts at same position as sleep blob (no transform) — seamless swap
+  if (doneBlob) { doneBlob.style.transition = 'none'; doneBlob.style.transform = ''; }
+
+  setTimeout(() => {
+    sleep.classList.remove('active');
+    done.classList.add('active');
+    cur = 's-done';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      done.classList.add('done-entered');
+      // Blob grows 20% and shifts down — only top arch visible
+      if (doneBlob) {
+        doneBlob.style.transition = 'transform 900ms ' + BEZ;
+        doneBlob.style.transform  = 'translateY(615px) scale(1.2)';
+      }
+    }));
+  }, 350);
+}
+
+function finishMoodCheckin() {
+  localStorage.setItem('bp_mood_emotions', JSON.stringify(detailOrder));
+  const reasons = [...document.querySelectorAll('#wh-0 .why-block.sel')]
+    .map(b => b.querySelector('.why-label').textContent.trim());
+  localStorage.setItem('bp_mood_reasons', JSON.stringify(reasons));
+
+  const done     = document.getElementById('s-done');
+  const doneBlob = done.querySelector('.done-blob');
+  const BEZ      = 'cubic-bezier(0.75,0,0.3,0.99)';
+
+  done.classList.add('done-exiting');
+
+  if (doneBlob) {
+    doneBlob.style.transition = 'transform 700ms ' + BEZ;
+    doneBlob.style.transform  = 'translateY(615px) scale(5)';
+  }
+
+  setTimeout(() => {
+    localStorage.setItem('bp_mood_done', '1');
+    localStorage.setItem('bp_fresh_start', '1');
+    sessionStorage.setItem('bp_enter_anim', '1');
+    window.location.href = 'today.html';
+  }, 700);
+}
+
+function goTo(id) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  cur = id;
+}
+
+var _mcAnimating = false;
+var MC_DUR = 1000;
+var MC_BEZ = 'cubic-bezier(0.81,0,0.26,0.98)';
+
+function updateGlobalProg(w) {
+  var fill = document.getElementById('globalProgFill');
+  if (fill && w) fill.style.width = w + 'px';
+}
+
+function animateScreen(fromId, toId, dir) {
+  if (_mcAnimating) return;
+  _mcAnimating = true;
+  var fromEl = document.getElementById(fromId);
+  var toEl   = document.getElementById(toId);
+
+  // Update shared progress bar
+  var pw = toEl.dataset.progWidth;
+  updateGlobalProg(pw);
+
+  var useReveal = fromId.startsWith('ed-') && toId.startsWith('ed-');
+
+  if (useReveal) {
+    // ── Clip-path reveal (ed ↔ ed only) ──────────────────────
+    var DUR = 800;
+    var BEZ = 'cubic-bezier(0.81, 0, 0.26, 0.98)';
+    var startClip = dir >= 0 ? 'inset(834px 0 0 0)' : 'inset(0 0 834px 0)';
+
+    // Hide exiting nav immediately so it doesn't show through the reveal
+    var fromNav = fromEl.querySelector('.ed-nav');
+    if (fromNav) { fromNav.style.opacity = '0'; fromNav.style.pointerEvents = 'none'; }
+
+    toEl.style.zIndex     = '10';
+    toEl.style.transition = 'none';
+    toEl.style.clipPath   = startClip;
+    toEl.classList.add('active');
+
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      toEl.style.transition = 'clip-path ' + DUR + 'ms ' + BEZ;
+      toEl.style.clipPath   = 'inset(0px 0 0 0)';
+
+      setTimeout(function() {
+        toEl.style.clipPath   = 'none';
+        toEl.style.transition = '';
+        toEl.style.zIndex     = '';
+        fromEl.classList.remove('active');
+        if (fromNav) { fromNav.style.opacity = ''; fromNav.style.pointerEvents = ''; }
+        cur = toId;
+        _mcAnimating = false;
+      }, DUR + 60);
+    }); });
+
+  } else {
+    // ── Original horizontal slide (all other transitions) ────
+    toEl.style.zIndex     = '10';
+    toEl.style.transition = 'none';
+    toEl.style.opacity    = '1';
+    toEl.style.transform  = 'translateX(' + (dir * 100) + '%)';
+    toEl.offsetWidth;
+    var t = 'transform ' + MC_DUR + 'ms ' + MC_BEZ;
+    fromEl.style.transition = t;
+    fromEl.style.transform  = 'translateX(' + (dir * -100) + '%)';
+    toEl.style.transition   = t;
+    toEl.style.transform    = 'translateX(0)';
+
+    setTimeout(function() {
+      toEl.classList.add('active');
+      fromEl.style.transition = 'none';
+      fromEl.style.opacity    = '0';
+      fromEl.classList.remove('active');
+      fromEl.style.transform  = '';
+      toEl.style.transition   = '';
+      toEl.style.transform    = '';
+      toEl.style.opacity      = '';
+      toEl.style.zIndex       = '';
+      setTimeout(function() {
+        fromEl.style.transition = '';
+        fromEl.style.opacity    = '';
+      }, 50);
+      cur = toId;
+      _mcAnimating = false;
+    }, MC_DUR + 60);
+  }
+}
+
+// ─── Emotion picker ───────────────────────────────────────────
+const MAX = 3;
+const grid = document.getElementById('emGrid');
+
+function toggleEm(el) {
+  if (el.classList.contains('sel')) {
+    el.classList.remove('sel');
+  } else {
+    if (document.querySelectorAll('.em-btn.sel').length >= MAX) return;
+    el.classList.add('sel');
+  }
+  grid.classList.toggle('maxed', document.querySelectorAll('.em-btn.sel').length >= MAX);
+}
+
+// ─── Build & start detail flow ────────────────────────────────
+function startDetailFlow() {
+  const selected = [...document.querySelectorAll('.em-btn.sel')].map(el => el.dataset.key);
+  if (!selected.length) {
+    grid.classList.remove('shake');
+    void grid.offsetWidth;
+    grid.classList.add('shake');
+    grid.addEventListener('animationend', () => grid.classList.remove('shake'), { once: true });
+    return;
+  }
+  detailOrder = selected;
+  const device = document.getElementById('device');
+  // Remove previously built screens
+  document.querySelectorAll('.ed-screen, .why-screen').forEach(s => s.remove());
+  // Build one detail screen per emotion
+  selected.forEach((key, idx) => {
+    const screen = buildDetailScreen(key, idx, selected.length);
+    device.appendChild(screen);
+    initArc(key);
+  });
+  // Build one why screen with all selected emotions as background
+  device.appendChild(buildWhyScreen(selected));
+
+  // Set first emotion's shape to huge scale — animateScreen's reflow commits it,
+  // then we immediately start the shrink animation (simultaneous with slide-in)
+  const edShape = document.querySelector('#ed-0 .ed-shape');
+  if (edShape) {
+    edShape.style.transition = 'none';
+    edShape.style.transform  = 'scale(6)';
+  }
+
+  animateScreen('s0', 'ed-0', 1); // internally calls to.offsetWidth → commits scale(6)
+
+  if (edShape) {
+    edShape.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
+    edShape.style.transform  = 'scale(1)';
+  }
+}
+
+// ─── Detail screen builder ────────────────────────────────────
+function buildDetailScreen(key, idx, total) {
+  const em = EMOTIONS[key];
+  const progWidth = 120 + ((idx + 1) / (total * 2 + 2)) * 600;
+  const chk = `<svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7L6 11L12 3" stroke="#1f1f25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const chipsHtml = em.chips.map(c =>
+    `<button class="chip" onclick="toggleChip(this,'${em.color}')">${c}</button>`
+  ).join('');
+  const gradId = `grad-${key}`;
+
+  const div = document.createElement('div');
+  div.className = 'screen ed-screen';
+  div.id = `ed-${idx}`;
+  div.style.background = em.color;
+  div.dataset.progWidth = Math.round(progWidth);
+  const sh = em.shape || { size:1495, left:-151, top:-331 };
+  div.innerHTML = `
+    <div class="ed-shape" style="width:${sh.size}px;height:${sh.size}px;left:${sh.left}px;top:${sh.top}px"><img src="./components/${key}-shape.svg" alt=""></div>
+
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <h2 class="ed-title">${em.name}</h2>
+
+    <div class="ed-slider-wrap">
+      <div class="arc-slider" id="arc-${key}" tabindex="0">
+        <svg viewBox="0 0 532 310" width="532" height="310" overflow="visible">
+          <defs>
+            <linearGradient id="${gradId}" gradientUnits="userSpaceOnUse" x1="48" y1="247" x2="480" y2="247">
+              <stop offset="0%" stop-color="${em.gradDark}"/>
+              <stop offset="100%" stop-color="${em.color}"/>
+            </linearGradient>
+          </defs>
+          <path id="arcTrack-${key}" fill="none" stroke="#2f2f37" stroke-width="68" stroke-linecap="round"/>
+          <path id="arcFill-${key}"  fill="none" stroke="url(#${gradId})" stroke-width="48" stroke-linecap="round"/>
+          <g id="arcDots-${key}"></g>
+        </svg>
+        <div class="arc-slider__hit" id="arcHit-${key}"></div>
+        <div class="arc-slider__thumb" id="arcThumb-${key}" style="background:${em.color}"><span id="arcEmoji-${key}">${em.emoji}</span></div>
+        <div class="arc-slider__pill"><span id="arcLabel-${key}"></span></div>
+      </div>
+    </div>
+
+    <div class="ed-chips-section">
+      <p class="ed-chips-label">More specifically <span>(optional)</span></p>
+      <div class="ed-chips">${chipsHtml}</div>
+    </div>
+
+    <div class="ed-nav">
+      <button class="btn-back-dark" onclick="edBack(${idx})">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-next-em" onclick="edNext(${idx}, ${total})">
+        Next
+      </button>
+    </div>
+  `;
+  return div;
+}
+
+function edBack(idx) {
+  var toId = idx === 0 ? 's0' : 'ed-' + (idx - 1);
+  animateScreen(cur, toId, -1);
+}
+function edNext(idx, total) {
+  var toId = idx < total - 1 ? 'ed-' + (idx + 1) : 'wh-0';
+  animateScreen(cur, toId, 1);
+  if (toId === 'wh-0') animateWhyDecos();
+}
+
+function animateWhyDecos() {
+  var screen = document.getElementById('wh-0');
+  if (!screen) return;
+  var decos = screen.querySelectorAll('.why-deco');
+  var EASE = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
+  decos.forEach(function(deco) {
+    var isLeft = deco.classList.contains('why-deco-tl') || deco.classList.contains('why-deco-bl');
+    var rot = deco.classList.contains('why-deco-bl') ? ' rotate(30deg)' :
+              deco.classList.contains('why-deco-mr') ? ' rotate(40deg)' : '';
+    deco.style.transition = 'none';
+    deco.style.transform = 'translateX(' + (isLeft ? '-900px' : '900px') + ')' + rot;
+  });
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      decos.forEach(function(deco) {
+        var finalRot = deco.classList.contains('why-deco-bl') ? 'rotate(30deg)' :
+                       deco.classList.contains('why-deco-mr') ? 'rotate(40deg)' : '';
+        deco.style.transition = EASE;
+        deco.style.transform = finalRot;
+      });
+    });
+  });
+}
+function whyBack()  { animateScreen(cur, 'ed-' + (detailOrder.length - 1), -1); }
+function whyNext() {
+  var BEZ = 'cubic-bezier(0.81,0,0.26,0.98)';
+
+  // Exit why-screen decos back to their sides
+  var whyScreen = document.getElementById('wh-0');
+  if (whyScreen) {
+    whyScreen.querySelectorAll('.why-deco').forEach(function(deco) {
+      var isLeft = deco.classList.contains('why-deco-tl') || deco.classList.contains('why-deco-bl');
+      var rot = deco.classList.contains('why-deco-bl') ? ' rotate(30deg)' :
+                deco.classList.contains('why-deco-mr') ? ' rotate(40deg)' : '';
+      deco.style.transition = 'transform 700ms ' + BEZ;
+      deco.style.transform = 'translateX(' + (isLeft ? '-900px' : '900px') + ')' + rot;
+    });
+  }
+
+  // Prep sleep screen blob at full-screen scale (covers entire screen)
+  var sleepShape = document.querySelector('#s-sleep > img');
+  if (sleepShape) {
+    sleepShape.style.transition = 'none';
+    sleepShape.style.transform = 'scale(2)';
+  }
+
+  // Standard screen slide
+  animateScreen(cur, 's-sleep', 1);
+
+  // Shrink blob to final position (double rAF so browser commits scale(2) first)
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (sleepShape) {
+        sleepShape.style.transition = 'transform 1000ms ' + BEZ;
+        sleepShape.style.transform = '';
+      }
+    });
+  });
+}
+function goBackFromSleep() {
+  var sleepBlob = document.querySelector('#s-sleep > img');
+  if (sleepBlob) { sleepBlob.style.transition = 'none'; sleepBlob.style.transform = ''; }
+  animateScreen(cur, 'wh-0', -1);
+}
+
+// ─── Why screen builder ───────────────────────────────────────
+const WHY_BLOCKS = [
+  { emoji: '📚', label: 'School life' },
+  { emoji: '📝', label: 'Exams' },
+  { emoji: '🏠', label: 'Home life' },
+  { emoji: '🤸', label: 'Activities' },
+  { emoji: '📱', label: 'Saw something online' },
+  { emoji: '👫', label: 'Friends' },
+  { emoji: '🫥', label: 'No friends' },
+  { emoji: '😩', label: 'Hungry' },
+];
+
+// Positions per count: [1 emotion], [2 emotions], [3 emotions]
+const WHY_DECO_POS = {
+  1: ['why-deco-bl'],
+  2: ['why-deco-tl', 'why-deco-br'],
+  3: ['why-deco-tl', 'why-deco-mr', 'why-deco-bl'],
+};
+
+function buildWhyScreen(selectedKeys) {
+  const n = selectedKeys.length;
+  const progWidth = 120 + ((n + 1) / (n * 2 + 2)) * 600;
+  const positions = WHY_DECO_POS[n] || WHY_DECO_POS[3];
+
+  const decosHtml = selectedKeys.slice(0, 3).map((key, i) =>
+    `<div class="why-deco ${positions[i]}"${i === 1 ? ' style="transform:rotate(40deg)"' : ''}><img src="./components/emotion-${key}.svg" alt=""></div>`
+  ).join('');
+
+  const blocksHtml = WHY_BLOCKS.map(b => `
+    <button class="why-block" onclick="this.classList.toggle('sel')">
+      <div class="why-icon"><span class="why-emoji">${b.emoji}</span></div>
+      <span class="why-label">${b.label}</span>
+    </button>`).join('');
+
+  const addOtherHtml = `
+    <button class="why-block why-block--add" onclick="whyAddOther(this)">
+      <div class="why-icon"><span style="font-size:20px;color:#a4a59f">+</span></div>
+      <span class="why-label">Add other</span>
+    </button>`;
+
+  const div = document.createElement('div');
+  div.className = 'screen why-screen';
+  div.id = 'wh-0';
+  div.dataset.progWidth = Math.round(progWidth);
+  div.innerHTML = `
+    ${decosHtml}
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <h2 class="why-title">What's going on?</h2>
+    <div class="why-grid">${blocksHtml}${addOtherHtml}</div>
+    <div class="ed-nav">
+      <button class="btn-back-dark" onclick="whyBack()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-next-em" onclick="whyNext()">Next</button>
+    </div>
+  `;
+  return div;
+}
+
+// ─── Add other ────────────────────────────────────────────────
+function whyAddOther(el) {
+  el.className = 'why-block why-block--input';
+  el.style.gridColumn = 'span 2';
+  el.onclick = null;
+  el.innerHTML = `
+    <div class="why-icon" style="cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();whyShowPicker(this)"><span class="why-emoji">✏️</span></div>
+    <input class="why-input-field" type="text" placeholder="Type here…" maxlength="40">
+    <button class="why-confirm-btn" onclick="event.stopPropagation();whyConfirmAdd(this.closest('.why-block'))">
+      <img src="./components/checkbox.svg" style="width:36px;height:36px;display:block;" alt="">
+    </button>`;
+  const input = el.querySelector('.why-input-field');
+  input.focus();
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') whyConfirmAdd(el);
+    if (e.key === 'Escape') whyRevertAdd(el);
+  });
+}
+
+function whyConfirmAdd(el) {
+  const val = el.querySelector('.why-input-field').value.trim();
+  const emoji = el.querySelector('.why-emoji').textContent;
+  whyHidePicker();
+  if (!val) { whyRevertAdd(el); return; }
+  const newBlock = document.createElement('button');
+  newBlock.className = 'why-block sel';
+  newBlock.onclick = function() { this.classList.toggle('sel'); };
+  newBlock.innerHTML = `
+    <div class="why-icon"><span class="why-emoji">${emoji}</span></div>
+    <span class="why-label">${val}</span>`;
+  el.parentElement.insertBefore(newBlock, el);
+  whyRevertAdd(el);
+}
+
+function whyRevertAdd(el) {
+  el.className = 'why-block why-block--add';
+  el.style.gridColumn = '';
+  el.onclick = function() { whyAddOther(this); };
+  el.innerHTML = `
+    <div class="why-icon"><span style="font-size:20px;color:#a4a59f">+</span></div>
+    <span class="why-label">Add other</span>`;
+}
+
+// ─── Emoji picker ─────────────────────────────────────────────
+const PICKER_EMOJI = [
+  '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩',
+  '😘','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶',
+  '😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤧','🥵',
+  '🥶','🥴','😵','🤯','🤠','🥸','😎','🤓','🧐','😕','😟','🙁','☹️','😮','😯','😲',
+  '😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫',
+  '🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','🤡','👹','👺','👻','👽','👾','🤖',
+  '👋','🤚','🖐️','✋','🖖','👌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','☝️',
+  '👇','👍','👎','✊','👊','🤛','🤜','👏','🙌','🫶','🙏','✍️','💪','🦾',
+  '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈',
+  '🙉','🙊','🐔','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🦋','🐌',
+  '🐞','🐜','🐢','🐍','🦎','🐙','🦑','🐠','🐟','🐬','🐳','🦈','🦒','🐘','🦏','🐪',
+  '🍎','🍊','🍋','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦',
+  '🥕','🌽','🌶️','🍔','🍟','🍕','🌭','🌮','🌯','🍜','🍛','🍣','🍱','🍤','🎂','🍰',
+  '🧁','🍩','🍪','🍫','🍬','🍭','🍿','☕','🍵','🧋','🍺','🍷','🥂',
+  '⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🏆','🥇','🎮','🕹️','🎲','♟️',
+  '🧩','🎯','🎨','🎭','🎬','🎤','🎧','🎹','🥁','🎸','🎺','🎻',
+  '🚗','🚙','🚌','✈️','🚀','🛸','🛶','⛵','🚤','🏠','🏢','🌆','🌇','🌌','🌠','🏔️',
+  '🌋','🏕️','🏖️',
+  '❤️','🧡','💛','💚','💙','💜','🖤','🤍','💔','💕','💞','💓','💗','💖','💘','💝',
+  '✨','⭐','🌟','💫','🌈','🔥','💥','❄️','🌊','💧','🌸','🌺','🌻','🌹','🌷','🌼',
+  '🍀','🍁','🌿','🌱','💡','🔦','💎','🔮','🪄','🎩','📱','💻','📷','📸','📹','🎥',
+  '💰','💵','💳','✉️','📝','📚','📖','💼','🎁','🎀','🏅','🎟️','🎪',
+];
+
+function whyBuildPicker() {
+  const div = document.createElement('div');
+  div.className = 'why-emoji-picker';
+  div.innerHTML = `<div class="why-picker-grid">${
+    PICKER_EMOJI.map(e => `<button onclick="event.stopPropagation();whySelectEmoji('${e}')">${e}</button>`).join('')
+  }</div>`;
+  return div;
+}
+
+function whyShowPicker(iconEl) {
+  const screen = document.getElementById('wh-0');
+
+  let overlay = screen.querySelector('.why-picker-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'why-picker-overlay';
+    overlay.onclick = () => whyHidePicker();
+    screen.appendChild(overlay);
+  }
+
+  let picker = screen.querySelector('.why-emoji-picker');
+  if (!picker) {
+    picker = whyBuildPicker();
+    screen.appendChild(picker);
+  }
+  picker._iconEl = iconEl;
+
+  // Position picker relative to device coords
+  const device = document.getElementById('device');
+  const dRect = device.getBoundingClientRect();
+  const iRect = iconEl.getBoundingClientRect();
+  const scale = dRect.width / 1194;
+  const cx = (iRect.left - dRect.left) / scale;
+  const cy = (iRect.top - dRect.top) / scale;
+  const iH = iRect.height / scale;
+  const pw = 282, ph = 244;
+  let pl = Math.max(8, Math.min(cx - 20, 1194 - pw - 8));
+  let pt = cy - ph - 8;
+  if (pt < 50) pt = cy + iH + 8;
+  picker.style.left = pl + 'px';
+  picker.style.top = pt + 'px';
+
+  overlay.style.display = 'block';
+  picker.style.display = 'block';
+}
+
+function whyHidePicker() {
+  const screen = document.getElementById('wh-0');
+  if (!screen) return;
+  const overlay = screen.querySelector('.why-picker-overlay');
+  const picker = screen.querySelector('.why-emoji-picker');
+  if (overlay) overlay.style.display = 'none';
+  if (picker) picker.style.display = 'none';
+}
+
+function whySelectEmoji(emoji) {
+  const screen = document.getElementById('wh-0');
+  const picker = screen && screen.querySelector('.why-emoji-picker');
+  if (picker && picker._iconEl) {
+    picker._iconEl.querySelector('.why-emoji').textContent = emoji;
+  }
+  whyHidePicker();
+}
+
+// ─── Chip toggle ──────────────────────────────────────────────
+function toggleChip(el, color) {
+  el.classList.toggle('sel');
+  el.style.background = el.classList.contains('sel') ? color : '';
+}
+
+// ─── Arc slider (3 stops) ─────────────────────────────────────
+const ARC_CX = 263, ARC_CY = 247, ARC_RM = 190.5;
+const ARC_FILL_START = 175, ARC_TRACK_END = 5;
+const ARC_A_MAX = 170, ARC_A_MIN = 10;
+const DEG = Math.PI / 180;
+const rnd = n => Math.round(n * 10) / 10;
+
+function arcPt(r, deg) {
+  return [ARC_CX + r * Math.cos(deg * DEG), ARC_CY - r * Math.sin(deg * DEG)];
+}
+function arcAng(x, y) {
+  return Math.atan2(ARC_CY - y, x - ARC_CX) / DEG;
+}
+function arcPath(from, to) {
+  if (from - to < 0.4) to = from - 0.4;
+  const [x1,y1] = arcPt(ARC_RM, from), [x2,y2] = arcPt(ARC_RM, to);
+  return `M${rnd(x1)},${rnd(y1)} A${ARC_RM},${ARC_RM} 0 ${(from-to)>=180?1:0},1 ${rnd(x2)},${rnd(y2)}`;
+}
+
+function initArc(key) {
+  const em = EMOTIONS[key];
+  const NS = 'http://www.w3.org/2000/svg';
+  const stops3 = [ARC_A_MAX, (ARC_A_MAX + ARC_A_MIN) / 2, ARC_A_MIN]; // left, mid, right
+
+  document.getElementById(`arcTrack-${key}`).setAttribute('d', arcPath(ARC_FILL_START, ARC_TRACK_END));
+
+  const dotsG = document.getElementById(`arcDots-${key}`);
+  const dotEls = stops3.map(a => {
+    const [dx, dy] = arcPt(ARC_RM, a);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', rnd(dx)); c.setAttribute('cy', rnd(dy));
+    c.setAttribute('r', '7'); c.setAttribute('fill', '#18181f');
+    dotsG.appendChild(c);
+    return c;
+  });
+
+  let arcAngle = stops3[0];
+
+  function arcMove(a) {
+    a = Math.max(ARC_A_MIN, Math.min(ARC_A_MAX, a));
+    arcAngle = a;
+    document.getElementById(`arcFill-${key}`).setAttribute('d', arcPath(ARC_FILL_START, a));
+    const [tx, ty] = arcPt(ARC_RM, a);
+    const thumb = document.getElementById(`arcThumb-${key}`);
+    thumb.style.left = tx + 'px'; thumb.style.top = ty + 'px';
+    const nearIdx = stops3.reduce((b, sa, i) => Math.abs(a-sa) < Math.abs(a-stops3[b]) ? i : b, 0);
+    document.getElementById(`arcLabel-${key}`).textContent = em.levels[nearIdx];
+    document.getElementById(`arcEmoji-${key}`).textContent = em.emojis[nearIdx];
+    dotEls.forEach((c, i) => c.setAttribute('fill', i === nearIdx ? 'transparent' : '#18181f'));
+  }
+
+  function arcSnap(v, noAnim) {
+    const thumb = document.getElementById(`arcThumb-${key}`);
+    if (!noAnim) {
+      thumb.classList.add('is-snapping');
+      thumb.addEventListener('transitionend', () => thumb.classList.remove('is-snapping'), { once: true });
+    }
+    arcMove(stops3[v]);
+  }
+
+  function nearestStop(a) {
+    return stops3.reduce((b, sa, i) => Math.abs(a-sa) < Math.abs(a-stops3[b]) ? i : b, 0);
+  }
+
+  const sliderEl = document.getElementById(`arc-${key}`);
+  const hitEl = document.getElementById(`arcHit-${key}`);
+  const thumbEl = document.getElementById(`arcThumb-${key}`);
+  let dragging = false;
+
+  function clientToAngle(e) {
+    const t = e.touches ? e.touches[0] : e;
+    const r = sliderEl.getBoundingClientRect();
+    return arcAng((t.clientX - r.left) / _deviceScale, (t.clientY - r.top) / _deviceScale);
+  }
+  function onStart(e) { dragging=true; sliderEl.classList.add('is-dragging'); thumbEl.classList.remove('is-snapping'); e.preventDefault(); arcMove(clientToAngle(e)); }
+  function onMove(e) { if (!dragging) return; e.preventDefault(); arcMove(clientToAngle(e)); }
+  function onEnd()   { if (!dragging) return; dragging=false; sliderEl.classList.remove('is-dragging'); arcSnap(nearestStop(arcAngle)); }
+
+  hitEl.addEventListener('mousedown', onStart);
+  thumbEl.addEventListener('mousedown', onStart);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+  hitEl.addEventListener('touchstart', onStart, { passive: false });
+  thumbEl.addEventListener('touchstart', onStart, { passive: false });
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onEnd);
+  sliderEl.addEventListener('keydown', e => {
+    const n = nearestStop(arcAngle);
+    if (e.key === 'ArrowRight') arcSnap(Math.min(n+1, 2));
+    if (e.key === 'ArrowLeft')  arcSnap(Math.max(n-1, 0));
+  });
+
+  arcSnap(1, true);
+}
+
+// ─── Sleep slider (7 stops) ───────────────────────────────────
+const SLEEP_LEVELS = [
+  { e:'😩', t:'Terrible' },
+  { e:'😔', t:'Hard to fall asleep' },
+  { e:'😕', t:'Not great' },
+  { e:'😐', t:'Okay' },
+  { e:'😌', t:'Pretty good' },
+  { e:'🙂', t:'Slept well' },
+  { e:'😄', t:'Woke up feeling great' },
+];
+
+function initSleepSlider() {
+  const NS = 'http://www.w3.org/2000/svg';
+  const n = SLEEP_LEVELS.length;
+  const stops = SLEEP_LEVELS.map((_, i) => ARC_A_MAX - (i / (n-1)) * (ARC_A_MAX - ARC_A_MIN));
+
+  document.getElementById('arcTrack-sleep').setAttribute('d', arcPath(ARC_FILL_START, ARC_TRACK_END));
+
+  const dotsG = document.getElementById('arcDots-sleep');
+  const dotEls = stops.map(a => {
+    const [dx, dy] = arcPt(ARC_RM, a);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', rnd(dx)); c.setAttribute('cy', rnd(dy));
+    c.setAttribute('r', '6'); c.setAttribute('fill', '#18181f');
+    dotsG.appendChild(c); return c;
+  });
+
+  let arcAngle = stops[0];
+  function arcMove(a) {
+    a = Math.max(ARC_A_MIN, Math.min(ARC_A_MAX, a)); arcAngle = a;
+    document.getElementById('arcFill-sleep').setAttribute('d', arcPath(ARC_FILL_START, a));
+    const [tx, ty] = arcPt(ARC_RM, a);
+    const thumb = document.getElementById('arcThumb-sleep');
+    thumb.style.left = tx+'px'; thumb.style.top = ty+'px';
+    const ni = stops.reduce((b,sa,i) => Math.abs(a-sa)<Math.abs(a-stops[b])?i:b, 0);
+    document.getElementById('arcEmoji-sleep').textContent = SLEEP_LEVELS[ni].e;
+    document.getElementById('arcLabel-sleep').innerHTML = SLEEP_LEVELS[ni].t.replace('\n','<br>');
+    dotEls.forEach((c,i) => c.setAttribute('fill', i===ni?'transparent':'#18181f'));
+  }
+  function arcSnap(v, noAnim) {
+    const thumb = document.getElementById('arcThumb-sleep');
+    if (!noAnim) { thumb.classList.add('is-snapping'); thumb.addEventListener('transitionend', ()=>thumb.classList.remove('is-snapping'),{once:true}); }
+    arcMove(stops[v]);
+  }
+  function nearest(a) { return stops.reduce((b,sa,i)=>Math.abs(a-sa)<Math.abs(a-stops[b])?i:b,0); }
+
+  const sliderEl = document.getElementById('arc-sleep');
+  const hitEl = document.getElementById('arcHit-sleep');
+  const thumbEl = document.getElementById('arcThumb-sleep');
+  let dragging = false;
+  function cta(e) { const t=e.touches?e.touches[0]:e; const r=sliderEl.getBoundingClientRect(); return arcAng((t.clientX-r.left)/_deviceScale,(t.clientY-r.top)/_deviceScale); }
+  function onStart(e){dragging=true;sliderEl.classList.add('is-dragging');thumbEl.classList.remove('is-snapping');e.preventDefault();arcMove(cta(e));}
+  function onMove(e){if(!dragging)return;e.preventDefault();arcMove(cta(e));}
+  function onEnd(){if(!dragging)return;dragging=false;sliderEl.classList.remove('is-dragging');arcSnap(nearest(arcAngle));}
+  hitEl.addEventListener('mousedown',onStart); thumbEl.addEventListener('mousedown',onStart);
+  window.addEventListener('mousemove',onMove); window.addEventListener('mouseup',onEnd);
+  hitEl.addEventListener('touchstart',onStart,{passive:false}); thumbEl.addEventListener('touchstart',onStart,{passive:false});
+  window.addEventListener('touchmove',onMove,{passive:false}); window.addEventListener('touchend',onEnd);
+  sliderEl.addEventListener('keydown',e=>{ const ni=nearest(arcAngle); if(e.key==='ArrowRight')arcSnap(Math.min(ni+1,n-1)); if(e.key==='ArrowLeft')arcSnap(Math.max(ni-1,0)); });
+  arcSnap(3, true);
+}
+
+initSleepSlider();
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

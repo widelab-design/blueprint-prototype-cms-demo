@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Helpful content</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1));
+}
+
+.screen {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity 260ms cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; z-index: 20; pointer-events: none;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9);
+}
+
+.btn-back {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.16); border: none; border-radius: 8px;
+  display: grid; place-items: center; cursor: pointer; z-index: 20;
+  transition: opacity 120ms;
+}
+.btn-back:active { opacity: 0.75; }
+
+/* ─── Shared buttons ──────────────────────────────────────────── */
+.btn-secondary {
+  width: 260px; height: 48px;
+  background: rgba(31,31,37,0.5); border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px; font-family: var(--font-body); font-size: 16px;
+  font-weight: 500; color: #f2f3e5; cursor: pointer; transition: opacity 120ms;
+}
+.btn-primary {
+  width: 260px; height: 48px; background: #f2f3e5; border: none;
+  border-radius: 8px; font-family: var(--font-body); font-size: 16px;
+  font-weight: 500; color: #1f1f25; cursor: pointer; transition: opacity 120ms;
+}
+.btn-secondary:active, .btn-primary:active { opacity: 0.75; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   S-INTRO — "Want some ideas for right now?"
+   ══════════════════════════════════════════════════════════════ */
+#s-intro { background: #49aee1; }
+
+.intro-content {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 760px; text-align: center; z-index: 5;
+  display: flex; flex-direction: column; gap: 20px; align-items: center;
+}
+.intro-sub {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: rgba(242,243,229,0.8); margin: 0;
+}
+.intro-heading {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 1px; color: #f2f3e5; margin: 0;
+}
+.intro-btns {
+  position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 16px; z-index: 5;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   S-VIDEO — Video player
+   ══════════════════════════════════════════════════════════════ */
+#s-video { background: #000; }
+
+.vid-wrap {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 994px; height: 485px;
+  border-radius: 20px; overflow: hidden;
+}
+.vid-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vid-heart { position: absolute; top: 12px; right: 12px; }
+.vid-heart img { width: 48px; height: 48px; display: block; cursor: pointer; }
+.vid-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: none; border: none; cursor: pointer; padding: 0;
+  transition: opacity 120ms;
+}
+.vid-play:active { opacity: 0.7; }
+.vid-hint {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-body); font-size: 13px; color: rgba(255,255,255,0.5);
+  margin: 0; pointer-events: none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   S-FEEDBACK — "Showing up counts!"
+   ══════════════════════════════════════════════════════════════ */
+#s-feedback { background: #49aee1; }
+
+.fb-dome {
+  position: absolute; left: -357px; top: 79px;
+  width: 1910px; height: 1910px; border-radius: 50%;
+  background: #1f1f25; pointer-events: none; z-index: 0;
+}
+.fb-spark-row {
+  position: absolute; top: 274px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 12px; align-items: center; z-index: 5;
+}
+.fb-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  line-height: 40px; letter-spacing: -0.8px; color: #f2f3e5;
+}
+.spark-badge {
+  position: relative; width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+}
+.spark-badge img {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.spark-badge img:nth-child(1) { animation: sc1 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(2) { opacity:0; animation: sc2 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(3) { opacity:0; animation: sc3 6400ms linear 1600ms infinite; }
+.spark-badge img:nth-child(4) { opacity:0; animation: sc4 6400ms linear 1600ms infinite; }
+@keyframes sc1 { 0%{opacity:1} 25%{opacity:0} 75%{opacity:0} 100%{opacity:1} }
+@keyframes sc2 { 0%{opacity:0} 25%{opacity:1} 50%{opacity:0} 100%{opacity:0} }
+@keyframes sc3 { 0%{opacity:0} 50%{opacity:1} 75%{opacity:0} 100%{opacity:0} }
+@keyframes sc4 { 0%{opacity:0} 75%{opacity:1} 100%{opacity:0} }
+
+.fb-title {
+  position: absolute; top: 326px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center;
+  width: 600px; margin: 0; z-index: 5;
+}
+.fb-bubble {
+  position: absolute; top: 435px; left: 50%; transform: translateX(-50%);
+  width: 439px; padding: 10px; background: #b38aff;
+  display: flex; align-items: flex-start; gap: 12px; z-index: 5;
+}
+.fb-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5; display: grid; place-items: center;
+}
+.fb-avatar img { width: 40px; height: 40px; display: block; object-fit: cover; }
+.fb-bubble-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  flex: 1; padding-top: 4px;
+}
+.fb-btns {
+  position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 16px; z-index: 20;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+<!-- ═══ S-INTRO ════════════════════════════════════════════════ -->
+<div class="screen active" id="s-intro">
+  <img src="./components/Pillow.svg" alt="" style="position:absolute;left:50%;top:50%;width:2500px;height:2500px;pointer-events:none;z-index:0;transform:translate(-50%,-50%);">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <button class="btn-back" onclick="goToday()">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="intro-content">
+    <h2 class="intro-heading" data-content="helpful_intro_heading">Lots of students feel this way sometimes</h2>
+    <p class="intro-sub" data-content="helpful_intro_sub">Want to see what helps them?</p>
+  </div>
+  <div class="intro-btns">
+    <button class="btn-secondary" onclick="goToday()" data-content="helpful_btn_maybe_later">Maybe later</button>
+    <button class="btn-primary" onclick="goTo('s-video')" data-content="helpful_btn_yes_show_me">Yes, show me</button>
+  </div>
+</div>
+
+<!-- ═══ S-VIDEO ════════════════════════════════════════════════ -->
+<div class="screen" id="s-video">
+  <div class="sb" style="color:rgba(255,255,255,0.7)"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <button class="btn-back" onclick="goTo('s-intro')" style="background:rgba(255,255,255,0.1);">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="vid-wrap">
+    <img class="vid-thumb" src="./components/video-thumbnail.jpg" alt="">
+    <div class="vid-heart"><img src="./components/heart-default.svg" alt="save"></div>
+    <button class="vid-play" onclick="playVideo()">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="36" fill="rgba(0,0,0,0.45)"/>
+        <polygon points="30,22 54,36 30,50" fill="#f2f3e5"/>
+      </svg>
+    </button>
+    <p class="vid-hint" data-content="helpful_vid_hint">Tap to play (prototype)</p>
+  </div>
+</div>
+
+<!-- ═══ S-FEEDBACK ═════════════════════════════════════════════ -->
+<div class="screen" id="s-feedback">
+  <div class="fb-dome"></div>
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <button class="btn-back" onclick="goTo('s-video')" style="background:rgba(255,255,255,0.12);">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M13 4L7 10L13 16" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="fb-spark-row">
+    <span class="fb-plus" data-content="helpful_fb_spark">+1</span>
+    <div class="spark-badge">
+      <img src="./components/Spark-4.svg" alt="">
+      <img src="./components/Spark-01.svg" alt="">
+      <img src="./components/Spark-02.svg" alt="">
+      <img src="./components/Spark-03.svg" alt="">
+    </div>
+  </div>
+  <h2 class="fb-title" data-content="helpful_fb_title">Did this help?</h2>
+  <div class="fb-bubble">
+    <div class="fb-avatar"><img src="./components/monster-01.svg" alt=""></div>
+    <p class="fb-bubble-text" data-content="helpful_bubble">You made it through a tough moment—and that counts.</p>
+  </div>
+  <div class="fb-btns">
+    <button class="btn-secondary" onclick="goToday()" data-content="helpful_btn_not_really">Not really</button>
+    <button class="btn-primary" onclick="goToday()" data-content="helpful_btn_yes_a_bit">Yes, a bit!</button>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+let cur = 's-intro';
+function goTo(id) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  cur = id;
+}
+
+function goToday() {
+  sessionStorage.setItem('bp_enter_anim', '1');
+  window.location.href = 'today.html';
+}
+
+function playVideo() {
+  localStorage.setItem('bp_video_watched', '1');
+  goTo('s-feedback');
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

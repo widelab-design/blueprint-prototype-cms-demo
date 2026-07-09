@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Session Feedback</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center;
+  transform: scale(var(--s,1));
+}
+
+/* ── Status bar ── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ── Screen base ── */
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+
+/* ══════════════════════════════════════
+   SCREEN 1 — Did it help?
+══════════════════════════════════════ */
+#s-question { background: #1f1f25; }
+
+/* Yellow shell decoration — Shell-new 1.5× scale, rotate(-150deg) */
+.q-shell {
+  position: absolute;
+  width: 2892px; height: 2544px;
+  left: 755px; top: -20px;
+  transform: rotate(-120deg);
+  transform-origin: center center;
+  pointer-events: none; z-index: 0;
+}
+.q-shell svg { display: block; width: 100%; height: 100%; }
+
+/* Content wrapper */
+.q-content {
+  position: absolute;
+  left: 213px; top: 104px; width: 769px;
+  display: flex; flex-direction: column; align-items: center; gap: 64px;
+  z-index: 2;
+}
+
+/* Top group: thumbnail + subtitle */
+.q-top { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+
+/* Video thumbnail card */
+.q-card {
+  width: 160px; height: 166px;
+  background: #fef5cc; border-radius: 13px;
+  overflow: hidden; position: relative; flex-shrink: 0;
+}
+.q-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.q-card-label {
+  position: absolute; bottom: 8px; right: 8px;
+  background: #36363f; border-radius: 8px;
+  padding: 4px 8px; font-family: var(--font-display, 'Anton', sans-serif);
+  font-size: 10px; letter-spacing: 0.5px;
+  color: #f2f3e5; line-height: 1.2; text-align: center;
+}
+
+/* Subtitle */
+.q-subtitle {
+  width: 278px; margin: 0;
+  font-family: var(--font-body, 'Barlow', sans-serif);
+  font-weight: 500; font-size: 20px; line-height: 1.1;
+  letter-spacing: -0.4px; color: #f2f3e5; text-align: center;
+}
+
+/* Bottom group: title + blocks */
+.q-bottom { display: flex; flex-direction: column; align-items: center; gap: 32px; width: 100%; }
+
+.q-title {
+  width: 613px; margin: 0;
+  font-family: var(--font-display, 'Anton', sans-serif);
+  font-size: 64px; line-height: 1.06; letter-spacing: 1.5px;
+  color: #f2f3e5; text-align: center;
+}
+
+/* Answer blocks */
+.q-blocks { display: flex; gap: 16px; align-items: center; }
+
+.q-block {
+  width: 179px; height: 94px;
+  background: #2f2f37;
+  border: 1px solid rgba(92,92,101,0.3);
+  border-radius: 8px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; padding: 10px;
+  cursor: pointer;
+  transition: border-color 150ms, border-width 150ms;
+}
+.q-block.selected { border: 3px solid #f2f3e5; }
+
+.q-block-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #1f1f25; border: 1px solid rgba(92,92,101,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; line-height: 1;
+}
+.q-block-label {
+  font-family: 'DIN Alternate', 'Barlow', sans-serif;
+  font-weight: 700; font-size: 16px; line-height: 24px;
+  color: #f2f3e5; text-align: center; white-space: nowrap;
+}
+
+/* Save button */
+.q-btn {
+  position: absolute; top: 722px; left: 462px;
+  width: 270px; height: 48px;
+  background: #f2f3e5; border: none; border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-body, 'Barlow', sans-serif);
+  font-weight: 500; font-size: 16px; letter-spacing: -0.1px;
+  color: #1f1f25;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════
+   SCREENS 2a / 2b / 2c — Response screens
+══════════════════════════════════════ */
+#s-yes, #s-not-really, #s-didnt { background: #fdda3c; }
+
+/* Shell-new — bottom decoration on yellow screens */
+.r-shell-new {
+  position: absolute;
+  width: 1400px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 0;
+}
+.r-shell-new img { width: 100%; height: auto; display: block; }
+
+/* Content: centered column */
+.r-content {
+  position: absolute;
+  left: 291px; width: 613px;
+  display: flex; flex-direction: column; align-items: center; gap: 40px;
+  z-index: 2;
+}
+#s-yes .r-content     { top: 295px; }
+#s-not-really .r-content { top: 231px; }
+#s-didnt .r-content   { top: 265px; }
+
+/* +1 spark reward row */
+.r-reward { display: flex; align-items: center; gap: 12px; }
+.r-plus {
+  font-family: var(--font-display, 'Anton', sans-serif);
+  font-size: 32px; line-height: 40px; letter-spacing: -0.8px;
+  color: #f2f3e5; white-space: nowrap;
+}
+.r-spark { width: 32px; height: 32px; display: block; }
+
+/* Big response text */
+.r-text {
+  margin: 0; width: 613px;
+  font-family: var(--font-display, 'Anton', sans-serif);
+  font-size: 64px; line-height: 1.06; letter-spacing: 1.5px;
+  color: #f2f3e5; text-align: center;
+}
+
+/* "Start with how you feel" button */
+.r-btn {
+  position: absolute; top: 722px; left: 50%; transform: translateX(-50%);
+  width: 270px; height: 48px;
+  background: #f2f3e5; border: none; border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-body, 'Barlow', sans-serif);
+  font-weight: 500; font-size: 16px; letter-spacing: -0.1px;
+  color: #1f1f25;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════
+   ANIMATIONS — question screen (S7 style)
+══════════════════════════════════════ */
+#s-question .q-top  { transform: translateY(400px); opacity: 0; }
+#s-question .q-bottom { transform: translateY(400px); opacity: 0; }
+#s-question .q-btn  { transform: translateY(200px); opacity: 0; }
+
+#s-question.q-entered .q-top {
+  transform: translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-question.q-entered .q-bottom {
+  transform: translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99) 100ms, opacity 400ms ease 100ms;
+}
+#s-question.q-phase2 .q-btn {
+  transform: translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+
+/* ── Response screen animations ── */
+#s-yes .r-content,
+#s-not-really .r-content,
+#s-didnt .r-content { transform: translateY(400px); opacity: 0; }
+
+#s-yes .r-btn,
+#s-not-really .r-btn,
+#s-didnt .r-btn { transform: translateX(-50%) translateY(200px); opacity: 0; }
+
+#s-yes.r-entered .r-content,
+#s-not-really.r-entered .r-content,
+#s-didnt.r-entered .r-content {
+  transform: translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-yes.r-phase2 .r-btn,
+#s-not-really.r-phase2 .r-btn,
+#s-didnt.r-phase2 .r-btn {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device">
+
+<!-- ── SCREEN 1: Did it help? ── -->
+<div class="screen active" id="s-question">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <div class="q-shell">
+    <svg viewBox="0 0 1243 1087" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M621.5 0C964.745 0 1243 277.401 1243 619.59C1057.07 619.59 936.196 769.852 936.196 955.205C936.196 1022.9 936.196 1087 936.196 1087H306.804C306.804 1087 306.804 1022.9 306.804 955.205C306.804 769.852 185.924 619.59 0 619.59C0 277.401 278.254 0 621.5 0Z" fill="#fdda3c"/>
+    </svg>
+  </div>
+
+  <div class="q-content">
+    <div class="q-top">
+      <div class="q-card">
+        <img src="./components/calming-breath-cover.png" alt="Calming Breath">
+      </div>
+      <p class="q-subtitle" data-content="feedback_subtitle">Yesterday was a little tough —<br>we suggested Calming Breath</p>
+    </div>
+    <div class="q-bottom">
+      <h1 class="q-title" data-content="feedback_title">Did it help?</h1>
+      <div class="q-blocks">
+        <button class="q-block" onclick="selectAnswer(this,'s-yes')">
+          <div class="q-block-icon">😊</div>
+          <span class="q-block-label" data-content="feedback_answer_yes">Yes, it helped</span>
+        </button>
+        <button class="q-block" onclick="selectAnswer(this,'s-not-really')">
+          <div class="q-block-icon">😕</div>
+          <span class="q-block-label" data-content="feedback_answer_not_really">Not really</span>
+        </button>
+        <button class="q-block" onclick="selectAnswer(this,'s-didnt')">
+          <div class="q-block-icon">🤷</div>
+          <span class="q-block-label" data-content="feedback_answer_didnt">I didn't do that</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button class="q-btn" data-content="btn_save" onclick="saveAnswer()">Save</button>
+</div>
+
+<!-- ── SCREEN 2a: Yes it helped ── -->
+<div class="screen" id="s-yes">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="r-shell-new"><img src="./components/Shell-new.svg" alt=""></div>
+  <div class="r-content">
+    <div class="r-reward">
+      <span class="r-plus" data-content="feedback_reward_yes">+1</span>
+      <img class="r-spark" src="./components/spark.svg" alt="">
+    </div>
+    <h1 class="r-text" data-content="feedback_response_yes">Good to know! We'll keep that in mind.</h1>
+  </div>
+  <button class="r-btn" data-content="feedback_btn_start_yes" onclick="window.location.href='mood-checkin.html'">Start with how you feel</button>
+</div>
+
+<!-- ── SCREEN 2b: Not really ── -->
+<div class="screen" id="s-not-really">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="r-shell-new"><img src="./components/Shell-new.svg" alt=""></div>
+  <div class="r-content">
+    <div class="r-reward">
+      <span class="r-plus" data-content="feedback_reward_not_really">+1</span>
+      <img class="r-spark" src="./components/spark.svg" alt="">
+    </div>
+    <h1 class="r-text" data-content="feedback_response_not_really">Thanks for telling us — we'll try something different next time.</h1>
+  </div>
+  <button class="r-btn" data-content="feedback_btn_start_not_really" onclick="window.location.href='mood-checkin.html'">Start with how you feel</button>
+</div>
+
+<!-- ── SCREEN 2c: I didn't do that ── -->
+<div class="screen" id="s-didnt">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+  <div class="r-shell-new"><img src="./components/Shell-new.svg" alt=""></div>
+  <div class="r-content">
+    <div class="r-reward">
+      <span class="r-plus" data-content="feedback_reward_didnt">+1</span>
+      <img class="r-spark" src="./components/spark.svg" alt="">
+    </div>
+    <h1 class="r-text" data-content="feedback_response_didnt">No worries — it'll be there if you ever want it.</h1>
+  </div>
+  <button class="r-btn" data-content="feedback_btn_start_didnt" onclick="window.location.href='mood-checkin.html'">Start with how you feel</button>
+</div>
+
+</div>
+</div>
+
+<script>
+var cur = 's-question';
+var pendingNext = null;
+
+function selectAnswer(el, nextId) {
+  document.querySelectorAll('.q-block').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+  pendingNext = nextId;
+}
+
+function saveAnswer() {
+  if (pendingNext) goTo(pendingNext);
+}
+
+function goTo(id) {
+  var oldEl = document.getElementById(cur);
+  var newEl = document.getElementById(id);
+  oldEl.classList.remove('active');
+  newEl.classList.remove('q-entered','q-phase2','r-entered','r-phase2');
+  newEl.classList.add('active');
+  cur = id;
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (id === 's-question') {
+        newEl.classList.add('q-entered');
+        setTimeout(function() { newEl.classList.add('q-phase2'); }, 300);
+      } else {
+        newEl.classList.add('r-entered');
+        setTimeout(function() { newEl.classList.add('r-phase2'); }, 300);
+      }
+    });
+  });
+}
+
+// Entrance animation on load
+window.addEventListener('DOMContentLoaded', function() {
+  var q = document.getElementById('s-question');
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      q.classList.add('q-entered');
+      setTimeout(function() { q.classList.add('q-phase2'); }, 300);
+    });
+  });
+});
+</script>
+
+  <script src="./content-loader.js"></script>
+</body>
+</html>

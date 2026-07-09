@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blueprint — Arc Slider</title>
+  <link rel="stylesheet" href="../foundations/tokens.css">
+  <link rel="stylesheet" href="../foundations/viz-colors.css">
+  <style>
+    body {
+      background: #3a3a42;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 80px;
+      padding: 80px 32px;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .section-title {
+      color: rgba(242,243,229,0.35);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-family: var(--font-body);
+    }
+
+    /* ── Step chips ─────────────────────────────────────────── */
+    .chips { display: flex; gap: 6px; }
+
+    .chip {
+      padding: 7px 16px;
+      border-radius: 8px;
+      background: #2f2f37;
+      border: none;
+      color: #f2f3e5;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .chip:hover:not(.active) { background: #3c3c47; }
+    .chip.active { background: #f08b31; color: #1f1f25; }
+
+    /* ── Arc Slider ─────────────────────────────────────────── */
+    .arc-slider {
+      position: relative;
+      width: 532px;
+      height: 248px;
+      overflow: visible;
+      outline: none;
+      cursor: grab;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .arc-slider.is-dragging { cursor: grabbing; }
+
+    .arc-slider svg {
+      position: absolute;
+      top: 0; left: 0;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .arc-slider__hit {
+      position: absolute;
+      inset: 0;
+    }
+
+    .arc-slider__thumb {
+      position: absolute;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      background: #f08b31;
+      border: 11px solid #2f2f37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 62px;
+      line-height: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: none;
+      will-change: left, top, transform;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,.45));
+      transition: none;
+    }
+    .arc-slider__thumb.is-snapping {
+      transition:
+        left  .42s cubic-bezier(.34, 1.56, .64, 1),
+        top   .42s cubic-bezier(.34, 1.56, .64, 1);
+    }
+    .arc-slider.is-dragging .arc-slider__thumb {
+      transform: translate(-50%, -50%) scale(1.06);
+      transition: transform .12s ease;
+      filter: drop-shadow(0 8px 28px rgba(0,0,0,.55));
+    }
+
+    .arc-slider__pill {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2f2f37;
+      border-radius: 99px;
+      padding: 10px 20px;
+      min-width: 174px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .arc-slider__pill span {
+      color: #f2f3e5;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.3;
+      text-align: center;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 5-level -->
+<div class="section">
+  <span class="section-title">5 levels</span>
+  <div class="chips" id="chips5"></div>
+  <div class="arc-slider" id="s5" tabindex="0">
+    <svg viewBox="0 0 532 248" width="532" height="248">
+      <defs>
+        <linearGradient id="grad5" gradientUnits="userSpaceOnUse"
+          x1="48" y1="247" x2="480" y2="247">
+          <stop offset="0%"   stop-color="#945218"/>
+          <stop offset="55%"  stop-color="#e65800"/>
+          <stop offset="100%" stop-color="#ffbb25"/>
+        </linearGradient>
+      </defs>
+      <path id="track5" fill="none" stroke="#2f2f37"        stroke-width="49" stroke-linecap="round"/>
+      <path id="fill5"  fill="none" stroke="url(#grad5)"   stroke-width="49" stroke-linecap="round"/>
+      <g   id="dots5"></g>
+    </svg>
+    <div class="arc-slider__hit" id="hit5"></div>
+    <div class="arc-slider__thumb" id="thumb5"><span id="emoji5"></span></div>
+    <div class="arc-slider__pill"><span id="label5"></span></div>
+  </div>
+</div>
+
+<!-- 3-level -->
+<div class="section">
+  <span class="section-title">3 levels</span>
+  <div class="chips" id="chips3"></div>
+  <div class="arc-slider" id="s3" tabindex="0">
+    <svg viewBox="0 0 532 248" width="532" height="248">
+      <defs>
+        <linearGradient id="grad3" gradientUnits="userSpaceOnUse"
+          x1="48" y1="247" x2="480" y2="247">
+          <stop offset="0%"   stop-color="#945218"/>
+          <stop offset="55%"  stop-color="#e65800"/>
+          <stop offset="100%" stop-color="#ffbb25"/>
+        </linearGradient>
+      </defs>
+      <path id="track3" fill="none" stroke="#2f2f37"        stroke-width="49" stroke-linecap="round"/>
+      <path id="fill3"  fill="none" stroke="url(#grad3)"   stroke-width="49" stroke-linecap="round"/>
+      <g   id="dots3"></g>
+    </svg>
+    <div class="arc-slider__hit" id="hit3"></div>
+    <div class="arc-slider__thumb" id="thumb3"><span id="emoji3"></span></div>
+    <div class="arc-slider__pill"><span id="label3"></span></div>
+  </div>
+</div>
+
+<script>
+const CX = 263, CY = 247;
+const R1 = 215, R2 = 166;
+const RM = (R1 + R2) / 2;
+
+const FILL_START = 175;
+const TRACK_END  = 5;
+
+const DEG = Math.PI / 180;
+const rnd = n => Math.round(n * 10) / 10;
+
+function pt(radius, deg) {
+  return [
+    CX + radius * Math.cos(deg * DEG),
+    CY - radius * Math.sin(deg * DEG)
+  ];
+}
+
+function ang(x, y) {
+  return Math.atan2(CY - y, x - CX) / DEG;
+}
+
+function arcPath(fromDeg, toDeg) {
+  if (fromDeg - toDeg < 0.4) toDeg = fromDeg - 0.4;
+  const [x1, y1] = pt(RM, fromDeg);
+  const [x2, y2] = pt(RM, toDeg);
+  const la = (fromDeg - toDeg) >= 180 ? 1 : 0;
+  return `M${rnd(x1)},${rnd(y1)} A${RM},${RM} 0 ${la},1 ${rnd(x2)},${rnd(y2)}`;
+}
+
+const DATA = {
+  5: {
+    v: 0,
+    stops: [
+      { e: '😴', t: 'I often feel\ndrained' },
+      { e: '😕', t: 'I feel tired most\nof the time' },
+      { e: '🙂', t: 'Some days are okay,\nsome are harder' },
+      { e: '😊', t: 'I usually feel\npretty good' },
+      { e: '🤩', t: 'I usually feel energized' },
+    ]
+  },
+  3: {
+    v: 1,
+    stops: [
+      { e: '😀', t: 'Happy' },
+      { e: '😊', t: 'Very happy' },
+      { e: '😁', t: 'Super happy' },
+    ]
+  }
+};
+
+function build(id) {
+  const d  = DATA[id];
+  const n  = d.stops.length;
+  const NS = 'http://www.w3.org/2000/svg';
+  const $  = k => document.getElementById(k + id);
+
+  const A_MAX = 170, A_MIN = 10;
+  const stopAngles = Array.from({ length: n }, (_, i) =>
+    A_MAX - (i / (n - 1)) * (A_MAX - A_MIN)
+  );
+
+  $('track').setAttribute('d', arcPath(FILL_START, TRACK_END));
+
+  const dotsG  = $('dots');
+  const dotEls = stopAngles.map(a => {
+    const [dx, dy] = pt(RM, a);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx',   rnd(dx));
+    c.setAttribute('cy',   rnd(dy));
+    c.setAttribute('r',    '7');
+    c.setAttribute('fill', '#18181f');
+    dotsG.appendChild(c);
+    return c;
+  });
+
+  const chipsEl = $('chips');
+  d.stops.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = i + 1;
+    b.onclick = () => snap(i);
+    chipsEl.appendChild(b);
+  });
+
+  const slider = document.getElementById('s' + id);
+  const thumb  = $('thumb');
+
+  let currentAngle = stopAngles[d.v];
+
+  function moveToAngle(a) {
+    a = Math.max(A_MIN, Math.min(A_MAX, a));
+    currentAngle = a;
+
+    $('fill').setAttribute('d', arcPath(FILL_START, a));
+
+    const [tx, ty] = pt(RM, a);
+    thumb.style.left = tx + 'px';
+    thumb.style.top  = ty + 'px';
+
+    const nearest = nearestStop(a);
+    $('emoji').textContent = d.stops[nearest].e;
+    $('label').innerHTML   = d.stops[nearest].t.replace('\n', '<br>');
+
+    chipsEl.querySelectorAll('.chip').forEach((c, i) =>
+      c.classList.toggle('active', i === nearest));
+
+    dotEls.forEach((c, i) =>
+      c.setAttribute('fill', i === nearest ? 'transparent' : '#18181f'));
+  }
+
+  function snap(v, skipAnim) {
+    d.v = v;
+    if (!skipAnim) {
+      thumb.classList.add('is-snapping');
+      thumb.addEventListener('transitionend', () =>
+        thumb.classList.remove('is-snapping'), { once: true });
+    }
+    moveToAngle(stopAngles[v]);
+  }
+
+  function nearestStop(a) {
+    let best = 0, bestDist = Infinity;
+    stopAngles.forEach((sa, i) => {
+      const dist = Math.abs(a - sa);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+    return best;
+  }
+
+  let dragging = false;
+
+  function clientToAngle(e) {
+    const t = e.touches ? e.touches[0] : e;
+    const rect = slider.getBoundingClientRect();
+    return ang(t.clientX - rect.left, t.clientY - rect.top);
+  }
+
+  function onDragStart(e) {
+    dragging = true;
+    slider.classList.add('is-dragging');
+    thumb.classList.remove('is-snapping');
+    e.preventDefault();
+    moveToAngle(clientToAngle(e));
+  }
+
+  function onDragMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    moveToAngle(clientToAngle(e));
+  }
+
+  function onDragEnd() {
+    if (!dragging) return;
+    dragging = false;
+    slider.classList.remove('is-dragging');
+    snap(nearestStop(currentAngle));
+  }
+
+  $('hit').addEventListener('mousedown',  onDragStart);
+  thumb.addEventListener('mousedown',     onDragStart);
+  window.addEventListener('mousemove',    onDragMove);
+  window.addEventListener('mouseup',      onDragEnd);
+
+  $('hit').addEventListener('touchstart', onDragStart, { passive: false });
+  thumb.addEventListener('touchstart',    onDragStart, { passive: false });
+  window.addEventListener('touchmove',    onDragMove,  { passive: false });
+  window.addEventListener('touchend',     onDragEnd);
+
+  slider.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') snap(Math.min(d.v + 1, n - 1));
+    if (e.key === 'ArrowLeft')  snap(Math.max(d.v - 1, 0));
+  });
+
+  snap(d.v, true);
+}
+
+build(5);
+build(3);
+</script>
+</body>
+</html>

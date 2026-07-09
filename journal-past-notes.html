@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Past notes</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Back button ───────────────────────────────────────────── */
+.btn-back {
+  position: absolute; left: 24px; top: 48px; z-index: 20;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 120ms;
+}
+.btn-back:hover { background: rgba(255,255,255,0.24); }
+
+/* ─── Page title ────────────────────────────────────────────── */
+.page-title {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 52px; margin: 0;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center; white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ─── Scroll area ───────────────────────────────────────────── */
+.scroll-area {
+  position: absolute;
+  left: 111px; right: 0; top: 186px; bottom: 0;
+  display: flex; gap: 32px; align-items: flex-start;
+  overflow: hidden;
+}
+
+/* ─── Left column (scrollable) ──────────────────────────────── */
+.col-left {
+  width: 658px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 32px;
+  overflow-y: auto; height: 100%;
+  padding-bottom: 32px; box-sizing: border-box;
+  scrollbar-width: none;
+}
+.col-left::-webkit-scrollbar { display: none; }
+
+/* ─── Right column (sticky) ─────────────────────────────────── */
+.col-right {
+  width: 282px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 20px;
+  align-items: center;
+  padding-left: 31px; box-sizing: border-box;
+}
+.col-right-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: rgba(242,243,229,0.4); letter-spacing: -0.1px; text-align: center;
+  width: 100%;
+}
+
+/* ─── Section group ─────────────────────────────────────────── */
+.notes-section { display: flex; flex-direction: column; gap: 12px; }
+.section-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: rgba(242,243,229,0.4); letter-spacing: -0.1px;
+}
+.notes-list { display: flex; flex-direction: column; gap: 16px; }
+
+/* ─── Note card ─────────────────────────────────────────────── */
+.note-card {
+  width: 658px; border-radius: 12px;
+  background: #1f1f25; border: 1px solid #36363f;
+  padding: 12px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.note-date {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px;
+}
+.note-text {
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #f2f3e5; line-height: 24px; letter-spacing: -0.2px;
+  margin: 0;
+}
+.note-question {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #a4a59f; letter-spacing: -0.1px; margin: 0;
+}
+.note-answer {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px; margin: 0;
+}
+
+/* ─── Stat cards ────────────────────────────────────────────── */
+.stat-cards { display: flex; flex-direction: column; gap: 12px; }
+.stat-card {
+  width: 220px; height: 220px; border-radius: 20px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px;
+}
+.stat-card-blue  { background: #3f50b8; }
+.stat-card-purple { background: #7040c8; }
+.stat-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.1px; line-height: 20px;
+}
+.stat-number {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; width: 148px; text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <button class="btn-back" onclick="history.back()">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <h1 class="page-title" data-content="journal_past_page_title">Past notes</h1>
+
+  <div class="scroll-area">
+
+    <!-- Left column -->
+    <div class="col-left">
+
+      <div class="notes-section">
+        <span class="section-label" data-content="journal_past_section_this_month">This month</span>
+        <div class="notes-list">
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_1">April 27, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_1">Today was really overwhelming with the math test and the thing with Jamie.</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_2">April 26, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_2">I feel excited!</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_3">April 20, 2026</span>
+            <p class="note-question" data-content="journal_past_note_question_1">What was the best thing that happened yesterday?</p>
+            <p class="note-answer" data-content="journal_past_note_answer_1">Dancing!</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_4">April 15, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_4">Had a great conversation with Sarah; it really helped clear my mind after the stressful week.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <span class="section-label" data-content="journal_past_section_older_notes">Older notes</span>
+        <div class="notes-list">
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_5">March 30, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_5">I don't know.</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_6">March 20, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_6">What a day.</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_7">March 19, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_7">......</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_8">March 10, 2026</span>
+            <p class="note-question" data-content="journal_past_note_question_2">What was the best thing that happened yesterday?</p>
+            <p class="note-answer" data-content="journal_past_note_answer_2">Dancing!</p>
+          </div>
+          <div class="note-card">
+            <span class="note-date" data-content="journal_past_note_date_9">February 15, 2026</span>
+            <p class="note-text" data-content="journal_past_note_text_9">Had a great conversation with Sarah; it really helped clear my mind after the stressful week.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column -->
+    <div class="col-right">
+      <span class="col-right-label" data-content="journal_past_col_right_label">Way to go!</span>
+      <div class="stat-cards">
+        <div class="stat-card stat-card-blue">
+          <span class="stat-label" data-content="journal_past_stat_label_this_month">This month</span>
+          <span class="stat-number" data-content="journal_past_stat_number_this_month">5</span>
+        </div>
+        <div class="stat-card stat-card-purple">
+          <span class="stat-label" data-content="journal_past_stat_label_total">Total notes</span>
+          <span class="stat-number" data-content="journal_past_stat_number_total">35</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

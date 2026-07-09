@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — My toolkit</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+.today-sidebar {
+  position: absolute;
+  left: 24px; top: 50%; transform: translateY(-50%);
+  width: 80px; height: 786px;
+  background: #2b2b32; border-radius: 20px;
+  padding: 24px 8px; box-sizing: border-box;
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: center;
+  z-index: 10;
+}
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 400; font-size: 16px; color: #8e8b85;
+  text-transform: uppercase; text-align: center; letter-spacing: 0.5px;
+  height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 12px; }
+.nav-item {
+  width: 64px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 8px 0; cursor: pointer;
+  border-radius: 12px; transition: background 140ms;
+}
+.nav-item.active { background: #1f1f25; }
+.nav-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+.nav-icon { width: 24px; height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.nav-icon img { width: 24px; height: 24px; display: block; }
+.nav-item.active .nav-icon img { filter: brightness(0) invert(1); }
+.nav-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; line-height: 16px; width: 64px;
+}
+.nav-item.active .nav-label { color: #f2f3e5; }
+.sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #b8c0ed no-repeat center / cover;
+  border: 2px solid #36363f;
+  overflow: hidden; box-sizing: border-box;
+}
+.user-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+}
+
+/* ─── Main content ──────────────────────────────────────────── */
+.toolkit-main {
+  position: absolute;
+  left: 152px; top: 72px; bottom: 0; right: 48px;
+  overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.toolkit-main::-webkit-scrollbar { width: 0; }
+
+/* ─── Title ─────────────────────────────────────────────────── */
+.toolkit-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  color: #f2f3e5; letter-spacing: -1px;
+  margin: 0 0 16px; text-align: left;
+}
+.toolkit-desc {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  letter-spacing: -0.1px; line-height: 20px;
+  color: #737472; margin: 0 0 36px;
+}
+
+/* ─── Filter pills ──────────────────────────────────────────── */
+.filter-row {
+  display: flex; gap: 8px; margin-bottom: 24px;
+}
+.filter-pill {
+  height: 40px; padding: 0 20px;
+  border-radius: 12px; border: none;
+  background: #2b2b35; color: rgba(242,243,229,0.5);
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  cursor: pointer; transition: background 120ms, color 120ms;
+  display: flex; align-items: center;
+}
+.filter-pill.active { background: #f2f3e5; color: #1f1f25; }
+.filter-pill:not(.active):hover { color: #f2f3e5; }
+
+/* ─── Tab panels ────────────────────────────────────────────── */
+.tab-panel { display: none; width: 100%; }
+.tab-panel.active { display: block; }
+
+/* ─── Video row ─────────────────────────────────────────────── */
+.video-row {
+  display: flex; gap: 24px; align-items: flex-start; width: 100%;
+}
+
+/* ─── Video tile ────────────────────────────────────────────── */
+.video-tile {
+  flex: 1; height: 485px; border-radius: 20px; overflow: hidden;
+  position: relative; cursor: pointer;
+}
+
+/* ─── Recommended layout: hero + 2-tile pair ────────────────── */
+.rec-hero {
+  width: 100%; flex: none;
+}
+.rec-pair {
+  display: flex; gap: 24px; margin-top: 24px;
+}
+
+.video-tile-bg {
+  position: absolute; inset: 0; overflow: hidden;
+}
+.video-tile-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.tile-gradient {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.20) 100%);
+  pointer-events: none;
+}
+
+/* Heart button — top right */
+.heart-btn {
+  position: absolute; top: 12px; right: 12px;
+  width: 48px; height: 48px;
+  background: none; border: none; padding: 0; margin: 0;
+  outline: none; appearance: none; -webkit-appearance: none;
+  box-shadow: none; -webkit-tap-highlight-color: transparent;
+  cursor: pointer; display: block;
+  transition: transform 120ms;
+  z-index: 2;
+}
+.heart-btn:active { transform: scale(0.9); }
+.heart-btn img { width: 48px; height: 48px; display: block; }
+
+/* Info box — bottom right */
+.video-info {
+  position: absolute; bottom: 12px; right: 12px;
+  width: 240px;
+  background: #36363f; border-radius: 12px;
+  padding: 8px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 6px;
+  z-index: 2;
+}
+.video-meta {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.video-duration {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.2px;
+}
+.video-sparks {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.2px;
+}
+.video-sparks img { width: 16px; height: 16px; display: block; }
+.video-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; color: #f2f3e5;
+  line-height: 1.12; letter-spacing: -0.4px; margin: 0;
+}
+
+/* ─── Browse grid ───────────────────────────────────────────── */
+.browse-grid { display: flex; flex-direction: column; width: 100%; margin-top: 40px; }
+.browse-row { display: flex; gap: 12px; justify-content: center; }
+.browse-row:first-child { margin-bottom: -12px; }
+
+.category-circle {
+  width: 220px; height: 220px; border-radius: 149px;
+  position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;
+  transition: transform 140ms cubic-bezier(0.34,1.56,0.64,1);
+}
+.category-circle:hover { transform: scale(1.04); }
+
+.category-inner {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  gap: 24px;
+  padding: 36px; box-sizing: border-box;
+}
+
+.category-emoji-btn {
+  width: 96px; height: 96px; flex-shrink: 0;
+  background: #1f1f25; border-radius: 50%;
+  border: 10px solid #2f2f37;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; line-height: 1;
+  box-sizing: border-box;
+}
+
+.category-label {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; text-align: center; letter-spacing: -0.4px; line-height: 1.1;
+}
+
+/* ─── Empty state ───────────────────────────────────────────── */
+.saved-empty {
+  font-family: var(--font-display); font-weight: 400; color: #a4a59f;
+  font-size: 32px; font-weight: 400;
+  text-align: center; margin: 120px 0 0;
+}
+
+/* ─── Simplified "My toolkit" (no video watched) ────────────── */
+.toolkit-simple {
+  position: absolute;
+  left: 152px; top: 72px; bottom: 112px; right: 48px;
+  display: flex; flex-direction: column;
+}
+.tk-header-row {
+  flex-shrink: 0;
+}
+.toolkit-simple .toolkit-desc { margin-bottom: 0; }
+.tk-featured-video {
+  width: 100%; height: 485px; border-radius: 20px; overflow: hidden;
+  position: relative; cursor: pointer;
+  margin: auto 0;
+  transition: transform 140ms cubic-bezier(0.34,1.56,0.64,1);
+}
+.tk-featured-video:hover { transform: scale(1.01); }
+.btn-explore {
+  position: absolute; bottom: 64px; left: 640px; transform: translateX(-50%);
+  height: 48px; padding: 0; width: 200px;
+  background: transparent; color: #f5f5f5;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: 1px solid rgba(255,255,255,0.16);
+  cursor: pointer; letter-spacing: -0.1px;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  transition: opacity 120ms;
+}
+.btn-explore:active { opacity: 0.7; }
+
+/* ─── Explore back button ────────────────────────────────────── */
+.explore-back {
+  position: absolute; left: 24px; top: 48px;
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.16); border: none; border-radius: 8px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; z-index: 10;
+  transition: opacity 120ms;
+}
+.explore-back:active { opacity: 0.7; }
+
+
+/* ── Support handle + panel ──────────────────────────────────── */
+.support-handle {
+  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  width: 64px; height: 72px;
+  background: #1f1f25; border: 1px solid #36363f; border-right: none;
+  border-radius: 14px 0 0 14px;
+  padding: 0; cursor: pointer; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 150ms;
+}
+.support-handle:hover { background: #252530; }
+.support-handle-label { font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #a4a59f; pointer-events: none; line-height: 1; }
+.support-panel.sp-open .support-handle { background: #2b2b32; }
+.sp-backdrop {
+  position: absolute; inset: 0; z-index: 34;
+  background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.sp-backdrop.sp-open { opacity: 1; pointer-events: all; }
+.support-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 380px; z-index: 35;
+  background: #2b2b32; border-left: 1px solid #36363f;
+  transform: translateX(100%); transition: transform 360ms cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+}
+.support-panel.sp-open { transform: translateX(0); }
+.sp-header {
+  display: flex; flex-direction: column;
+  padding: 52px 24px 20px; border-bottom: 1px solid #36363f; flex-shrink: 0;
+}
+.sp-subtitle {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 6px 0 0; line-height: 1.4;
+}
+.sp-cta {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; padding: 16px 24px; line-height: 1.5;
+}
+.sp-cta strong { color: #f2f3e5; }
+.sp-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.1;
+  letter-spacing: 0.5px; color: #f2f3e5; margin: 0;
+}
+.sp-close {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.sp-close:hover { background: rgba(255,255,255,0.14); }
+.sp-items { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+.sp-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 24px; cursor: pointer; transition: background 120ms;
+}
+.sp-item:hover { background: rgba(255,255,255,0.04); }
+.sp-item-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: #36363f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sp-item-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; margin: 0 0 3px; letter-spacing: -0.1px;
+}
+.sp-item-sub {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Sidebar -->
+  <nav class="today-sidebar">
+    <div class="sidebar-logo" data-content="toolkit_sidebar_logo">Sparkz</div>
+    <div class="sidebar-nav">
+      <div class="nav-item" onclick="window.location.href='today.html'">
+        <div class="nav-icon"><img src="./components/icon-02.svg" alt="Today"></div>
+        <span class="nav-label" data-content="nav_today">Today</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journal.html'">
+        <div class="nav-icon"><img src="./components/icon-01.svg" alt="Journal"></div>
+        <span class="nav-label" data-content="nav_journal">Journal</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><img src="./components/icon-03.svg" alt="My toolkit"></div>
+        <span class="nav-label" data-content="nav_my_toolkit">My toolkit</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journey.html'">
+        <div class="nav-icon"><img src="./components/icon-04.svg" alt="Journey"></div>
+        <span class="nav-label" data-content="nav_journey">Journey</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='grades.html'">
+        <div class="nav-icon"><img src="./components/icon-05.svg" alt="Grades"></div>
+        <span class="nav-label" data-content="nav_grades">Grades</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='sparks.html'">
+        <div class="nav-icon"><img src="./components/icon-06.svg" alt="Sparkz"></div>
+        <span class="nav-label" data-content="nav_sparkz">Sparkz</span>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar" onclick="window.location.href='settings.html'" style="cursor:pointer"></div>
+      <span class="user-name">Sophie</span>
+    </div>
+  </nav>
+
+  <!-- Simplified view (no video watched) -->
+  <section class="toolkit-simple" id="mainSimple" style="display:none">
+    <div class="tk-header-row">
+      <h2 class="toolkit-title" data-content="toolkit_title_simple">My toolkit</h2>
+      <p class="toolkit-desc" data-content="toolkit_desc">Content for how you feel.</p>
+    </div>
+
+    <div class="tk-featured-video" onclick="window.location.href='toolkit-video.html?video=calming-breath'">
+      <div class="video-tile-bg"><img src="./components/calming-breath-cover.png" alt="Calming Breath"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(182deg,rgba(0,0,0,0) 44%,rgba(0,0,0,0.5) 84%);"></div>
+      <div class="heart-btn" data-vid="v2" onclick="event.stopPropagation();toggleHeart(this)" style="z-index:2">
+        <img src="./components/heart-default.svg" alt="save">
+      </div>
+      <div class="video-info" style="z-index:2">
+        <div class="video-meta">
+          <span class="video-duration" data-content="toolkit_video_duration_simple">1:04</span>
+          <span class="video-sparks" data-content="toolkit_video_sparks_simple">1 <img src="./components/spark.svg" alt="spark"></span>
+        </div>
+        <p class="video-title" data-content="toolkit_video_title_calming_breath_simple">Calming Breath</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Explore button — outside toolkit-simple so it positions relative to device -->
+  <button class="btn-explore" id="btnExplore" onclick="goExplore()" style="display:none" data-content="btn_explore">More</button>
+
+  <!-- Full toolkit view -->
+  <main class="toolkit-main" id="mainFull" style="display:none">
+
+    <h2 class="toolkit-title" id="toolkitTitle">My toolkit</h2>
+    <p class="toolkit-desc" data-content="toolkit_desc_full">Content for how you feel.</p>
+
+    <div class="filter-row">
+      <button class="filter-pill active" onclick="setFilter('recommended', this)" data-content="btn_filter_recommended">Recommended</button>
+      <button class="filter-pill" onclick="setFilter('browse', this)" data-content="btn_filter_browse">Browse</button>
+      <button class="filter-pill" onclick="setFilter('doitagain', this)" data-content="btn_filter_doitagain">Do it again</button>
+      <button class="filter-pill" onclick="setFilter('saved', this)" data-content="btn_filter_saved">Saved</button>
+    </div>
+
+    <!-- ─── RECOMMENDED ─────────────────────────────────────── -->
+    <div class="tab-panel active" id="tab-recommended">
+
+      <!-- Hero tile (full width) -->
+      <div class="video-tile rec-hero" style="background:#0d0d0d;" onclick="window.location.href='toolkit-video.html?video=youve-done-hard-things'">
+        <div class="video-tile-bg"><img src="./components/youve-done-hard-things-cover.png" alt=""></div>
+        <div class="heart-btn" data-vid="v1" onclick="event.stopPropagation();toggleHeart(this)">
+          <img src="./components/heart-default.svg" alt="save">
+        </div>
+        <div class="video-info">
+          <div class="video-meta">
+            <span class="video-duration" data-content="toolkit_video_duration_hero">1:16</span>
+            <span class="video-sparks" data-content="toolkit_video_sparks_hero">1 <img src="./components/spark.svg" alt="spark"></span>
+          </div>
+          <p class="video-title" data-content="toolkit_video_title_hard_things">You've Done Hard Things</p>
+        </div>
+      </div>
+
+      <!-- Two-tile row -->
+      <div class="rec-pair">
+
+        <div class="video-tile" style="background:#030d1f;" onclick="window.location.href='toolkit-video.html?video=calming-breath'">
+          <div class="video-tile-bg"><img src="./components/calming-breath-cover.png" alt=""></div>
+          <div class="tile-gradient"></div>
+          <div class="heart-btn" data-vid="v2" onclick="event.stopPropagation();toggleHeart(this)">
+            <img src="./components/heart-default.svg" alt="save">
+          </div>
+          <div class="video-info">
+            <div class="video-meta">
+              <span class="video-duration" data-content="toolkit_video_duration_calming">1:04</span>
+              <span class="video-sparks" data-content="toolkit_video_sparks_calming">1 <img src="./components/spark.svg" alt="spark"></span>
+            </div>
+            <p class="video-title" data-content="toolkit_video_title_calming_breath">Calming Breath</p>
+          </div>
+        </div>
+
+        <div class="video-tile" style="background:#1a1a22;" onclick="window.location.href='toolkit-video.html?video=calming-breath'">
+          <div class="video-tile-bg"><img src="./components/video-thumbnail.jpg" alt=""></div>
+          <div class="tile-gradient"></div>
+          <div class="heart-btn" data-vid="v3" onclick="event.stopPropagation();toggleHeart(this)">
+            <img src="./components/heart-default.svg" alt="save">
+          </div>
+          <div class="video-info">
+            <div class="video-meta">
+              <span class="video-duration" data-content="toolkit_video_duration_resilience">1:07</span>
+              <span class="video-sparks" data-content="toolkit_video_sparks_resilience">1 <img src="./components/spark.svg" alt="spark"></span>
+            </div>
+            <p class="video-title" data-content="toolkit_video_title_resilience">Building Resilience Every Day</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── DO IT AGAIN ─────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-doitagain">
+      <div class="video-row">
+
+        <div class="video-tile" onclick="window.location.href='toolkit-video.html?video=calming-breath'">
+          <div class="video-tile-bg"><img src="./components/carousel-01.svg" alt=""></div>
+          <div class="heart-btn" data-vid="vwatch" onclick="event.stopPropagation();toggleHeart(this)">
+            <img src="./components/heart-default.svg" alt="save">
+          </div>
+          <div class="video-info">
+            <div class="video-meta">
+              <span class="video-duration" data-content="toolkit_video_duration_doitagain_1">1:07</span>
+              <span class="video-sparks" data-content="toolkit_video_sparks_doitagain_1">1 <img src="./components/spark.svg" alt="spark"></span>
+            </div>
+            <p class="video-title" data-content="toolkit_video_title_karl">Karl Anthony Tawns Overcoming Challenges</p>
+          </div>
+        </div>
+
+        <div class="video-tile" style="background:#030d1f;" onclick="window.location.href='toolkit-video.html?video=calming-breath'">
+          <div class="video-tile-bg"><img src="./components/calming-breath-cover.png" alt=""></div>
+          <div class="tile-gradient"></div>
+          <div class="heart-btn" data-vid="v2" onclick="event.stopPropagation();toggleHeart(this)">
+            <img src="./components/heart-default.svg" alt="save">
+          </div>
+          <div class="video-info">
+            <div class="video-meta">
+              <span class="video-duration" data-content="toolkit_video_duration_doitagain_2">1:04</span>
+              <span class="video-sparks" data-content="toolkit_video_sparks_doitagain_2">1 <img src="./components/spark.svg" alt="spark"></span>
+            </div>
+            <p class="video-title" data-content="toolkit_video_title_calming_breath_doitagain">Calming Breath</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── SAVED ────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-saved">
+      <div class="video-row" id="savedRow"></div>
+      <p class="saved-empty" id="savedEmpty" data-content="toolkit_saved_empty">Save your favourite exercises!</p>
+    </div>
+
+    <!-- ─── BROWSE ───────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-browse">
+      <div class="browse-grid">
+        <div class="browse-row">
+          <div class="category-circle" style="background:#3f50b8;" onclick="window.location.href='category.html?cat=calm-down'">
+            <div class="category-inner">
+              <div class="category-emoji-btn">😮‍💨</div>
+              <span class="category-label" data-content="toolkit_category_calm_down">Calm down</span>
+            </div>
+          </div>
+          <div class="category-circle" style="background:#e65800;" onclick="window.location.href='category.html?cat=boost-energy'">
+            <div class="category-inner">
+              <div class="category-emoji-btn">⚡</div>
+              <span class="category-label" data-content="toolkit_category_boost_energy">Boost energy</span>
+            </div>
+          </div>
+          <div class="category-circle" style="background:#219653;" onclick="window.location.href='category.html?cat=feel-good'">
+            <div class="category-inner">
+              <div class="category-emoji-btn">🌈</div>
+              <span class="category-label" data-content="toolkit_category_feel_good">Feel good</span>
+            </div>
+          </div>
+        </div>
+        <div class="browse-row">
+          <div class="category-circle" style="background:#49aee1;" onclick="window.location.href='category.html?cat=focus'">
+            <div class="category-inner">
+              <div class="category-emoji-btn">🧠</div>
+              <span class="category-label" data-content="toolkit_category_focus">Focus</span>
+            </div>
+          </div>
+          <div class="category-circle" style="background:#7040c8;" onclick="window.location.href='category.html?cat=wind-down'">
+            <div class="category-inner">
+              <div class="category-emoji-btn">😴</div>
+              <span class="category-label" data-content="toolkit_category_wind_down">Wind down</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ── Support handle ──────────────────────────────────────── -->
+  <div class="sp-backdrop" id="spBackdrop" onclick="closeSupport()"></div>
+  <div class="support-panel" id="supportPanel">
+    <button class="support-handle" onclick="toggleSupport()"><img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt=""><span class="support-handle-label" data-content="toolkit_support_handle_label">Talk</span></button>
+        <div class="sp-header">
+      <h2 class="sp-title" data-content="toolkit_support_title">Need to talk?</h2>
+      <p class="sp-subtitle" data-content="toolkit_support_subtitle">When things are tough, you are not alone.</p>
+    </div>
+    <div class="sp-items">
+      <div class="sp-item">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="3.5" stroke="#f2f3e5" stroke-width="1.5"/>
+            <path d="M4 19c0-3.87 3.13-7 7-7h0c3.87 0 7 3.13 7 7" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="toolkit_support_item1_title">Talk to someone.</p>
+          <p class="sp-item-sub" data-content="toolkit_support_item1_sub">A trusted adult at your school is here to help.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <div class="sp-item" style="cursor:pointer" onclick="window.location.href='support-write.html'">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="toolkit_support_item2_title">Write it out.</p>
+          <p class="sp-item-sub" data-content="toolkit_support_item2_sub">We'll make sure someone sees it.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <p class="sp-cta" data-content="toolkit_support_cta">Need to talk to someone right away? <strong>Call 988.</strong></p>
+    </div>
+  </div>
+  </div>
+
+</div>
+</div>
+
+<!-- Video overlay — outside bp-device so transform:scale() doesn't block video frames -->
+<div id="yt-overlay" style="display:none; position:fixed; left:0; top:0; right:0; bottom:0; background:#000; z-index:999; -webkit-transform:translateZ(0); transform:translateZ(0);">
+  <video id="yt-player" playsinline webkit-playsinline
+    style="width:100%; height:100%; display:block; -webkit-transform:translateZ(0); transform:translateZ(0);"></video>
+  <button onclick="closeYT()" data-content="toolkit_video_close_btn"
+    style="position:absolute; top:24px; right:32px; background:rgba(0,0,0,0.6); color:#fff;
+           border:none; border-radius:20px; padding:8px 20px; font-size:16px; cursor:pointer; z-index:2;">
+    ✕ Zamknij
+  </button>
+</div>
+
+<script>
+// ─── Decide which view to show ────────────────────────────────
+(function() {
+  const params       = new URLSearchParams(location.search);
+  if (params.get('reset') === 'video') {
+    localStorage.removeItem('bp_video_watched');
+  }
+  const videoWatched = localStorage.getItem('bp_video_watched') === '1' && params.get('preview') !== 'simple';
+  const exploreMode  = params.get('explore') === '1';
+
+  if (videoWatched || exploreMode) {
+    const mainFull = document.getElementById('mainFull');
+    mainFull.style.display = '';
+
+    if (exploreMode) {
+      // Hide sidebar, show back button, center layout
+      document.querySelector('.today-sidebar').style.display = 'none';
+
+      const backBtn = document.createElement('button');
+      backBtn.className = 'explore-back';
+      backBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      backBtn.onclick = () => history.back();
+      document.getElementById('device').appendChild(backBtn);
+
+      // Center the main content — same top/spacing as other sections
+      mainFull.style.left      = '50%';
+      mainFull.style.top       = '72px';
+      mainFull.style.transform = 'translateX(-50%)';
+      mainFull.style.width     = '994px';
+
+      document.getElementById('toolkitTitle').textContent = 'Explore';
+      mainFull.style.alignItems = 'center';
+      mainFull.querySelector('.toolkit-title').style.textAlign = 'center';
+      mainFull.querySelector('.toolkit-desc').style.textAlign  = 'center';
+    }
+  } else {
+    document.getElementById('mainSimple').style.display = '';
+    document.getElementById('btnExplore').style.display = '';
+  }
+})();
+
+function goExplore() {
+  window.location.href = 'my-toolkit.html?explore=1';
+}
+
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+(function(){
+  var src = localStorage.getItem('bp_avatar') || './foundations/assets/avatars/avatar-3.svg';
+  var bg  = localStorage.getItem('bp_avatar_bg') || '#b8c0ed';
+  var el  = document.getElementById('userAvatar');
+  if (el) el.style.background = bg + ' url("' + src + '") no-repeat center / cover';
+})();
+(function(){
+  var name = localStorage.getItem('bp_username') || 'Sophie';
+  var el = document.querySelector('.user-name');
+  if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+const tabMap = {
+  'recommended': 'tab-recommended',
+  'browse':      'tab-browse',
+  'doitagain':   'tab-doitagain',
+  'saved':       'tab-saved',
+};
+
+function setFilter(tab, btn) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  Object.values(tabMap).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const target = document.getElementById(tabMap[tab]);
+  if (target) target.classList.add('active');
+}
+
+const VIDEOS = {
+  v1:          { bg: '#0d0d0d',  img: './components/youve-done-hard-things-cover.png', title: "You've Done Hard Things" },
+  v2:          { bg: '#030d1f',  img: './components/calming-breath-cover.png',          title: 'Calming Breath' },
+  v3:          { bg: '#1a1a22',  img: './components/video-thumbnail.jpg',               title: 'Building Resilience Every Day' },
+  vwatch:      { bg: '#1a1a1a',  img: './components/carousel-01.svg',                   title: 'Karl Anthony Tawns Overcoming Challenges' },
+  'grades-v1': { bg: '#addbf2',  img: './components/cloud-grades-1.svg',                title: 'The emotional side of grades' },
+  'grades-v2': { bg: '#d6c0fe',  img: './components/mithosis.svg',                      title: 'How to catch up after missing school' },
+};
+
+// Init from localStorage; filter out unknown IDs, ensure at least one item
+const _savedArr = JSON.parse(localStorage.getItem('bp_saved') || '["v2"]').filter(id => VIDEOS[id]);
+if (_savedArr.length === 0) _savedArr.push('v2');
+const savedSet = new Set(_savedArr);
+localStorage.setItem('bp_saved', JSON.stringify([...savedSet]));
+
+function toggleHeart(btn) {
+  const vid = btn.dataset.vid;
+  const nowSaved = !btn.classList.contains('saved');
+  // Never allow removing the last saved item
+  if (!nowSaved && savedSet.size <= 1) return;
+
+  // Sync all buttons with same vid
+  document.querySelectorAll(`[data-vid="${vid}"]`).forEach(b => {
+    const img = b.querySelector('img');
+    if (nowSaved) {
+      b.classList.add('saved');
+      img.src = './components/heart-saved.svg';
+    } else {
+      b.classList.remove('saved');
+      img.src = './components/heart-default.svg';
+    }
+  });
+
+  if (nowSaved) savedSet.add(vid);
+  else savedSet.delete(vid);
+
+  localStorage.setItem('bp_saved', JSON.stringify([...savedSet]));
+  renderSaved();
+  syncHearts();
+}
+
+function renderSaved() {
+  const row   = document.getElementById('savedRow');
+  const empty = document.getElementById('savedEmpty');
+
+  if (savedSet.size === 0) {
+    row.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  row.style.display = 'flex';
+  row.innerHTML = [...savedSet].map(vid => {
+    const v = VIDEOS[vid] || {};
+    return `
+      <div class="video-tile" style="background:${v.bg || '#36363f'};" onclick="window.location.href='toolkit-video.html?video=calming-breath'">
+        <div class="video-tile-bg"><img src="${v.img}" alt="" style="object-fit:cover;"></div>
+        <div class="heart-btn saved" data-vid="${vid}" onclick="event.stopPropagation();toggleHeart(this)">
+          <img src="./components/heart-saved.svg" alt="saved">
+        </div>
+        <div class="video-info">
+          <div class="video-meta">
+            <span class="video-duration">1:07</span>
+            <span class="video-sparks">1 <img src="./components/spark.svg" alt="spark"></span>
+          </div>
+          <p class="video-title">${v.title}</p>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function syncHearts() {
+  document.querySelectorAll('.heart-btn[data-vid]').forEach(btn => {
+    const isSaved = savedSet.has(btn.dataset.vid);
+    const img = btn.querySelector('img');
+    if (isSaved) {
+      btn.classList.add('saved');
+      img.src = './components/heart-saved.svg';
+    } else {
+      btn.classList.remove('saved');
+      img.src = './components/heart-default.svg';
+    }
+  });
+}
+
+// Init saved tab
+renderSaved();
+syncHearts();
+
+// Activate tab from URL param (e.g. when returning from category.html?tab=browse)
+(function() {
+  const p = new URLSearchParams(location.search);
+  const tab = p.get('tab');
+  if (tab && tabMap[tab]) {
+    const pill = document.querySelector(`.filter-pill[onclick*="'${tab}'"]`);
+    if (pill) setFilter(tab, pill);
+  }
+})();
+
+function toggleSupport() {
+  document.getElementById('supportPanel').classList.contains('sp-open') ? closeSupport() : openSupport();
+}
+function openSupport() {
+  document.getElementById('supportPanel').classList.add('sp-open');
+  document.getElementById('spBackdrop').classList.add('sp-open');
+}
+function closeSupport() {
+  document.getElementById('supportPanel').classList.remove('sp-open');
+  document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+
+function openYT(src) {
+  var overlay = document.getElementById('yt-overlay');
+  var player  = document.getElementById('yt-player');
+  overlay.style.display = 'block';
+  player.src = src;
+  requestAnimationFrame(function() {
+    player.play().catch(function(){});
+  });
+}
+function closeYT() {
+  var overlay = document.getElementById('yt-overlay');
+  var player  = document.getElementById('yt-player');
+  overlay.style.display = 'none';
+  player.pause();
+  player.src = '';
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

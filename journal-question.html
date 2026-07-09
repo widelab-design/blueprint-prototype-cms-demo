@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Journal question</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1));
+}
+
+/* ─── Screen switcher ───────────────────────────────────────── */
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+
+/* ─── Shared ────────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+.btn-back {
+  position: absolute; left: 24px; top: 48px; z-index: 20;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 120ms;
+}
+.btn-back:hover { background: rgba(255,255,255,0.24); }
+
+/* ─── S-QUESTION ────────────────────────────────────────────── */
+.q-circle {
+  position: absolute;
+  left: 84px; top: -96px;
+  width: 1026px; height: 1026px;
+  pointer-events: none;
+}
+
+.q-text {
+  position: absolute;
+  left: 50%; transform: translate(-50%, -50%);
+  top: 50%;
+  width: 449px;
+  font-family: var(--font-body); font-size: 48px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.14; text-align: center; margin: 0;
+}
+
+.q-write-btn {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 721px;
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: -0.1px; box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  transition: opacity 120ms;
+}
+.q-write-btn:active { opacity: 0.8; }
+
+/* ─── S-WRITE ───────────────────────────────────────────────── */
+#s-write { /* bg set by JS */ }
+
+.w-dome {
+  position: absolute;
+  width: 1026px; height: 1026px;
+  left: 84px; top: -96px;
+  pointer-events: none;
+}
+
+.w-spark-pill {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 115px;
+  background: #2f2f37; border-radius: 99px;
+  padding: 8px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.w-spark-pill span {
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; color: #f2f3e5; line-height: 1.05;
+}
+.w-spark-pill img { width: 20px; height: 20px; display: block; }
+
+.w-content {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 200px;
+  width: 439px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+
+.w-message {
+  width: 100%; height: 68px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px; box-sizing: border-box;
+  background: #f08b31;
+}
+.w-message-icon {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5;
+  display: flex; align-items: center; justify-content: center;
+}
+.w-message-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  flex: 1; min-width: 0;
+}
+
+.w-textarea {
+  width: 100%; height: 200px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 8px;
+  padding: 10px 16px; box-sizing: border-box;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; resize: none; outline: none;
+}
+.w-textarea::placeholder { color: #adadad; }
+
+.w-buttons {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 721px;
+}
+.w-icon-btn {
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+}
+.w-save-btn {
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: -0.1px; box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  transition: opacity 120ms;
+}
+.w-save-btn:active { opacity: 0.8; }
+
+/* ─── S-SAVED ───────────────────────────────────────────────── */
+#s-saved { /* bg set by JS */ }
+
+.saved-dome {
+  position: absolute;
+  width: 1910px; height: 1910px;
+  left: 50%; transform: translateX(-50%);
+  top: 197px; border-radius: 50%;
+  background: #1f1f25;
+  pointer-events: none;
+}
+
+.saved-spark {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 274px;
+  display: flex; align-items: center; gap: 12px;
+}
+.saved-spark-num {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; color: #f2f3e5;
+  line-height: 40px; letter-spacing: -0.8px;
+}
+.saved-spark-img { width: 32px; height: 32px; display: block; }
+
+.saved-title {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 326px;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; text-align: center;
+  margin: 0; white-space: nowrap;
+}
+
+.saved-message {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 423px;
+  width: 439px; height: 68px;
+  background: #58b880;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px; box-sizing: border-box;
+}
+.saved-message-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  flex: 1; min-width: 0;
+}
+
+.saved-btns {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 721px;
+  display: flex; gap: 24px; align-items: center;
+}
+.saved-btn-secondary {
+  width: 270px; height: 48px;
+  background: rgba(255,255,255,0.16); color: #ededed;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: -0.1px; transition: opacity 120ms;
+}
+.saved-btn-primary {
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: -0.1px; box-shadow: 0 1px 1px rgba(20,21,26,0.03);
+  transition: opacity 120ms;
+}
+.saved-btn-secondary:active, .saved-btn-primary:active { opacity: 0.8; }
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <!-- ═══ S-QUESTION ══════════════════════════════════════════ -->
+  <div class="screen active" id="s-question">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <button class="btn-back" onclick="history.back()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <img class="q-circle" src="./components/kolo1.svg" alt="">
+    <p class="q-text" id="qText"></p>
+    <button class="q-write-btn" data-content="journal_q_write_btn" onclick="goTo('s-write')">Write</button>
+  </div>
+
+  <!-- ═══ S-WRITE ═════════════════════════════════════════════ -->
+  <div class="screen" id="s-write">
+    <img class="w-dome" src="./components/kolo1.svg" alt="">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <button class="btn-back" onclick="goTo('s-question')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="w-spark-pill">
+      <span>1</span>
+      <img src="./components/spark.svg" alt="spark">
+    </div>
+
+    <div class="w-content">
+      <div class="w-message" id="wMessage">
+        <div class="w-message-icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M19.8931 37.566C8.7883 37.566 -0.2139 28.6003 -0.2139 17.5408C5.8012 17.5408 10.6774 12.6843 10.6774 6.6937C10.6774 4.5059 10.6774 2.4341 10.6774 2.4341L29.1087 2.4341C29.1087 2.4341 29.1087 4.5059 29.1087 6.6937C29.1087 12.6843 33.9849 17.5408 40 17.5408C40 28.6004 30.9979 37.566 19.8931 37.566Z" fill="#E65800"/>
+            <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 19.053 15.9763)" fill="#F2F3E5"/>
+            <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 18.1058 19.9985)" fill="#36363F"/>
+            <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 26.6295 15.9763)" fill="#F2F3E5"/>
+            <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 25.6825 19.9986)" fill="#36363F"/>
+          </svg>
+        </div>
+        <p class="w-message-text" id="wMessageText"></p>
+      </div>
+      <textarea class="w-textarea" id="wTextarea" data-content-placeholder="journal_q_textarea_placeholder" placeholder="Start writing here…"></textarea>
+    </div>
+
+    <div class="w-buttons">
+      <button class="w-save-btn" data-content="journal_q_save_btn" onclick="saveAnswer()">Save</button>
+    </div>
+  </div>
+
+  <!-- ═══ S-SAVED ══════════════════════════════════════════════ -->
+  <div class="screen" id="s-saved">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <button class="btn-back" onclick="goTo('s-write')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="saved-dome"></div>
+
+    <div class="saved-spark">
+      <span class="saved-spark-num">+1</span>
+      <img class="saved-spark-img" src="./components/Spark-4.svg" alt="spark">
+    </div>
+
+    <h1 class="saved-title" data-content="journal_q_saved_title">Note saved!</h1>
+
+    <div class="saved-message">
+      <div class="w-message-icon" style="background:#f2f3e5; flex-shrink:0;">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M19.8931 37.566C8.7883 37.566 -0.2139 28.6003 -0.2139 17.5408C5.8012 17.5408 10.6774 12.6843 10.6774 6.6937C10.6774 4.5059 10.6774 2.4341 10.6774 2.4341L29.1087 2.4341C29.1087 2.4341 29.1087 4.5059 29.1087 6.6937C29.1087 12.6843 33.9849 17.5408 40 17.5408C40 28.6004 30.9979 37.566 19.8931 37.566Z" fill="#E65800"/>
+          <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 19.053 15.9763)" fill="#F2F3E5"/>
+          <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 18.1058 19.9985)" fill="#36363F"/>
+          <ellipse cx="2.84122" cy="3.7883" rx="2.84122" ry="3.7883" transform="matrix(-1 0 0 1 26.6295 15.9763)" fill="#F2F3E5"/>
+          <circle cx="1.98886" cy="1.98886" r="1.98886" transform="matrix(-1 0 0 1 25.6825 19.9986)" fill="#36363F"/>
+        </svg>
+      </div>
+      <p class="saved-message-text" data-content="journal_q_saved_message">Did writing this help you understand your feelings more?</p>
+    </div>
+
+    <div class="saved-btns">
+      <button class="saved-btn-secondary" data-content="journal_q_btn_not_really" onclick="finish()">Not really</button>
+      <button class="saved-btn-primary" data-content="journal_q_btn_yes" onclick="finish()">Yes, a bit!</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+// ─── Question config ───────────────────────────────────────────
+const QUESTIONS = {
+  '1': { text: 'What kinds of moments or things tend to lift your mood — even a little?', color: '#3f50b8', msgColor: '#49aee1', key: 'bp_journal_q1' },
+  '2': { text: "What's making you feel this excited?", color: '#e65800', msgColor: '#f08b31', key: 'bp_journal_q2' }
+};
+
+const params = new URLSearchParams(location.search);
+const qId = params.get('q') || '1';
+const q = QUESTIONS[qId] || QUESTIONS['1'];
+
+// Apply question content
+document.getElementById('s-question').style.background = q.color;
+document.getElementById('qText').textContent = q.text;
+document.getElementById('wMessageText').textContent = q.text;
+document.getElementById('wMessage').style.background = q.msgColor;
+document.getElementById('s-write').style.background = q.color;
+document.getElementById('s-saved').style.background = q.color;
+
+// Pre-fill if editing
+const saved = localStorage.getItem(q.key);
+if (saved) document.getElementById('wTextarea').value = saved;
+
+// ─── Navigation ────────────────────────────────────────────────
+let cur = 's-question';
+function goTo(id) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  cur = id;
+}
+
+function saveAnswer() {
+  const val = document.getElementById('wTextarea').value.trim();
+  if (!val) return;
+  localStorage.setItem(q.key, val);
+  goTo('s-saved');
+}
+
+function finish() {
+  window.location.href = 'journal.html';
+}
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

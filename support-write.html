@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Write it out</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #f08b31;
+}
+
+.screen {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity 320ms ease;
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: #fff; pointer-events: none;
+}
+
+/* ── Shared animated circle ── */
+#sw-circle {
+  position: absolute;
+  width: 1910px; height: 1910px; border-radius: 50%;
+  background: #1f1f25;
+  left: -358px; top: 69px;
+  pointer-events: none; z-index: 0;
+  transition: top 700ms cubic-bezier(0.81, 0, 0.26, 0.98);
+}
+#sw-circle.done-pos { top: 150px; }
+
+/* ── SCREEN 1: Write ── */
+
+.btn-back {
+  position: absolute; top: 36px; left: 24px; z-index: 10;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16);
+  border: none; cursor: pointer; display: grid; place-items: center;
+  transition: background 120ms;
+}
+.btn-back:hover { background: rgba(255,255,255,0.24); }
+.btn-back svg { width: 20px; height: 20px; }
+
+.write-header {
+  position: absolute; top: 115px; left: 50%; transform: translateX(-50%);
+  z-index: 5; width: 351px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.spark-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: #2f2f37; border-radius: 99px;
+  padding: 8px 12px;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px;
+  color: #f2f3e5; line-height: 1.05;
+}
+.write-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  letter-spacing: -0.8px; color: #f2f3e5; margin: 0;
+  line-height: 40px; text-align: center;
+}
+
+.write-body {
+  position: absolute; top: 257px; left: 50%; transform: translateX(-50%);
+  z-index: 5; width: 439px; display: flex; flex-direction: column; gap: 24px;
+}
+
+.msg-bubble {
+  padding: 10px; display: flex; align-items: flex-start; gap: 12px;
+}
+.msg-bubble-write { background: #f08b31; }
+.msg-bubble-done  { background: #58b880; }
+
+.msg-avatar {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5; display: grid; place-items: center;
+}
+.msg-monster { position: relative; width: 40px; height: 40px; }
+.msg-butterfly { position: absolute; width: 36px; height: 36px; top: 2px; left: 2px; }
+.msg-eyes {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 1px;
+}
+.msg-eye { width: 5.78px; height: 7.58px; display: block; }
+.msg-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; margin: 0;
+  flex: 1;
+}
+
+.write-area {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 8px; position: relative;
+}
+.write-textarea {
+  width: 100%; box-sizing: border-box;
+  border: none; outline: none; resize: none;
+  font-family: var(--font-body); font-size: 16px; font-weight: 600;
+  color: #f2f3e5; padding: 10px 16px;
+  background: transparent; min-height: 200px;
+}
+.write-textarea::placeholder { color: #adadad; font-weight: 400; }
+
+.btn-save-wrap {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 10;
+}
+.btn-save {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 150ms, transform 120ms;
+}
+.btn-save:active { transform: scale(0.97); }
+.btn-save:disabled { opacity: 0.4; cursor: default; }
+
+/* ── SCREEN 2: Success ── */
+
+.done-title {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 301px; z-index: 5; width: 613px;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  line-height: 1.06; letter-spacing: 1.5px;
+  color: #f2f3e5; text-align: center; margin: 0;
+}
+
+.done-bubble {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: 511px; z-index: 5; width: 395px;
+}
+
+.done-btns {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  z-index: 5;
+}
+.btn-primary {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer; transition: opacity 120ms;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <div id="sw-circle"></div>
+
+  <!-- SCREEN 1: Write -->
+  <div class="screen active" id="s-write">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <button class="btn-back" onclick="history.back()">
+      <svg viewBox="0 0 20 20" fill="none">
+        <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="write-header">
+      <div class="spark-pill" data-content="support_write_spark_pill">
+        1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+      </div>
+      <h1 class="write-title" data-content="support_write_title">Need to talk?</h1>
+    </div>
+
+    <div class="write-body">
+      <div class="msg-bubble msg-bubble-write">
+        <div class="msg-avatar">
+          <div class="msg-monster">
+            <img class="msg-butterfly" src="./components/monster-butterfly.svg" alt="">
+            <div class="msg-eyes">
+              <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+              <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="msg-text" data-content="support_write_bubble">Write it out. You're not alone. Other people have felt this way too.</p>
+      </div>
+
+      <div class="write-area">
+        <textarea class="write-textarea" id="noteInput" placeholder="Start writing here" data-content-placeholder="support_write_textarea_placeholder" oninput="onInput()"></textarea>
+      </div>
+    </div>
+
+    <div class="btn-save-wrap">
+      <button class="btn-save" id="btnSave" data-content="btn_save" disabled onclick="saveNote()">Save</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Success -->
+  <div class="screen" id="s-done">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <h1 class="done-title" data-content="support_done_title">Message<br>Sent!</h1>
+
+    <div class="done-bubble">
+      <div class="msg-bubble msg-bubble-done">
+        <div class="msg-avatar">
+          <div class="msg-monster">
+            <img class="msg-butterfly" src="./components/monster-butterfly.svg" alt="">
+            <div class="msg-eyes">
+              <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+              <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="msg-text" data-content="support_done_bubble">Thanks for sharing. Someone at your school will be in touch. You're always welcome to keep checking in here.</p>
+      </div>
+    </div>
+
+    <div class="done-btns">
+      <button class="btn-primary" data-content="btn_done" onclick="history.back()">Done</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+let cur = 's-write';
+
+function onInput() {
+  document.getElementById('btnSave').disabled = document.getElementById('noteInput').value.trim().length === 0;
+}
+
+function saveNote() {
+  if (!document.getElementById('noteInput').value.trim()) return;
+  // Circle slides down
+  document.getElementById('sw-circle').classList.add('done-pos');
+  // Fade out current screen
+  document.getElementById('s-write').classList.remove('active');
+  // After old screen is gone, fade in new one
+  setTimeout(() => {
+    document.getElementById('s-done').classList.add('active');
+    cur = 's-done';
+  }, 340);
+}
+
+onInput();
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

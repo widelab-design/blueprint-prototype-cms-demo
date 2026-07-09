@@ -1,0 +1,348 @@
+/* Blueprint Prototype — Design Tokens
+ * Source: Blueprint UI Design (Figma) + SparkEQ foundations
+ * -----------------------------------------------------------
+ * @import this file at the top of any Blueprint prototype.
+ *
+ * Sections:
+ *   1.  Fonts
+ *   2.  Colors — primitives
+ *   3.  Colors — semantic / dynamic
+ *   4.  Colors — emotion palette
+ *   5.  Typography scale
+ *   6.  Spacing
+ *   7.  Border radius
+ *   8.  Shadows / elevation
+ *   9.  Easing / animation timing
+ *   10. Glass morphism helpers
+ *   11. Base reset
+ *   12. Device canvas helper
+ */
+
+/* ─────────────────────────────────────────────────────────────
+   1. FONTS
+   Anton loaded from local file — no network dependency.
+   Barlow Semi Condensed used as DIN Alternate substitute.
+   ───────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@400;500;600&family=Barlow+Condensed:wght@500;600&display=swap');
+
+/* ─────────────────────────────────────────────────────────────
+   2. COLORS — Primitive palette
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Neutral / Warm */
+  --colors-neutral-warm-50:   #f2f3e5;
+  --colors-neutral-warm-1100: #1f1f25;
+
+  /* Blueprint Gray */
+  --colors-gray-100: #a4a59f;
+  --colors-gray-300: #444450;
+  --colors-gray-400: #36363f;
+  --colors-gray-500: #2f2f37;
+  --colors-gray-600: #1f1f25;
+
+  /* Blueprint Dark Blue */
+  --colors-dark-blue-200: #cbd1f5;
+  --colors-dark-blue-300: #b8c0ed;
+  --colors-dark-blue-400: #3f50b8;
+  --colors-dark-blue-500: #384078;
+
+  /* Blueprint Purple */
+  --colors-purple-300: #c4a3ff;
+  --colors-purple-500: #7040c8;
+  --colors-purple-800: #b38aff;
+
+  /* Blueprint Green */
+  --colors-green-300: #58b880;
+  --colors-green-400: #219653;
+  --colors-green-900: #1a5e36;
+
+  /* Blueprint Coral */
+  --colors-coral-200: #f3beaf;
+  --colors-coral-400: #e65800;
+
+  /* Blueprint Orange */
+  --colors-orange-400: #f08b31;
+
+  /* Blueprint Yellow */
+  --colors-yellow-400: #fdda3c;
+
+  /* Blueprint Light Orange */
+  --colors-light-orange-400: #ffbb25;
+
+  /* Blueprint Light Blue */
+  --colors-light-blue-400: #49aee1;
+
+  /* Blueprint Pink */
+  --colors-pink-400: #e768b0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. COLORS — Semantic / Dynamic
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --bg:         #3a3a44;   /* primary app bg */
+  --bg-deep:    #32323b;   /* slightly darker, elevated surfaces */
+  --bg-darkest: #14141a;   /* full-bleed stage / splash */
+  --surface:    #464651;   /* cards, list items, raised elements */
+  --surface-low:#2f2f37;   /* sunken, input fills, nav underlay */
+
+  /* Text */
+  --cream:      #f2f3e5;   /* primary text / headings (on dark) */
+  --cream-dark: #d1cbb8;   /* secondary text */
+  --muted:      #8e8b85;   /* tertiary / disabled / placeholders */
+  --text-dark:  #403a2e;   /* text on light/cream backgrounds */
+
+  /* Brand accents */
+  --purple:       #7040c8;
+  --purple-light: #b38aff;
+  --blue:         #49aee1;
+  --blue-deep:    #3f50b8;
+  --gold:         #d5941a;
+  --green:        #219653;
+  --green-light:  #58b880;
+
+  /* Borders */
+  --border:       rgba(255,255,255,0.06);
+  --border-light: rgba(255,255,255,0.10);
+  --border-muted: rgba(92,92,101,0.30);
+
+  /* Dynamic fill / text roles (from Figma tokens) */
+  --fill-primary:   #f2f3e5;
+  --fill-secondary: rgba(255,255,255,0.16);
+  --fill-inverse:   #0f0f0f;
+
+  --text-on-primary: #1f1f25;
+  --text-on-dark:    #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. COLORS — Emotion palette (mood check-in)
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --mood-happy:    #f8b3b8;
+  --mood-excited:  #e75a33;
+  --mood-grateful: #6fcf97;
+  --mood-hopeful:  #56ccf2;
+  --mood-curious:  #ffa250;
+  --mood-okay:     #b38aff;
+  --mood-neutral:  #8e8a8a;
+  --mood-sad:      #5f72e5;
+  --mood-anxious:  #b38aff;
+  --mood-stressed: #e75a33;
+  --mood-tired:    #5f72e5;
+  --mood-angry:    #ef4444;
+  --mood-lonely:   #8e8a8a;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5. TYPOGRAPHY
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Font stacks */
+  --font-display:   'Anton', 'Helvetica Neue Condensed', 'Arial Narrow', sans-serif;
+  --font-body:      'Barlow', sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+
+  /* ── Typography tokens (size / line-height%) ──────────────── */
+
+  /* TITLE — Anton */
+  --title-large-size:   80px;  --title-large-lh:   106%;
+  --title-medium-size:  64px;  --title-medium-lh:  106%;
+  --title-small-size:   48px;  --title-small-lh:   100%;
+
+  /* SUBTITLE — DIN Alternate bold */
+  --subtitle-large-size:        32px;  --subtitle-large-lh:        125%;
+  --subtitle-medium-size:       24px;  --subtitle-medium-lh:       112%;
+  --subtitle-semi-medium-size:  20px;  --subtitle-semi-medium-lh:  105%;
+  --subtitle-small-size:        20px;  --subtitle-small-lh:        110%;
+  --subtitle-xsmall-size:       18px;  --subtitle-xsmall-lh:       133%;
+
+  /* LABEL — DIN Alternate bold */
+  --label-large-size:   18px;  --label-large-lh:   133%;
+  --label-medium-size:  16px;  --label-medium-lh:  125%;
+  --label-small-size:   14px;  --label-small-lh:   143%;
+
+  /* BODY — DIN Alternate */
+  --body-large-size:    16px;  --body-large-lh:    150%;
+  --body-medium-size:   14px;  --body-medium-lh:   143%;
+  --body-small-size:    12px;  --body-small-lh:    133%;
+
+  /* NUMBER — DIN Alternate */
+  --number-large-size:  18px;  --number-large-lh:  133%;
+  --number-medium-size: 16px;  --number-medium-lh: 125%;
+  --number-small-size:  14px;  --number-small-lh:  143%;
+  --number-xsmall-size: 12px;  --number-xsmall-lh: 133%;
+
+  /* CAPTION — DIN Alternate */
+  --caption-medium-size: 12px; --caption-medium-lh: 133%;
+  --caption-small-size:  10px; --caption-small-lh:  160%;
+
+  /* Legacy aliases */
+  --text-3xl:  80px; --text-2xl: 64px; --text-xl: 48px;
+  --text-lg:   32px; --text-md:  24px; --text-base: 20px;
+  --text-sm:   16px; --text-xs:  12px; --text-2xs:  10px;
+
+  /* Weights */
+  --fw-normal: 400;
+  --fw-semi:   600;
+  --fw-bold:   500;
+
+  /* Letter spacing */
+  --ls-tight-2: -0.8px;
+  --ls-tight-1: -0.4px;
+  --ls-tight-0: -0.1px;
+  --ls-normal:   0px;
+  --ls-wide-0:   0.1px;
+  --ls-wide-1:   0.05em;
+  --ls-widest:   0.12em;  /* overlines, section labels */
+
+  /* Line heights */
+  --lh-tight:  1.06;
+  --lh-snug:   1.10;
+  --lh-normal: 1.20;
+  --lh-loose:  1.40;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. SPACING
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  28px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. BORDER RADIUS
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --radius-none: 0px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   20px;
+  --radius-pill: 1000px;
+  --radius-full: 50%;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   8. SHADOWS / ELEVATION
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.20);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.32);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,0.40);
+  --shadow-xl: 0 20px 40px rgba(0,0,0,0.45);
+
+  /* Figma Elevation/Medium — layered depth */
+  --elevation-md:
+    0px 1px 0px 0px rgba(0,0,0,0.08),
+    0px 8px 24px 0px rgba(0,0,0,0.07),
+    0px 4px  4px 0px rgba(0,0,0,0.05),
+    0px 2px  2px 0px rgba(0,0,0,0.04),
+    0px 1px  1px 0px rgba(0,0,0,0.03),
+    0px 0px  0px 1px rgba(0,0,0,0.12);
+
+  /* Focus / selection rings */
+  --ring-primary: 0 0 0 2px var(--bg), 0 0 0 4px var(--purple);
+  --ring-cream:   0 0 0 2px var(--bg), 0 0 0 4px var(--cream);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   9. EASING / ANIMATION
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-flip:     cubic-bezier(0.6, 0.04, 0.2, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
+
+  --dur-fast:   160ms;
+  --dur-normal: 220ms;
+  --dur-slow:   360ms;
+  --dur-enter:  480ms;
+  --dur-page:   720ms;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   10. GLASS MORPHISM
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --glass-bg:     rgba(70,70,81,0.40);
+  --glass-border: rgba(255,255,255,0.05);
+  --glass-blur:   blur(27.5px);
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   11. BASE RESET
+   ───────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font: inherit;
+  font-weight: var(--fw-semi);
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+img, svg { display: block; max-width: 100%; }
+
+h1, h2, h3 { text-transform: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   12. DEVICE CANVAS HELPER
+   Fixed 390×844 (iPhone-like) coord system, letterboxed on any viewport.
+   Add .bp-stage + .bp-device to any mobile prototype.
+   ───────────────────────────────────────────────────────────── */
+.bp-stage {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.bp-device {
+  width: 390px;
+  height: 844px;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+  transform-origin: center center;
+  transform: scale(var(--s, 1));
+  border-radius: 40px;
+}

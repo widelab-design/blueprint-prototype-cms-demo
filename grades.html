@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Grades</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1)); background: #1f1f25;
+}
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.9); pointer-events: none;
+}
+
+/* ─── Sidebar ───────────────────────────────────────────────── */
+.today-sidebar {
+  position: absolute;
+  left: 24px; top: 50%; transform: translateY(-50%);
+  width: 80px; height: 786px;
+  background: #2b2b32; border-radius: 20px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  padding: 24px 8px; box-sizing: border-box;
+  z-index: 10;
+}
+.sidebar-logo {
+  font-family: var(--font-display); font-weight: 400; font-size: 16px; color: #8e8b85;
+  text-transform: uppercase; text-align: center; letter-spacing: 0.5px;
+  height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: 100%;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 12px; }
+.nav-item {
+  width: 64px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 8px 0; cursor: pointer;
+  transition: background 140ms;
+}
+.nav-item.active { background: #1f1f25; }
+.nav-item:not(.active):hover { background: rgba(255,255,255,0.05); }
+.nav-icon { width: 24px; height: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.nav-icon img { width: 24px; height: 24px; display: block; }
+.nav-item.active .nav-icon img { filter: brightness(0) invert(1); }
+.nav-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px; line-height: 16px;
+}
+.nav-item.active .nav-label { color: #f2f3e5; }
+.sidebar-user { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #b8c0ed no-repeat center / cover;
+  border: 2px solid #36363f;
+  overflow: hidden; box-sizing: border-box;
+}
+.user-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #a4a59f; text-align: center; width: 64px;
+}
+
+/* ─── Right dark background ─────────────────────────────────── */
+.grades-right-bg {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 545px;
+  background: #2b2b32;
+}
+
+/* ─── Left column ───────────────────────────────────────────── */
+.col-left {
+  position: absolute; left: 152px; top: 72px;
+  width: 449px;
+  display: flex; flex-direction: column;
+}
+
+.grades-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
+  letter-spacing: 0; color: #f2f3e5; margin: 0 0 16px;
+}
+.grades-desc {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  letter-spacing: -0.1px; line-height: 20px;
+  color: #737472; margin: 0 0 36px;
+}
+
+/* ─── Tab pills ─────────────────────────────────────────────── */
+.tab-pills { display: flex; gap: 8px; margin-bottom: 24px; }
+.tab-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  height: 40px; padding: 0 20px; border-radius: 12px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  cursor: pointer; border: none; transition: background 150ms, color 150ms;
+}
+.tab-pill-active   { background: #f2f3e5; color: #1f1f25; }
+.tab-pill-inactive { background: #2b2b35; color: rgba(242,243,229,0.5); }
+
+/* ─── Tab panels ────────────────────────────────────────────── */
+.tab-panel { display: none; }
+.tab-panel.active { display: contents; }
+
+/* ─── Subject list (Grades tab) ─────────────────────────────── */
+.subjects-list { display: flex; flex-direction: column; gap: 8px; }
+.subject-card {
+  width: 449px; height: 82px; border-radius: 12px;
+  background: #1f1f25; border: 1px solid #36363f;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px; box-sizing: border-box;
+  cursor: pointer; transition: background 120ms;
+}
+.subject-card:hover { background: #252530; }
+.subject-left { display: flex; flex-direction: column; gap: 8px; }
+.subject-name {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px;
+}
+.subject-teacher {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px;
+}
+.subject-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.subject-grade {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px;
+}
+.subject-pct {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px;
+}
+
+/* ─── Attendance cards ──────────────────────────────────────── */
+.att-stat-card {
+  width: 449px; border-radius: 16px;
+  background: #1f1f25; border: 1px solid #444450;
+  padding: 24px; box-sizing: border-box;
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.att-stat-left { display: flex; flex-direction: column; gap: 16px; }
+.att-stat-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #737472; letter-spacing: 0;
+}
+.att-stat-number {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 1.25;
+  letter-spacing: -0.8px; color: #f2f3e5;
+}
+.att-badge {
+  background: #36363f; border: 1px solid #36363f;
+  border-radius: 8px; padding: 8px;
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #f2f3e5; white-space: nowrap;
+}
+
+.att-chart-card {
+  width: 449px; height: 282px; border-radius: 16px;
+  background: #1f1f25; border: 1px solid #444450;
+  position: relative; overflow: hidden;
+  margin-top: 16px;
+}
+.att-chart-months {
+  position: absolute; bottom: 16px; left: 37px; right: 39px;
+  display: flex; justify-content: space-between;
+  font-family: var(--font-body); font-size: 10px; font-weight: 500;
+  color: #737472; letter-spacing: 0.1px;
+}
+@keyframes chart-reveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0% 0); }
+}
+.att-chart-line {
+  position: absolute; top: 38px; left: 36px;
+  width: 374px; height: 163px;
+  animation: chart-reveal 1s ease-out both 0.3s;
+}
+
+/* ─── Right columns ─────────────────────────────────────────── */
+.col-right {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 16px;
+  transition: left 200ms;
+}
+.col-right-grades  { left: 697px; width: 449px; }
+.col-right-attend  { left: 697px; width: 449px; }
+
+/* ─── Video card ─────────────────────────────────────────────── */
+.video-card {
+  border-radius: 20px; position: relative; overflow: hidden;
+  flex-shrink: 0; width: 100%; height: 449px;
+}
+.video-card-grades { background: #addbf2; }
+.video-card-attend { background: #d6c0fe; }
+
+.video-cloud-1 {
+  position: absolute; left: 37px; top: 96px;
+  width: 561px; transform: rotate(15deg); pointer-events: none;
+}
+.video-cloud-2 {
+  position: absolute; left: -303px; top: 237px;
+  width: 687px; pointer-events: none;
+}
+.video-mithosis-1 {
+  position: absolute; left: -136px; top: 121px;
+  width: 408px; transform: rotate(-30deg); pointer-events: none; opacity: 0.7;
+}
+.video-mithosis-2 {
+  position: absolute; left: 132px; top: -123px;
+  width: 408px; transform: rotate(-30deg); pointer-events: none; opacity: 0.7;
+}
+
+.heart-btn {
+  position: absolute; top: 12px; right: 12px;
+  width: 48px; height: 48px;
+  background: none; border: none; padding: 0; margin: 0;
+  outline: none; cursor: pointer; display: block;
+  transition: transform 120ms; z-index: 2;
+}
+.heart-btn:active { transform: scale(0.9); }
+.heart-btn img { width: 48px; height: 48px; display: block; }
+.video-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 44px; height: 44px; border-radius: 12px;
+  background: #f2f3e5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer;
+}
+.video-title-box {
+  position: absolute; bottom: 12px; right: 12px;
+  width: 260px; border-radius: 12px;
+  background: #36363f; padding: 8px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.video-meta {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.video-duration {
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.2px;
+}
+.video-spark {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--font-body); font-size: 18px; font-weight: 500;
+  color: #f2f3e5; letter-spacing: -0.2px;
+}
+.video-spark img { width: 16px; height: 16px; display: block; }
+.video-title-text {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.12;
+  color: #f2f3e5; letter-spacing: -0.4px; margin: 0;
+}
+
+/* ─── Remember card ──────────────────────────────────────────── */
+.remember-card {
+  border-radius: 20px; width: 100%;
+  background: #1f1f25; padding: 24px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 36px; flex-shrink: 0;
+}
+.remember-body { display: flex; flex-direction: column; gap: 8px; }
+.remember-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #737472; letter-spacing: 0;
+}
+.remember-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #f2f3e5; line-height: 1.1; letter-spacing: -0.4px; margin: 0;
+}
+.remember-actions { display: flex; gap: 12px; }
+.remember-btn {
+  flex: 1; height: 48px; border-radius: 8px;
+  background: transparent; border: 1px solid rgba(255,255,255,0.16);
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f5f5f5; cursor: pointer; transition: background 120ms;
+}
+.remember-btn:hover { background: rgba(255,255,255,0.06); }
+
+/* ─── Main content dim ───────────────────────────────────────── */
+#main-content {
+  position: absolute; inset: 0;
+  transition: opacity 500ms ease;
+}
+#main-content.dimmed { opacity: 0.3; pointer-events: none; }
+
+/* ─── Subject Drawer ─────────────────────────────────────────── */
+.subject-drawer {
+  position: absolute; top: 0; right: 0;
+  width: 580px; height: 834px;
+  background: #2b2b32;
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 1200ms cubic-bezier(0.73, -0.01, 0.2, 0.98);
+  overflow-y: auto; overflow-x: hidden;
+  padding: 24px 10px; box-sizing: border-box;
+}
+.subject-drawer.open { transform: translateX(0); }
+
+.drw-inner {
+  display: flex; flex-direction: column; gap: 32px;
+  padding: 16px; border-radius: 8px;
+}
+.drw-top { display: flex; flex-direction: column; gap: 16px; }
+.drw-head { display: flex; justify-content: space-between; align-items: flex-start; }
+.drw-name {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 40px;
+  letter-spacing: -0.8px; color: #fff; display: block; margin-bottom: 2px;
+}
+.drw-teacher {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; line-height: 20px; letter-spacing: -0.1px; display: block;
+}
+.drw-grade-col { text-align: right; }
+.drw-grade {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 40px;
+  letter-spacing: -0.8px; color: #fff; display: block;
+}
+.drw-pct {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.25); line-height: 20px; letter-spacing: -0.1px; display: block;
+}
+.drw-divider { height: 1px; background: #444450; }
+.drw-msg {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: #36363f; padding: 10px;
+}
+.drw-monster {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: #49aee1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; overflow: hidden;
+}
+.drw-monster img { width: 26.667px; height: 26.667px; display: block; }
+.drw-msg-text {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #a4a59f; letter-spacing: -0.1px; line-height: 20px; flex: 1; margin: 0;
+}
+
+.drw-stats-section { display: flex; flex-direction: column; gap: 24px; }
+.drw-stats { display: flex; flex-direction: column; gap: 12px; }
+.drw-stats-row { display: flex; gap: 12px; }
+.drw-stat {
+  flex: 1; border: 1px solid #444450; border-radius: 12px;
+  padding: 12px; display: flex; flex-direction: column; gap: 15px;
+}
+.drw-stat.ungraded { opacity: 0.6; justify-content: space-between; min-height: 86px; gap: 0; }
+.drw-stat-label {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px; line-height: 20px; margin-bottom: 4px;
+}
+.drw-stat-val {
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; line-height: 1.05;
+  color: #f2f3e5; text-transform: uppercase;
+}
+.drw-stat-bar-track {
+  height: 3px; background: #2f2f37; border-radius: 2px; position: relative; width: 100%;
+}
+.drw-stat-bar-fill {
+  position: absolute; left: 0; top: 0; height: 3px;
+  background: #737472; border-radius: 2px;
+}
+.drw-stat-na {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #444450; line-height: 16px;
+}
+.drw-hint {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #a4a59f; letter-spacing: -0.1px; line-height: 20px; margin: 0;
+}
+.drw-btns { display: flex; gap: 12px; }
+.drw-btn {
+  flex: 1; height: 40px; border-radius: 8px;
+  background: transparent; border: 1px solid rgba(255,255,255,0.16);
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #f5f5f5; cursor: pointer; letter-spacing: -0.1px;
+  transition: background 120ms;
+}
+.drw-btn:hover { background: rgba(255,255,255,0.06); }
+.drw-btn.drw-btn-on { background: rgba(255,255,255,0.16); border-color: transparent; color: #ededed; }
+
+/* ─── Drawer panels ──────────────────────────────────────────── */
+.drw-panel { display: none; flex-direction: column; gap: 12px; }
+.drw-panel.show { display: flex; }
+
+.drw-note-cards-row { display: flex; gap: 12px; }
+.drw-note-card {
+  flex: 1; border: 1px solid #444450; border-radius: 12px;
+  padding: 12px; display: flex; flex-direction: column; gap: 12px; min-width: 0;
+}
+.drw-note-label {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px; line-height: 20px;
+}
+.drw-note-rows { display: flex; flex-direction: column; gap: 8px; }
+.drw-note-row {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  letter-spacing: -0.1px; line-height: 20px;
+}
+.drw-note-row-name { color: #737472; }
+.drw-note-row-score { color: #a4a59f; }
+
+.drw-calc-q {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #a4a59f; letter-spacing: -0.1px; line-height: 20px; margin: 0 0 16px;
+}
+.drw-grade-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+.drw-grade-pill {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid #444450; background: transparent;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: border-color 120ms;
+}
+.drw-grade-pill.selected { border-color: #a4a59f; }
+.drw-grade-pill:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+.drw-calc-result {
+  border: 1px solid #444450; border-radius: 12px; padding: 12px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.drw-calc-pct {
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; line-height: 1.05;
+  color: #f2f3e5; text-transform: uppercase;
+}
+.drw-calc-needed {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px; line-height: 20px;
+}
+.drw-calc-context {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: #737472; line-height: 16px; white-space: nowrap;
+}
+
+
+/* ── Support handle + panel ──────────────────────────────────── */
+.support-handle {
+  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  width: 64px; height: 72px;
+  background: #1f1f25; border: 1px solid #36363f; border-right: none;
+  border-radius: 14px 0 0 14px;
+  padding: 0; cursor: pointer; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 150ms;
+}
+.support-handle:hover { background: #252530; }
+.support-handle-label { font-family: var(--font-body); font-size: 11px; font-weight: 500; color: #a4a59f; pointer-events: none; line-height: 1; }
+.support-panel.sp-open .support-handle { background: #2b2b32; }
+.sp-backdrop {
+  position: absolute; inset: 0; z-index: 34;
+  background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.sp-backdrop.sp-open { opacity: 1; pointer-events: all; }
+.support-panel {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 380px; z-index: 35;
+  background: #2b2b32; border-left: 1px solid #36363f;
+  transform: translateX(100%); transition: transform 360ms cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+}
+.support-panel.sp-open { transform: translateX(0); }
+.sp-header {
+  display: flex; flex-direction: column;
+  padding: 52px 24px 20px; border-bottom: 1px solid #36363f; flex-shrink: 0;
+}
+.sp-subtitle {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 6px 0 0; line-height: 1.4;
+}
+.sp-cta {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #a4a59f; margin: 0; padding: 16px 24px; line-height: 1.5;
+}
+.sp-cta strong { color: #f2f3e5; }
+.sp-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.1;
+  letter-spacing: 0.5px; color: #f2f3e5; margin: 0;
+}
+.sp-close {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  transition: background 120ms;
+}
+.sp-close:hover { background: rgba(255,255,255,0.14); }
+.sp-items { display: flex; flex-direction: column; padding: 8px 0; flex: 1; }
+.sp-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 24px; cursor: pointer; transition: background 120ms;
+}
+.sp-item:hover { background: rgba(255,255,255,0.04); }
+.sp-item-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: #36363f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.sp-item-title {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #f2f3e5; margin: 0 0 3px; letter-spacing: -0.1px;
+}
+.sp-item-sub {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
+
+/* ── Grades Journal Overlay ─────────────────────────────────── */
+.gj-overlay {
+  position: absolute; inset: 0; z-index: 50;
+  background: #b38aff; border-radius: 20px; overflow: hidden;
+  display: none;
+}
+.gj-bg {
+  position: absolute; width: 1910px; height: 1910px; border-radius: 50%;
+  background: #1f1f25; left: -358px; top: 80px; pointer-events: none; z-index: 0;
+}
+.gj-back {
+  position: absolute; top: 36px; left: 24px; z-index: 10;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none; cursor: pointer;
+  display: grid; place-items: center; transition: background 120ms;
+}
+.gj-back:hover { background: rgba(255,255,255,0.24); }
+.gj-body {
+  position: absolute; top: 115px; left: 50%; transform: translateX(-50%); z-index: 5;
+  width: 440px; display: flex; flex-direction: column; align-items: center;
+}
+.gj-spark-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: #2f2f37; border-radius: 99px; padding: 8px 12px;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px; color: #f2f3e5;
+  margin-bottom: 10px;
+}
+.gj-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; color: #f2f3e5;
+  margin: 0 0 48px; line-height: 40px; text-align: center; letter-spacing: -0.8px;
+}
+.gj-bubble {
+  background: #b38aff; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
+  width: 100%; box-sizing: border-box; margin-bottom: 24px;
+}
+.gj-avatar {
+  width: 48px; height: 48px; background: #f2f3e5; flex-shrink: 0;
+  display: grid; place-items: center;
+}
+.gj-bubble-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+}
+.gj-textarea-wrap {
+  width: 100%; background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16); border-radius: 8px;
+}
+.gj-textarea {
+  width: 100%; box-sizing: border-box; border: none; outline: none; resize: none;
+  font-family: var(--font-body); font-size: 16px; font-weight: 600;
+  color: #f2f3e5; padding: 10px 16px; background: transparent; min-height: 200px;
+}
+.gj-textarea::placeholder { color: #adadad; font-weight: 400; }
+.gj-save-wrap {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 10;
+}
+.gj-save {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+.gj-save:disabled { opacity: 0.4; cursor: default; }
+
+/* Done screen */
+.gj-done {
+  position: absolute; inset: 0; z-index: 20;
+  display: none; flex-direction: column; align-items: center;
+  padding-top: 253px; box-sizing: border-box; gap: 24px;
+}
+.gj-done.show { display: flex; }
+.gj-done-reward { display: flex; align-items: center; gap: 12px; }
+.gj-done-plus {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  color: #f2f3e5; line-height: 40px; letter-spacing: -0.8px;
+}
+.gj-done-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  color: #f2f3e5; letter-spacing: 1.5px; margin: 0; text-align: center;
+}
+.gj-done-bubble {
+  background: #58b880; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
+  width: 439px; box-sizing: border-box;
+}
+.gj-btn-row {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 24px;
+}
+.gj-btn-secondary {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); color: #ededed;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer;
+}
+.gj-btn-primary {
+  width: 270px; height: 48px; border-radius: 8px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer;
+}
+
+/* Entry animations — S7 style */
+#gjDone .gj-done-reward,
+#gjDone .gj-done-title { transform: translateY(400px); opacity: 0; }
+#gjDone .gj-done-bubble { transform: translateX(500px); opacity: 0; }
+#gjDone .gj-btn-row { transform: translateX(-50%) translateY(200px); opacity: 0; }
+
+#gjDone.gj-entered .gj-done-reward,
+#gjDone.gj-entered .gj-done-title {
+  transform: translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#gjDone.gj-phase2 .gj-done-bubble {
+  transform: translateX(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#gjDone.gj-phase2 .gj-btn-row {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+
+#gw-circle {
+  position: absolute;
+  width: 1910px; height: 1910px;
+  border-radius: 50%; background: #1f1f25;
+  left: -358px; top: -538px;
+  pointer-events: none; z-index: 999;
+  display: none;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+<div id="main-content">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Sidebar -->
+  <nav class="today-sidebar">
+    <div class="sidebar-logo" data-content="grades_sidebar_logo">Sparkz</div>
+    <div class="sidebar-nav">
+      <div class="nav-item" onclick="window.location.href='today.html'">
+        <div class="nav-icon"><img src="./components/icon-02.svg" alt="Today"></div>
+        <span class="nav-label" data-content="nav_today">Today</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journal.html'">
+        <div class="nav-icon"><img src="./components/icon-01.svg" alt="Journal"></div>
+        <span class="nav-label" data-content="nav_journal">Journal</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='my-toolkit.html'">
+        <div class="nav-icon"><img src="./components/icon-03.svg" alt="My toolkit"></div>
+        <span class="nav-label" data-content="nav_my_toolkit">My toolkit</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='journey.html'">
+        <div class="nav-icon"><img src="./components/icon-04.svg" alt="Journey"></div>
+        <span class="nav-label" data-content="nav_journey">Journey</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><img src="./components/icon-05.svg" alt="Grades"></div>
+        <span class="nav-label" data-content="nav_grades">Grades</span>
+      </div>
+      <div class="nav-item" onclick="window.location.href='sparks.html'">
+        <div class="nav-icon"><img src="./components/icon-06.svg" alt="Sparkz"></div>
+        <span class="nav-label" data-content="nav_sparkz">Sparkz</span>
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar" onclick="window.location.href='settings.html'" style="cursor:pointer"></div>
+      <span class="user-name">Sophie</span>
+    </div>
+  </nav>
+
+  <!-- Right dark background -->
+  <div class="grades-right-bg"></div>
+
+  <!-- Left column -->
+  <div class="col-left">
+    <h1 class="grades-title" data-content="grades_title">Grades</h1>
+    <p class="grades-desc" data-content="grades_desc">Stay on top of school.</p>
+
+    <div class="tab-pills">
+      <button class="tab-pill tab-pill-active"   id="pill-grades"  onclick="switchTab('grades')" data-content="grades_tab_grades">Grades</button>
+      <button class="tab-pill tab-pill-inactive" id="pill-attend"  onclick="switchTab('attend')" data-content="grades_tab_attendance">Attendance</button>
+    </div>
+
+    <!-- Grades panel -->
+    <div class="tab-panel active" id="panel-grades-left">
+      <div class="subjects-list">
+        <div class="subject-card" onclick="openSubjectDrawer('Math')">
+          <div class="subject-left">
+            <span class="subject-name" data-content="grades_subject_math_name">Math</span>
+            <span class="subject-teacher" data-content="grades_subject_math_teacher">Mr Kowalski</span>
+          </div>
+          <div class="subject-right">
+            <span class="subject-grade" data-content="grades_subject_math_grade">B</span>
+            <span class="subject-pct" data-content="grades_subject_math_pct">84.2%</span>
+          </div>
+        </div>
+        <div class="subject-card" onclick="openSubjectDrawer('Art')">
+          <div class="subject-left">
+            <span class="subject-name" data-content="grades_subject_art_name">Art</span>
+            <span class="subject-teacher" data-content="grades_subject_art_teacher">Mr Smith</span>
+          </div>
+          <div class="subject-right">
+            <span class="subject-grade" data-content="grades_subject_art_grade">A-</span>
+            <span class="subject-pct" data-content="grades_subject_art_pct">84.2%</span>
+          </div>
+        </div>
+        <div class="subject-card" onclick="openSubjectDrawer('Biology')">
+          <div class="subject-left">
+            <span class="subject-name" data-content="grades_subject_biology_name">Biology</span>
+            <span class="subject-teacher" data-content="grades_subject_biology_teacher">Mr Smith</span>
+          </div>
+          <div class="subject-right">
+            <span class="subject-grade" data-content="grades_subject_biology_grade">C</span>
+            <span class="subject-pct" data-content="grades_subject_biology_pct">66.3%</span>
+          </div>
+        </div>
+        <div class="subject-card" onclick="openSubjectDrawer('Music')">
+          <div class="subject-left">
+            <span class="subject-name" data-content="grades_subject_music_name">Music</span>
+            <span class="subject-teacher" data-content="grades_subject_music_teacher">Mr Smith</span>
+          </div>
+          <div class="subject-right">
+            <span class="subject-grade" data-content="grades_subject_music_grade">C</span>
+            <span class="subject-pct" data-content="grades_subject_music_pct">66.3%</span>
+          </div>
+        </div>
+        <div class="subject-card" onclick="openSubjectDrawer('Physics')">
+          <div class="subject-left">
+            <span class="subject-name" data-content="grades_subject_physics_name">Physics</span>
+            <span class="subject-teacher" data-content="grades_subject_physics_teacher">Mr Smith</span>
+          </div>
+          <div class="subject-right">
+            <span class="subject-grade" data-content="grades_subject_physics_grade">C</span>
+            <span class="subject-pct" data-content="grades_subject_physics_pct">66.3%</span>
+          </div>
+        </div>
+        <div class="subject-card" onclick="openSubjectDrawer('History')">
+          <div class="subject-left">
+            <span class="subject-name" data-content="grades_subject_history_name">History</span>
+            <span class="subject-teacher" data-content="grades_subject_history_teacher">Ms Johnson</span>
+          </div>
+          <div class="subject-right">
+            <span class="subject-grade" data-content="grades_subject_history_grade">B+</span>
+            <span class="subject-pct" data-content="grades_subject_history_pct">88.1%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance panel -->
+    <div class="tab-panel" id="panel-attend-left">
+      <div class="att-stat-card">
+        <div class="att-stat-left">
+          <span class="att-stat-label" data-content="grades_att_stat_label">This semester</span>
+          <span class="att-stat-number" data-content="grades_att_stat_number">70.2%</span>
+        </div>
+        <div class="att-badge" data-content="grades_att_badge">Less active lately</div>
+      </div>
+      <div class="att-chart-card">
+        <img class="att-chart-line" src="./components/chart-attendance.svg" alt="">
+        <div class="att-chart-months">
+          <span data-content="grades_att_month_feb">Feb</span><span data-content="grades_att_month_mar">Mar</span><span data-content="grades_att_month_apr">Apr</span><span data-content="grades_att_month_may">May</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right column — Grades -->
+  <div class="col-right col-right-grades" id="col-right-grades">
+    <div class="video-card video-card-grades" onclick="window.location.href='toolkit-video.html?video=calming-breath&from=grades'" style="cursor:pointer">
+      <img class="video-cloud-1" src="./components/cloud-grades-1.svg" alt="">
+      <img class="video-cloud-2" src="./components/cloud-grades-2.svg" alt="">
+      <button class="heart-btn" data-vid="grades-v1" onclick="event.stopPropagation();toggleHeart(this)">
+        <img src="./components/heart-default.svg" alt="save">
+      </button>
+      <div class="video-play">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M7 4L16 10L7 16V4Z" fill="#1f1f25"/>
+        </svg>
+      </div>
+      <div class="video-title-box">
+        <div class="video-meta">
+          <span class="video-duration" data-content="grades_video_duration_grades">1:30</span>
+          <div class="video-spark" data-content="grades_video_spark_grades">1 <img src="./components/Spark-4.svg" alt="spark"></div>
+        </div>
+        <p class="video-title-text" data-content="grades_video_title_grades">The emotional<br>side of grades</p>
+      </div>
+    </div>
+    <div class="remember-card">
+      <div class="remember-body">
+        <span class="remember-label" data-content="grades_remember_label">Remember</span>
+        <p class="remember-text" data-content="grades_remember" style="cursor:pointer" onclick="goToSupportWrite()">Everyone has ups and downs.<br>Want to write about what's been going on?</p>
+      </div>
+      <div class="remember-actions">
+        <button class="remember-btn" onclick="openGJOverlay()" data-content="btn_journal">Journal</button>
+        <button class="remember-btn" onclick="openSupport()" data-content="btn_get_support">Get support</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column — Attendance -->
+  <div class="col-right col-right-attend" id="col-right-attend" style="display:none">
+    <div class="video-card video-card-attend" onclick="window.location.href='toolkit-video.html?video=calming-breath&from=grades-attend'" style="cursor:pointer">
+      <img class="video-mithosis-1" src="./components/mithosis.svg" alt="">
+      <img class="video-mithosis-2" src="./components/mithosis.svg" alt="">
+      <button class="heart-btn" data-vid="grades-v2" onclick="event.stopPropagation();toggleHeart(this)">
+        <img src="./components/heart-default.svg" alt="save">
+      </button>
+      <div class="video-play">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M7 4L16 10L7 16V4Z" fill="#1f1f25"/>
+        </svg>
+      </div>
+      <div class="video-title-box">
+        <div class="video-meta">
+          <span class="video-duration" data-content="grades_video_duration_attend">1:30</span>
+          <div class="video-spark" data-content="grades_video_spark_attend">1 <img src="./components/Spark-4.svg" alt="spark"></div>
+        </div>
+        <p class="video-title-text" data-content="grades_video_title_attend">How to catch up after missing school</p>
+      </div>
+    </div>
+    <div class="remember-card">
+      <div class="remember-body">
+        <span class="remember-label" data-content="grades_attend_remember_label">Remember</span>
+        <p class="remember-text" data-content="grades_attend_remember" style="line-height:1.2">Everyone has ups and downs.<br>Want to write about what's been going on?</p>
+      </div>
+      <div class="remember-actions">
+        <button class="remember-btn" onclick="openGJOverlay()">Journal</button>
+        <button class="remember-btn" onclick="openSupport()">Get support</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+
+<div id="drw-overlay" onclick="closeSubjectDrawer()" style="position:absolute;inset:0;z-index:49;display:none;"></div>
+
+<!-- Subject Drawer -->
+<div class="subject-drawer" id="subject-drawer">
+  <div class="drw-inner">
+
+    <!-- Header + divider + message -->
+    <div class="drw-top">
+      <div class="drw-head">
+        <div>
+          <span id="drw-name" class="drw-name">Math</span>
+          <span id="drw-teacher" class="drw-teacher">Mr Kowalski</span>
+        </div>
+        <div class="drw-grade-col">
+          <span id="drw-grade" class="drw-grade">B</span>
+          <span id="drw-pct" class="drw-pct">84.2%</span>
+        </div>
+      </div>
+      <div class="drw-divider"></div>
+      <div class="drw-msg">
+        <div class="drw-monster">
+          <img src="./components/monster-01.svg" alt="">
+        </div>
+        <p id="drw-msg-text" class="drw-msg-text">Things are looking good here. You've been consistent with homework and it shows. Next up: quiz on Dec 3.</p>
+      </div>
+    </div>
+
+    <!-- Stats grid + hint -->
+    <div class="drw-stats-section">
+      <div class="drw-stats">
+        <div class="drw-stats-row">
+          <div class="drw-stat">
+            <div>
+              <div class="drw-stat-label" data-content="grades_drw_stat_homework">Homework</div>
+              <div id="drw-hw-val" class="drw-stat-val">91.7%</div>
+            </div>
+            <div class="drw-stat-bar-track">
+              <div id="drw-hw-bar" class="drw-stat-bar-fill" style="width:91.7%"></div>
+            </div>
+          </div>
+          <div class="drw-stat">
+            <div>
+              <div class="drw-stat-label" data-content="grades_drw_stat_quizzes">Quizzes</div>
+              <div id="drw-qz-val" class="drw-stat-val">80.5%</div>
+            </div>
+            <div class="drw-stat-bar-track">
+              <div id="drw-qz-bar" class="drw-stat-bar-fill" style="width:80.5%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="drw-stats-row">
+          <div class="drw-stat">
+            <div>
+              <div class="drw-stat-label" data-content="grades_drw_stat_midterm">Midterm</div>
+              <div id="drw-mt-val" class="drw-stat-val">84.0%</div>
+            </div>
+            <div class="drw-stat-bar-track">
+              <div id="drw-mt-bar" class="drw-stat-bar-fill" style="width:84%"></div>
+            </div>
+          </div>
+          <div class="drw-stat ungraded">
+            <div class="drw-stat-label" data-content="grades_drw_stat_final">Final Exam</div>
+            <div class="drw-stat-na" data-content="grades_drw_stat_na">Not graded yet</div>
+          </div>
+        </div>
+      </div>
+      <p id="drw-hint" class="drw-hint">Review chapter 7 before the quiz — it's only 12 pages.</p>
+    </div>
+
+    <div class="drw-divider"></div>
+
+    <!-- Buttons -->
+    <div class="drw-btns">
+      <button class="drw-btn" id="drw-btn-seeall" onclick="toggleDrawerPanel('assign')" data-content="btn_see_all_assignments">See all assignments</button>
+      <button class="drw-btn" id="drw-btn-calc"   onclick="toggleDrawerPanel('calc')" data-content="btn_calculate_target_grade">Calculate my target grade</button>
+    </div>
+
+    <!-- Panel: See all assignments -->
+    <div class="drw-panel" id="drw-panel-assign">
+      <div class="drw-note-cards-row">
+        <div class="drw-note-card">
+          <div class="drw-note-label" data-content="grades_drw_assign_hw_label">Homework</div>
+          <div class="drw-note-rows" id="drw-assign-hw"></div>
+        </div>
+        <div class="drw-note-card">
+          <div class="drw-note-label" data-content="grades_drw_assign_qz_label">Quizzes</div>
+          <div class="drw-note-rows" id="drw-assign-qz"></div>
+        </div>
+      </div>
+      <div style="width:calc(50% - 6px)">
+        <div class="drw-note-card">
+          <div class="drw-note-label" data-content="grades_drw_assign_mt_label">Midterm</div>
+          <div class="drw-note-rows" id="drw-assign-mt"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Calculate target grade -->
+    <div class="drw-panel" id="drw-panel-calc">
+      <div>
+        <p class="drw-calc-q" data-content="grades_drw_calc_question">What final grade do you want to achieve?</p>
+        <div class="drw-grade-picker" id="drw-grade-picker">
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_a">A</button>
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_aminus">A-</button>
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_bplus">B+</button>
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_b">B</button>
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_bminus">B-</button>
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_cplus">C+</button>
+          <button class="drw-grade-pill" onclick="selectTargetGrade(this)" data-content="grades_drw_grade_pill_c">C</button>
+        </div>
+      </div>
+      <div class="drw-calc-result" id="drw-calc-result" style="display:none">
+        <div>
+          <div id="drw-calc-pct" class="drw-calc-pct">68%</div>
+          <div class="drw-calc-needed" data-content="grades_drw_calc_needed">Needed</div>
+        </div>
+        <div class="drw-calc-context" data-content="grades_drw_calc_context">On final exam</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- ── Grades Journal Overlay ──────────────────────────────── -->
+  <div class="gj-overlay" id="gjOverlay">
+    <div class="gj-bg"></div>
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <button class="gj-back" onclick="closeGJOverlay()">
+      <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+        <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="gj-body" id="gjBody">
+      <div class="gj-spark-pill" data-content="grades_gj_spark_pill">
+        1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+      </div>
+      <h1 class="gj-title" data-content="grades_gj_title">Grades &amp; attendance</h1>
+      <div class="gj-bubble">
+        <div class="gj-avatar">
+          <div style="position:relative;width:40px;height:40px;">
+            <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
+            <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="gj-bubble-text" data-content="grades_gj_bubble_text">There's more to you than your grades. Want to write about what's been going on?</p>
+      </div>
+      <div class="gj-textarea-wrap">
+        <textarea class="gj-textarea" id="gjInput" placeholder="Start writing here" data-content-placeholder="grades_gj_textarea_placeholder"
+          oninput="document.getElementById('gjSaveBtn').disabled=this.value.trim().length===0;"></textarea>
+      </div>
+    </div>
+
+    <div class="gj-save-wrap" id="gjSaveWrap">
+      <button class="gj-save" id="gjSaveBtn" disabled onclick="saveGJNote()" data-content="btn_save">Save</button>
+    </div>
+
+    <!-- Done screen -->
+    <div class="gj-done" id="gjDone">
+      <div class="gj-done-reward">
+        <span class="gj-done-plus" data-content="grades_gj_done_plus">+1</span>
+        <img src="./components/spark.svg" alt="spark" style="width:32px;height:32px;display:block;">
+      </div>
+      <p class="gj-done-title" data-content="grades_gj_done_title">Note saved!</p>
+      <div class="gj-done-bubble">
+        <div class="gj-avatar">
+          <div style="position:relative;width:40px;height:40px;">
+            <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
+            <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="gj-bubble-text" data-content="grades_gj_done_bubble_text">Did writing this help you understand your feelings more?</p>
+      </div>
+      <div class="gj-btn-row">
+        <button class="gj-btn-secondary" onclick="closeGJOverlay()" data-content="btn_not_really">Not really</button>
+        <button class="gj-btn-primary" onclick="closeGJOverlay()" data-content="btn_yes_a_bit">Yes, a bit!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Support handle ──────────────────────────────────────── -->
+  <div class="sp-backdrop" id="spBackdrop" onclick="closeSupport()"></div>
+  <div class="support-panel" id="supportPanel">
+    <button class="support-handle" onclick="toggleSupport()"><img src="./components/chat.svg" width="28" height="28" style="display:block;pointer-events:none;" alt=""><span class="support-handle-label" data-content="grades_support_handle_label">Talk</span></button>
+        <div class="sp-header">
+      <h2 class="sp-title" data-content="grades_sp_title">Need to talk?</h2>
+      <p class="sp-subtitle" data-content="grades_sp_subtitle">When things are tough, you are not alone.</p>
+    </div>
+    <div class="sp-items">
+      <div class="sp-item">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="3.5" stroke="#f2f3e5" stroke-width="1.5"/>
+            <path d="M4 19c0-3.87 3.13-7 7-7h0c3.87 0 7 3.13 7 7" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="grades_sp_item_talk_title">Talk to someone.</p>
+          <p class="sp-item-sub" data-content="grades_sp_item_talk_sub">A trusted adult at your school is here to help.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <div class="sp-item" style="cursor:pointer" onclick="window.location.href='support-write.html'">
+        <div class="sp-item-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="sp-item-title" data-content="grades_sp_item_write_title">Write it out.</p>
+          <p class="sp-item-sub" data-content="grades_sp_item_write_sub">We'll make sure someone sees it.</p>
+        </div>
+      </div>
+      <div class="sp-divider"></div>
+      <p class="sp-cta" data-content="grades_sp_cta">Need to talk to someone right away? <strong>Call 988.</strong></p>
+    </div>
+  </div>
+  </div>
+
+<div id="gw-circle"></div>
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  const dev = document.getElementById('device');
+  dev.style.setProperty('--s', s);
+  dev.style.transform = 'scale(' + s + ')';
+}
+scale(); addEventListener('resize', scale);
+
+if (new URLSearchParams(location.search).get('tab') === 'attend') switchTab('attend');
+
+function switchTab(tab) {
+  const isGrades = tab === 'grades';
+
+  // Pills
+  document.getElementById('pill-grades').className = 'tab-pill ' + (isGrades ? 'tab-pill-active' : 'tab-pill-inactive');
+  document.getElementById('pill-attend').className = 'tab-pill ' + (isGrades ? 'tab-pill-inactive' : 'tab-pill-active');
+
+  // Left panels
+  document.getElementById('panel-grades-left').className = 'tab-panel' + (isGrades ? ' active' : '');
+  document.getElementById('panel-attend-left').className = 'tab-panel' + (isGrades ? '' : ' active');
+
+  // Right columns
+  document.getElementById('col-right-grades').style.display = isGrades ? '' : 'none';
+  document.getElementById('col-right-attend').style.display = isGrades ? 'none' : '';
+}
+
+const subjectData = {
+  'Math': {
+    grade: 'B', pct: '84.2%', teacher: 'Mr Kowalski',
+    message: "Things are looking good here. You've been consistent with homework and it shows. Next up: quiz on Dec 3.",
+    hw: '91.7%', hwBar: 91.7, qz: '80.5%', qzBar: 80.5, mt: '84.0%', mtBar: 84,
+    hint: "Review chapter 7 before the quiz — it's only 12 pages.",
+    notes: {
+      hw: [['HW 1','18/20'],['HW 2','18/20'],['HW 3','19/20']],
+      qz: [['Quiz 1','82/100'],['Quiz 2','70/100']],
+      mt: [['Exam','84/100']]
+    },
+    calc: { 'A':'95%','A-':'89%','B+':'81%','B':'72%','B-':'68%','C+':'55%','C':'42%' }
+  },
+  'Art': {
+    grade: 'A-', pct: '84.2%', teacher: 'Ms Rivera',
+    message: "You're crushing it in Art. Your portfolio piece really stood out. Keep that energy for the final project.",
+    hw: '88.0%', hwBar: 88, qz: '92.5%', qzBar: 92.5, mt: '80.0%', mtBar: 80,
+    hint: "Final project brief drops next week — start thinking about your theme.",
+    notes: {
+      hw: [['HW 1','17/20'],['HW 2','19/20'],['Portfolio','A']],
+      qz: [['Quiz 1','91/100'],['Quiz 2','94/100']],
+      mt: [['Project','80/100']]
+    },
+    calc: { 'A':'92%','A-':'82%','B+':'70%','B':'58%','B-':'46%','C+':'34%','C':'22%' }
+  },
+  'Biology': {
+    grade: 'C', pct: '66.3%', teacher: 'Mr Smith',
+    message: "Homework has been solid but tests are pulling the grade down. Reviewing your notes before each quiz would help.",
+    hw: '75.0%', hwBar: 75, qz: '62.0%', qzBar: 62, mt: '58.0%', mtBar: 58,
+    hint: "Cell division is worth 30% of the final. It's worth the extra hour.",
+    notes: {
+      hw: [['HW 1','14/20'],['HW 2','16/20'],['HW 3','12/20']],
+      qz: [['Quiz 1','65/100'],['Quiz 2','60/100']],
+      mt: [['Exam','58/100']]
+    },
+    calc: { 'A':'100%','A-':'97%','B+':'89%','B':'80%','B-':'71%','C+':'63%','C':'54%' }
+  },
+  'Music': {
+    grade: 'C', pct: '66.3%', teacher: 'Ms Park',
+    message: "You started well but performance scores have dipped. Practice sessions are logged — try to get two in before Friday.",
+    hw: '70.0%', hwBar: 70, qz: '68.0%', qzBar: 68, mt: '65.0%', mtBar: 65,
+    hint: "The rhythm section quiz is Dec 8. Three practice runs should do it.",
+    notes: {
+      hw: [['HW 1','13/20'],['HW 2','15/20'],['HW 3','14/20']],
+      qz: [['Quiz 1','68/100'],['Quiz 2','72/100']],
+      mt: [['Performance','65/100']]
+    },
+    calc: { 'A':'100%','A-':'95%','B+':'87%','B':'78%','B-':'70%','C+':'61%','C':'52%' }
+  },
+  'Physics': {
+    grade: 'C', pct: '66.3%', teacher: 'Mr Nowak',
+    message: "Lab work has been great — that's saving you here. Brush up on motion equations before the next test.",
+    hw: '72.0%', hwBar: 72, qz: '65.0%', qzBar: 65, mt: '60.0%', mtBar: 60,
+    hint: "Chapter 4 is where most people drop marks. Don't skip the examples.",
+    notes: {
+      hw: [['HW 1','15/20'],['HW 2','13/20'],['Lab','18/20']],
+      qz: [['Quiz 1','68/100'],['Quiz 2','62/100']],
+      mt: [['Exam','60/100']]
+    },
+    calc: { 'A':'100%','A-':'96%','B+':'88%','B':'79%','B-':'70%','C+':'61%','C':'52%' }
+  },
+  'History': {
+    grade: 'B+', pct: '88.1%', teacher: 'Ms Johnson',
+    message: "Strong overall — your essays show real engagement with the material. Keep it up through the final stretch.",
+    hw: '90.0%', hwBar: 90, qz: '86.0%', qzBar: 86, mt: '88.0%', mtBar: 88,
+    hint: "The final covers chapters 8–12. You've already nailed 8 and 9.",
+    notes: {
+      hw: [['Essay 1','18/20'],['HW 1','19/20'],['HW 2','17/20']],
+      qz: [['Quiz 1','86/100'],['Quiz 2','88/100']],
+      mt: [['Exam','88/100']]
+    },
+    calc: { 'A':'97%','A-':'88%','B+':'76%','B':'65%','B-':'53%','C+':'41%','C':'30%' }
+  }
+};
+
+let _currentSubjectData = null;
+
+function renderNoteRows(elId, rows) {
+  document.getElementById(elId).innerHTML = rows.map(([name, score]) =>
+    `<div class="drw-note-row"><span class="drw-note-row-name">${name}</span><span class="drw-note-row-score">${score}</span></div>`
+  ).join('');
+}
+
+function openSubjectDrawer(subject) {
+  const d = subjectData[subject];
+  _currentSubjectData = d;
+  document.getElementById('drw-name').textContent = subject;
+  document.getElementById('drw-teacher').textContent = d.teacher;
+  document.getElementById('drw-grade').textContent = d.grade;
+  document.getElementById('drw-pct').textContent = d.pct;
+  document.getElementById('drw-msg-text').textContent = d.message;
+  document.getElementById('drw-hw-val').textContent = d.hw;
+  document.getElementById('drw-qz-val').textContent = d.qz;
+  document.getElementById('drw-mt-val').textContent = d.mt;
+  document.getElementById('drw-hw-bar').style.width = d.hwBar + '%';
+  document.getElementById('drw-qz-bar').style.width = d.qzBar + '%';
+  document.getElementById('drw-mt-bar').style.width = d.mtBar + '%';
+  document.getElementById('drw-hint').textContent = d.hint;
+  renderNoteRows('drw-assign-hw', d.notes.hw);
+  renderNoteRows('drw-assign-qz', d.notes.qz);
+  renderNoteRows('drw-assign-mt', d.notes.mt);
+  // Reset panels
+  toggleDrawerPanel(null);
+  document.getElementById('drw-calc-result').style.display = 'none';
+  const GRADE_ORDER = ['A','A-','B+','B','B-','C+','C'];
+  const curIdx = GRADE_ORDER.indexOf(d.grade);
+  document.querySelectorAll('.drw-grade-pill').forEach(b => {
+    b.classList.remove('selected');
+    const idx = GRADE_ORDER.indexOf(b.textContent.trim());
+    b.disabled = idx === -1 || idx >= curIdx;
+  });
+  document.getElementById('subject-drawer').classList.add('open');
+  document.getElementById('main-content').classList.add('dimmed');
+  document.getElementById('drw-overlay').style.display = '';
+}
+
+function closeSubjectDrawer() {
+  document.getElementById('subject-drawer').classList.remove('open');
+  document.getElementById('main-content').classList.remove('dimmed');
+  document.getElementById('drw-overlay').style.display = 'none';
+}
+
+let _activePanel = null;
+function toggleDrawerPanel(panel) {
+  ['assign','calc'].forEach(p => {
+    document.getElementById('drw-panel-' + p).classList.remove('show');
+    document.getElementById('drw-btn-' + (p === 'assign' ? 'seeall' : 'calc')).classList.remove('drw-btn-on');
+  });
+  if (panel && panel !== _activePanel) {
+    document.getElementById('drw-panel-' + panel).classList.add('show');
+    document.getElementById('drw-btn-' + (panel === 'assign' ? 'seeall' : 'calc')).classList.add('drw-btn-on');
+    _activePanel = panel;
+  } else {
+    _activePanel = null;
+  }
+}
+
+function selectTargetGrade(btn) {
+  document.querySelectorAll('.drw-grade-pill').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const grade = btn.textContent.trim();
+  const pct = _currentSubjectData && _currentSubjectData.calc[grade] || '—';
+  document.getElementById('drw-calc-pct').textContent = pct;
+  document.getElementById('drw-calc-result').style.display = '';
+}
+
+(function(){
+  var src = localStorage.getItem('bp_avatar') || './foundations/assets/avatars/avatar-3.svg';
+  var bg  = localStorage.getItem('bp_avatar_bg') || '#b8c0ed';
+  var el  = document.getElementById('userAvatar');
+  if (el) el.style.background = bg + ' url("' + src + '") no-repeat center / cover';
+})();
+(function(){
+  var name = localStorage.getItem('bp_username') || 'Sophie';
+  var el = document.querySelector('.user-name');
+  if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+function openGJOverlay() {
+  var overlay = document.getElementById('gjOverlay');
+  var input   = document.getElementById('gjInput');
+  var btn     = document.getElementById('gjSaveBtn');
+  input.value = '';
+  btn.disabled = true;
+  var done = document.getElementById('gjDone');
+  done.classList.remove('show', 'gj-entered', 'gj-phase2');
+  document.getElementById('gjBody').style.display = 'flex';
+  document.getElementById('gjSaveWrap').style.display = 'block';
+  overlay.style.display = 'block';
+  input.focus();
+}
+
+function closeGJOverlay() {
+  document.getElementById('gjOverlay').style.display = 'none';
+}
+
+function saveGJNote() {
+  var val = document.getElementById('gjInput').value.trim();
+  if (!val) return;
+  try { localStorage.setItem('bp_grades_note', val); } catch(e) {}
+  document.getElementById('gjBody').style.display = 'none';
+  document.getElementById('gjSaveWrap').style.display = 'none';
+  var done = document.getElementById('gjDone');
+  done.classList.remove('gj-entered', 'gj-phase2');
+  done.classList.add('show');
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      done.classList.add('gj-entered');
+      setTimeout(function() { done.classList.add('gj-phase2'); }, 300);
+    });
+  });
+}
+
+function toggleSupport() {
+  document.getElementById('supportPanel').classList.contains('sp-open') ? closeSupport() : openSupport();
+}
+function openSupport() {
+  document.getElementById('supportPanel').classList.add('sp-open');
+  document.getElementById('spBackdrop').classList.add('sp-open');
+}
+function closeSupport() {
+  document.getElementById('supportPanel').classList.remove('sp-open');
+  document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+
+function toggleHeart(btn) {
+  var img = btn.querySelector('img');
+  var vid = btn.dataset.vid;
+  var saved = JSON.parse(localStorage.getItem('bp_saved') || '["v1"]');
+  if (btn.classList.contains('saved')) {
+    btn.classList.remove('saved');
+    img.src = './components/heart-default.svg';
+    saved = saved.filter(function(id) { return id !== vid; });
+  } else {
+    btn.classList.add('saved');
+    img.src = './components/heart-saved.svg';
+    if (vid && saved.indexOf(vid) === -1) saved.push(vid);
+  }
+  localStorage.setItem('bp_saved', JSON.stringify(saved));
+}
+
+(function() {
+  var saved = JSON.parse(localStorage.getItem('bp_saved') || '["v1"]');
+  document.querySelectorAll('.heart-btn[data-vid]').forEach(function(btn) {
+    if (saved.indexOf(btn.dataset.vid) !== -1) {
+      btn.classList.add('saved');
+      btn.querySelector('img').src = './components/heart-saved.svg';
+    }
+  });
+})();
+
+function goToSupportWrite() {
+  const dev    = document.getElementById('device');
+  const circle = document.getElementById('gw-circle');
+  const ease   = '800ms cubic-bezier(0.81, 0, 0.26, 0.98)';
+
+  // Show circle covering the whole screen (centered at -538px)
+  circle.style.display    = 'block';
+  circle.style.transition = 'none';
+  circle.style.transform  = 'translateY(0)';
+
+  // Transition device background from dark to orange (peeks above circle as it slides)
+  dev.style.transition       = 'background-color ' + ease;
+  dev.style.backgroundColor  = '#f08b31';
+
+  // Force reflow so initial state is committed before animation
+  circle.getBoundingClientRect();
+
+  // Slide circle down 607px → visual top goes from -538px to 69px (support-write position)
+  circle.style.transition = 'transform ' + ease;
+  circle.style.transform  = 'translateY(607px)';
+
+  setTimeout(() => { window.location.href = 'support-write.html'; }, 800);
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Notice your wins</title>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center center;
+  transform: scale(var(--s,1));
+}
+
+/* ─── Screen transitions ────────────────────────────────────── */
+.screen {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity 280ms cubic-bezier(0.4,0,0.2,1);
+}
+.screen.active { opacity: 1; pointer-events: all; }
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: #fff; pointer-events: none;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN 1 — Write
+   ════════════════════════════════════════════════════════════ */
+#s-write {
+  background: #3e4fb8;
+}
+
+/* Summertime Sadness background shape */
+.write-bg-shape {
+  position: absolute;
+  width: 1674px; height: 1674px;
+  left: 0; right: 0; top: 0; bottom: 0;
+  margin: auto;
+  transform: scale(1.2);
+  pointer-events: none; z-index: 0;
+  display: block;
+}
+
+/* back button */
+.btn-back {
+  position: absolute; top: 36px; left: 24px; z-index: 10;
+  width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.15);
+  border: none; cursor: pointer; display: grid; place-items: center;
+  transition: background 120ms;
+}
+.btn-back:hover { background: rgba(255,255,255,0.22); }
+.btn-back svg { width: 18px; height: 18px; }
+
+/* header + content combined flow */
+.write-body {
+  position: absolute; top: 115px; left: 50%; transform: translateX(-50%); z-index: 5;
+  width: 440px; display: flex; flex-direction: column; align-items: center;
+}
+.write-header {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-bottom: 48px; width: 100%;
+}
+.spark-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.18); border-radius: 100px;
+  padding: 4px 12px 4px 8px;
+  font-family: var(--font-display); font-weight: 400; font-size: 18px; color: #f2f3e5;
+}
+.spark-pill-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: linear-gradient(135deg, #f08b31, #ffbb25);
+  display: grid; place-items: center;
+}
+.spark-pill-icon img { width: 16px; height: 16px; display: block; }
+.write-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; letter-spacing: -0.8px;
+  color: #f2f3e5; margin: 0; line-height: 40px;
+  text-align: center;
+}
+
+/* content area (message + textarea — now separate) */
+.write-content {
+  width: 100%; display: flex; flex-direction: column; gap: 24px;
+}
+
+/* monster message bubble */
+.msg-bubble {
+  background: #49aee1; border-radius: 0;
+  padding: 10px; display: flex; align-items: flex-start; gap: 12px;
+}
+.msg-avatar {
+  width: 48px; height: 48px; border-radius: 0; background: #f2f3e5;
+  flex-shrink: 0; display: grid; place-items: center;
+}
+.msg-monster { position: relative; width: 40px; height: 40px; }
+.msg-butterfly { position: absolute; width: 36px; height: 36px; top: 2px; left: 2px; }
+.msg-eyes {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 1px;
+}
+.msg-eye { width: 5.78px; height: 7.58px; display: block; }
+.msg-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+}
+
+/* text area */
+.write-area {
+  background: #36363f;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 8px;
+  position: relative;
+}
+.write-textarea {
+  width: 100%; box-sizing: border-box;
+  border: none; outline: none; resize: none;
+  font-family: var(--font-body); font-size: 16px; font-weight: 600;
+  color: #f2f3e5; padding: 10px 16px;
+  background: transparent; min-height: 200px;
+}
+.write-textarea::placeholder { color: #adadad; font-weight: 400; }
+
+/* save button */
+.btn-save-wrap {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 10;
+}
+.btn-save {
+  width: 280px; height: 52px; border-radius: 12px;
+  background: #f1f2e4; color: #1f1f24;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border: none; cursor: pointer; transition: opacity 150ms, transform 120ms;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-save:active { transform: scale(0.97); }
+.btn-save:disabled { opacity: 0.4; cursor: default; }
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN 2 — Completed
+   ════════════════════════════════════════════════════════════ */
+#s-done {
+  background: #1f1f25;
+}
+
+/* Large Summertime Sadness for done screen */
+.done-bg-shape {
+  position: absolute;
+  width: 2579px; height: 2579px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 0;
+  opacity: 0.35;
+}
+
+.done-center {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.done-reward-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+}
+.done-reward-text {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px; color: #f2f3e5; line-height: 1;
+}
+.done-spark-badge {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #f08b31, #ffbb25);
+  display: grid; place-items: center;
+}
+.done-spark-badge img { width: 22px; height: 22px; display: block; }
+
+.done-card-wrap {
+  width: 237px; height: 353px; position: relative;
+  animation: float 3s ease-in-out infinite;
+  margin-bottom: 28px;
+}
+.done-card-wrap .done-card-img {
+  width: 100%; height: 100%; border-radius: 19px; display: block;
+}
+.done-card-wrap .done-monster {
+  position: absolute; top: 20px; left: 50%;
+  transform: translateX(-50%);
+  width: 180px; height: 180px;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+.done-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1;
+  color: #f2f3e5; letter-spacing: 1px;
+  text-align: center; margin: 0;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN 1 — Write your win
+       ══════════════════════════════════════════════════════════ -->
+  <div class="screen active" id="s-write">
+    <img class="write-bg-shape" src="./components/wins-bg.svg" alt="">
+
+    <div class="sb"><span data-content="notice_wins_status_time">9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <button class="btn-back" onclick="history.back()">
+      <svg viewBox="0 0 18 18" fill="none">
+        <path d="M11 4L6 9L11 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="write-body">
+    <div class="write-header">
+      <div class="spark-pill" data-content="notice_wins_spark_pill">
+        +1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:inline-block;vertical-align:middle;">
+      </div>
+      <h1 class="write-title" data-content="notice_wins_title">Notice your wins</h1>
+    </div>
+
+    <div class="write-content">
+      <div class="msg-bubble">
+        <div class="msg-avatar">
+          <div class="msg-monster">
+            <img class="msg-butterfly" src="./components/monster-butterfly.svg" alt="">
+            <div class="msg-eyes">
+              <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+              <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+            </div>
+          </div>
+        </div>
+        <p class="msg-text" data-content="notice_wins_msg_bubble">What's one small thing that happened this week that made you smile — even briefly?</p>
+      </div>
+
+      <div class="write-area">
+        <textarea
+          class="write-textarea"
+          id="noteInput"
+          placeholder="Start writing here"
+          data-content-placeholder="notice_wins_textarea_placeholder"
+          oninput="onInput()"
+        ></textarea>
+      </div>
+    </div>
+    </div>
+
+    <div class="btn-save-wrap">
+      <button class="btn-save" id="btnSave" disabled onclick="saveNote()" data-content="btn_save">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN 2 — Completed!
+       ══════════════════════════════════════════════════════════ -->
+  <div class="screen" id="s-done">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+    <img class="done-bg-shape" src="./components/wins-bg-done.svg" alt="">
+
+    <div class="done-center">
+      <div class="done-reward-row">
+        <span class="done-reward-text" data-content="notice_wins_reward_text">+1</span>
+        <img src="./components/spark.svg" alt="spark" style="width:28px;height:28px;display:block;">
+      </div>
+
+      <div class="done-card-wrap">
+        <img class="done-card-img" src="./components/card-1.svg" alt="Notice your wins">
+        <img class="done-monster" src="./components/Property 1=M01, Type=Default.svg" alt="">
+      </div>
+
+      <p class="done-title" data-content="notice_wins_completed">Completed!</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function scale() {
+  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
+let cur = 's-write';
+function goTo(id) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  cur = id;
+}
+
+function onInput() {
+  const val = document.getElementById('noteInput').value.trim();
+  document.getElementById('btnSave').disabled = val.length === 0;
+}
+
+function saveNote() {
+  const val = document.getElementById('noteInput').value.trim();
+  localStorage.setItem('bp_wins_note', val);
+  localStorage.setItem('bp_wins_question', "What's one small thing that happened this week that made you smile — even briefly?");
+  localStorage.setItem('bp_wins_done', '1');
+  setTimeout(() => {
+    window.location.href = 'completed.html?card=wins';
+  }, 400);
+}
+
+// Edit mode: pre-fill textarea if returning to edit
+(function() {
+  const saved = localStorage.getItem('bp_wins_note');
+  if (saved) document.getElementById('noteInput').value = saved;
+  onInput();
+})();
+</script>
+  <script src="./content-loader.js"></script>
+</body>
+</html>

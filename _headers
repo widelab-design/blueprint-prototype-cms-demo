@@ -1,0 +1,3 @@
+# Always revalidate the content file so CMS edits appear on the next page load
+/content.json
+  Cache-Control: no-cache
