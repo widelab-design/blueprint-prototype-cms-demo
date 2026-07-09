@@ -11,11 +11,11 @@
     "btn_done": "Done"
   },
   "all-about-you": {
-    "all_about_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
     "all_about_title": "All about you",
     "all_about_msg_bubble": "Pick the emoji that best matches how you've felt this week.",
     "all_about_reward_text": "+1",
-    "all_about_completed_title": "Completed!"
+    "all_about_completed_title": "Completed!",
+    "all_about_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">"
   },
   "category": {
     "category_status_time": "9:41 Mon Jun 6",
@@ -24,14 +24,14 @@
   "collection": {
     "collection_status_time": "9:41 Mon Jun 6",
     "collection_count_denom": "/20",
-    "collection_progress_sparks": "+30 <img src=\"./components/Spark-4.svg\" alt=\"sparks\">",
-    "collection_desc": "You're starting your collection.\nEvery card is one more step on your journey."
+    "collection_desc": "You're starting your collection.\nEvery card is one more step on your journey.",
+    "collection_progress_sparks": "+30 <img src=\"./components/Spark-4.svg\" alt=\"sparks\">"
   },
   "completed": {
-    "completed_spark_badge": "+1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
     "completed_completed_text": "Completed!",
     "completed_ad_plus": "+10",
-    "completed_ad_title": "Today mission\ncompleted!"
+    "completed_ad_title": "Today mission\ncompleted!",
+    "completed_spark_badge": "+1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">"
   },
   "grades": {
     "grades_sidebar_logo": "Sparkz",
@@ -71,14 +71,12 @@
     "grades_att_month_apr": "Apr",
     "grades_att_month_may": "May",
     "grades_video_duration_grades": "1:30",
-    "grades_video_spark_grades": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
     "grades_video_title_grades": "The emotional\nside of grades",
     "grades_remember_label": "Remember",
     "grades_remember": "There's more to you than your grades. Want to write about what's been going on?",
     "btn_journal": "Journal",
     "btn_get_support": "Get support",
     "grades_video_duration_attend": "1:30",
-    "grades_video_spark_attend": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
     "grades_video_title_attend": "How to catch up after missing school",
     "grades_attend_remember_label": "Remember",
     "grades_attend_remember": "Everyone has ups and downs.\nWant to write about what's been going on?",
@@ -102,7 +100,6 @@
     "grades_drw_grade_pill_c": "C",
     "grades_drw_calc_needed": "Needed",
     "grades_drw_calc_context": "On final exam",
-    "grades_gj_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
     "grades_gj_title": "Grades &amp; attendance",
     "grades_gj_bubble_text": "There's more to you than your grades. Want to write about what's been going on?",
     "grades_gj_textarea_placeholder": "Start writing here",
@@ -118,7 +115,10 @@
     "grades_sp_item_talk_sub": "A trusted adult at your school is here to help.",
     "grades_sp_item_write_title": "Write it out.",
     "grades_sp_item_write_sub": "We'll make sure someone sees it.",
-    "grades_sp_cta": "Need to talk to someone right away? <strong>Call 988.</strong>"
+    "grades_sp_cta": "Need to talk to someone right away? <strong>Call 988.</strong>",
+    "grades_gj_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
+    "grades_video_spark_attend": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
+    "grades_video_spark_grades": "1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">"
   },
   "helpful-content": {
     "helpful_intro_heading": "Lots of students feel this way sometimes",
@@ -175,7 +175,6 @@
     "journal_page_title": "Journal",
     "journal_page_desc": "Have any thoughts or feelings you want to write about today?",
     "journal_section_notes": "Notes",
-    "journal_write_cta_sparks": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "journal_write_cta_label": "Write it out",
     "journal_note_card_date": "Today",
     "btn_edit_note": "Edit note",
@@ -201,7 +200,8 @@
     "journal_support_item1_sub": "A trusted adult at your school is here to help.",
     "journal_support_item2_title": "Write it out.",
     "journal_support_item2_sub": "We'll make sure someone sees it.",
-    "journal_support_cta": "Need to talk to someone right away? <strong>Call 988.</strong>"
+    "journal_support_cta": "Need to talk to someone right away? <strong>Call 988.</strong>",
+    "journal_write_cta_sparks": "1 <img src=\"./components/spark.svg\" alt=\"spark\">"
   },
   "journey": {
     "journey_logo": "Sparkz",
@@ -288,7 +288,6 @@
     "toolkit_title_simple": "My toolkit",
     "toolkit_desc": "Content for how you feel.",
     "toolkit_video_duration_simple": "1:04",
-    "toolkit_video_sparks_simple": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_title_calming_breath_simple": "Calming Breath",
     "btn_explore": "More",
     "toolkit_desc_full": "Content for how you feel.",
@@ -297,19 +296,14 @@
     "btn_filter_doitagain": "Do it again",
     "btn_filter_saved": "Saved",
     "toolkit_video_duration_hero": "1:16",
-    "toolkit_video_sparks_hero": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_title_hard_things": "You've Done Hard Things",
     "toolkit_video_duration_calming": "1:04",
-    "toolkit_video_sparks_calming": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_title_calming_breath": "Calming Breath",
     "toolkit_video_duration_resilience": "1:07",
-    "toolkit_video_sparks_resilience": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_title_resilience": "Building Resilience Every Day",
     "toolkit_video_duration_doitagain_1": "1:07",
-    "toolkit_video_sparks_doitagain_1": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_title_karl": "Karl Anthony Tawns Overcoming Challenges",
     "toolkit_video_duration_doitagain_2": "1:04",
-    "toolkit_video_sparks_doitagain_2": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_title_calming_breath_doitagain": "Calming Breath",
     "toolkit_saved_empty": "Save your favourite exercises!",
     "toolkit_category_calm_down": "Calm down",
@@ -325,16 +319,22 @@
     "toolkit_support_item2_title": "Write it out.",
     "toolkit_support_item2_sub": "We'll make sure someone sees it.",
     "toolkit_support_cta": "Need to talk to someone right away? <strong>Call 988.</strong>",
-    "toolkit_video_close_btn": "✕ Zamknij"
+    "toolkit_video_close_btn": "✕ Zamknij",
+    "toolkit_video_sparks_doitagain_2": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_doitagain_1": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_resilience": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_calming": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_hero": "1 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_simple": "1 <img src=\"./components/spark.svg\" alt=\"spark\">"
   },
   "notice-wins": {
     "notice_wins_status_time": "9:41 Mon Jun 6",
-    "notice_wins_spark_pill": "+1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:inline-block;vertical-align:middle;\">",
     "notice_wins_title": "Notice your wins",
     "notice_wins_msg_bubble": "What's one small thing that happened this week that made you smile — even briefly?",
     "notice_wins_textarea_placeholder": "Start writing here",
     "notice_wins_reward_text": "+1",
-    "notice_wins_completed": "Completed!"
+    "notice_wins_completed": "Completed!",
+    "notice_wins_spark_pill": "+1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:inline-block;vertical-align:middle;\">"
   },
   "onboarding": {
     "onboarding_trans_s1_title": "Your space",
@@ -345,7 +345,7 @@
     "onboarding_name_label": "What's your name?",
     "onboarding_name_placeholder": "Your name…",
     "onboarding_btn_lets_go": "Let's go",
-    "onboarding_s0_title": "This space\nis for you",
+    "onboarding_s0_title": "This space\nis for you\nTest",
     "onboarding_s0_body": "For good days. For weird days.\nFeel. Reflect. Get support.",
     "onboarding_btn_get_started": "Get started",
     "onboarding_s1_title": "You choose\nwhat to share",
@@ -476,12 +476,12 @@
     "summary_mood_ov_status_battery": "100% 🔋"
   },
   "support-write": {
-    "support_write_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
     "support_write_title": "Need to talk?",
     "support_write_bubble": "Write it out. You're not alone. Other people have felt this way too.",
     "support_write_textarea_placeholder": "Start writing here",
     "support_done_title": "Message\nSent!",
-    "support_done_bubble": "Thanks for sharing. Someone at your school will be in touch. You're always welcome to keep checking in here."
+    "support_done_bubble": "Thanks for sharing. Someone at your school will be in touch. You're always welcome to keep checking in here.",
+    "support_write_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">"
   },
   "today": {
     "today_sidebar_logo": "Sparkz",
@@ -516,16 +516,16 @@
     "toolkit_video_why_label": "This is optional",
     "toolkit_video_why_title": "Do you want to tell why?",
     "toolkit_video_why_placeholder": "Write your thoughts…",
-    "toolkit_video_thanks_reward": "+1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">",
     "toolkit_video_thanks_title": "Thanks for sharing",
-    "toolkit_video_notif_label_feedback": "Your feedback helps us make\nthings better for you."
+    "toolkit_video_notif_label_feedback": "Your feedback helps us make\nthings better for you.",
+    "toolkit_video_thanks_reward": "+1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">"
   },
   "write-it-out": {
-    "write_out_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
     "write_out_title": "Write it out",
     "write_out_msg_bubble": "Journaling helps you slow down and make things feel easier to understand.",
     "write_out_textarea_placeholder": "Start writing here",
     "write_out_reward_text": "+1",
-    "write_out_completed": "Completed!"
+    "write_out_completed": "Completed!",
+    "write_out_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">"
   }
 }
