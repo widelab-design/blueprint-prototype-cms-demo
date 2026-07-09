@@ -8,7 +8,8 @@
     "nav_grades": "Grades",
     "nav_sparkz": "Sparkz",
     "btn_continue": "Continue",
-    "btn_done": "Done"
+    "btn_done": "Done",
+    "__ship_test__": "ping-1783598891"
   },
   "all-about-you": {
     "all_about_spark_pill": "1 <img src=\"./components/spark.svg\" alt=\"spark\" style=\"width:20px;height:20px;display:block;\">",
