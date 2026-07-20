@@ -500,13 +500,15 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <!-- Row 1 -->
       <div class="sparks-row">
 
-        <!-- Unlocked 200 — affordable -->
-        <div class="art-card art-card-dark art-affordable" style="cursor:pointer" onclick="tryUnlock(200, this)">
+        <!-- Locked 100 — affordable when sparks >= 100 -->
+        <div class="art-card art-card-dark art-card-locked" data-cost="100">
           <img class="art-img" src="./components/Frame-1308.svg" alt="">
-          <div class="art-dark-overlay" style="background:rgba(0,0,0,0.7)"></div>
-          <div class="art-key" style="z-index:2"><svg viewBox="0 0 25 47" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 12.2435C25 5.48091 19.4383 0 12.5789 0C5.71978 0 0.158021 5.48149 0.158021 12.2435C0.158021 16.8797 2.77369 20.9141 6.63152 22.9927L0 47H24.9663L18.3583 23.0759C22.3061 21.0238 25 16.9455 25 12.2435Z" fill="#36363f"/></svg></div>
+          <div class="art-dark-overlay"></div>
+          <div class="art-lock">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 16H40C41.1046 16 42 16.8954 42 18V42C42 43.1046 41.1046 44 40 44H8C6.89544 44 6 43.1046 6 42V18C6 16.8954 6.89544 16 8 16H12V14C12 7.37258 17.3726 2 24 2C30.6274 2 36 7.37258 36 14V16ZM22 31.4648V36H26V31.4648C27.1956 30.7732 28 29.4806 28 28C28 25.7908 26.2092 24 24 24C21.7908 24 20 25.7908 20 28C20 29.4806 20.8044 30.7732 22 31.4648ZM32 16V14C32 9.58172 28.4182 6 24 6C19.5817 6 16 9.58172 16 14V16H32Z" fill="#444450"/></svg>
+          </div>
           <div class="art-badge">
-            <span class="art-badge-num">200</span>
+            <span class="art-badge-num">100</span>
             <img src="./components/Spark-4.svg" alt="spark">
           </div>
         </div>
@@ -730,6 +732,12 @@ function tryUnlock(cost, card) {
   // Capture natural card position before anything moves
   _cardRect = _unlockCard.getBoundingClientRect();
 
+  // Suppress hover transitions on all cards before exit animation
+  document.querySelectorAll('.art-card').forEach(function(c) {
+    c.style.transition = 'none';
+    c.style.transform  = 'scale(1)';
+  });
+
   // Exit main content immediately on click
   document.querySelector('.today-sidebar').classList.add('exit');
   document.querySelector('.sparks-header-left').classList.add('exit');
@@ -916,6 +924,10 @@ function closeSuccess() {
 }
 
 function goToCollectible(cid) {
+  document.querySelectorAll('.art-card').forEach(function(c) {
+    c.style.transition = 'none';
+    c.style.transform  = 'scale(1)';
+  });
   var BEZIER = 'cubic-bezier(0.75,0,0.3,0.99)';
   var sidebar   = document.querySelector('.today-sidebar');
   var headerL   = document.querySelector('.sparks-header-left');
