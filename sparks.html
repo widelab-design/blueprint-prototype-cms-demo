@@ -182,7 +182,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   cursor: pointer;
   transition: transform 220ms ease-out;
 }
-.art-card:hover { transform: scale(1.025); }
+.art-card.art-affordable:hover { transform: scale(1.025); }
 .art-card-dark { background: #1f1f25; border: none; }
 .art-card-blue { background: #3f50b8; border: none; }
 
@@ -500,7 +500,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div class="sparks-row">
 
         <!-- Unlocked 200 — affordable -->
-        <div class="art-card art-card-dark" style="cursor:pointer" onclick="tryUnlock(200, this)">
+        <div class="art-card art-card-dark art-affordable" style="cursor:pointer" onclick="tryUnlock(200, this)">
           <img class="art-img" src="./components/Frame-1308.svg" alt="">
           <div class="art-dark-overlay" style="background:rgba(0,0,0,0.7)"></div>
           <div class="art-key" style="z-index:2"><svg viewBox="0 0 25 47" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 12.2435C25 5.48091 19.4383 0 12.5789 0C5.71978 0 0.158021 5.48149 0.158021 12.2435C0.158021 16.8797 2.77369 20.9141 6.63152 22.9927L0 47H24.9663L18.3583 23.0759C22.3061 21.0238 25 16.9455 25 12.2435Z" fill="#36363f"/></svg></div>
@@ -695,6 +695,7 @@ function applyAffordability(sparks) {
     var cost = parseInt(card.dataset.cost, 10);
     if (sparks >= cost) {
       card.classList.remove('art-card-locked');
+      card.classList.add('art-affordable');
       card.style.cursor = 'pointer';
       card.setAttribute('onclick', 'tryUnlock(' + cost + ', this)');
       var overlay = card.querySelector('.art-dark-overlay');
