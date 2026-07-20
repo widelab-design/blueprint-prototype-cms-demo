@@ -433,9 +433,14 @@ const EMOTION_NAMES = {
 };
 
 (function fillBubble() {
-  const sleep   = localStorage.getItem('bp_sleep_answer') || 'okay';
-  const keys    = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]');
-  const emotion = (keys.length ? (EMOTION_NAMES[keys[0]] || keys[0]) : 'okay').toLowerCase();
+  const sleep  = localStorage.getItem('bp_sleep_answer') || 'okay';
+  const keys   = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]');
+  const names  = keys.length
+    ? keys.map(k => (EMOTION_NAMES[k] || k).toLowerCase())
+    : ['okay'];
+  const emotion = names.length > 1
+    ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]
+    : names[0];
   const msg = document.getElementById('connMsg');
   if (msg) {
     msg.textContent = `You said you slept ${sleep} last night, and today felt ${emotion} — how much do you think they're connected?`;
