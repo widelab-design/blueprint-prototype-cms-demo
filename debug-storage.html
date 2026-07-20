@@ -11,6 +11,7 @@ pre{background:#2b2b32;padding:12px;border-radius:8px;white-space:pre-wrap;word-
 <button onclick="testRead()" style="margin-top:16px;background:#555;">Pokaz co jest zapisane</button>
 <button onclick="resetVideo()" style="background:#555;">Reset "video watched"</button>
 <button onclick="resetTour()" style="background:#3f50b8;">Reset tutorial (spotlight)</button>
+<button onclick="resetBanner()" style="background:#219653;">Reset banera (today)</button>
 <pre id="out">Kliknij przycisk...</pre>
 <script>
 var NOTE_KEYS = ['bp_write_text','bp_journal_q1','bp_journal_q2','bp_journal_notes','bp_today_sections'];
@@ -59,6 +60,11 @@ function resetVideo() {
 function resetTour() {
   localStorage.removeItem('bp_tour_done');
   document.getElementById('out').textContent = 'bp_tour_done usuniety — otworz today.html zeby zobaczyc tutorial od nowa.';
+  testRead();
+}
+function resetBanner() {
+  localStorage.removeItem('bp_banner_closed');
+  document.getElementById('out').textContent = 'bp_banner_closed usuniety — baner pojawi sie ponownie na today.html.';
   testRead();
 }
 testRead();
