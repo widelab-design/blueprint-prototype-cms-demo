@@ -29,9 +29,9 @@
   },
   "completed": {
     "completed_completed_text": "Completed!",
-    "completed_ad_plus": "+10",
+    "completed_ad_plus": "+50",
     "completed_ad_title": "Today mission\ncompleted!",
-    "completed_spark_badge": "+1 <img src=\"./components/Spark-4.svg\" alt=\"spark\">"
+    "completed_spark_badge": "+50 <img src=\"./components/Spark-4.svg\" alt=\"spark\">"
   },
   "grades": {
     "grades_sidebar_logo": "Sparkz",
