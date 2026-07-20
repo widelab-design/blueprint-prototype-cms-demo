@@ -272,26 +272,32 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <img class="aay-bg-shape" src="./components/asterisk-3.svg" alt="">
 </div>
 
+<!-- Shared static UI — never moves -->
+<div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+<button class="btn-back" id="aayBack" onclick="history.back()">
+  <svg viewBox="0 0 20 20" fill="none">
+    <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<div class="aay-header">
+  <div class="aay-pill" data-content="all_about_spark_pill">
+    1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+  </div>
+  <h1 class="aay-title" data-content="all_about_title">All about you</h1>
+</div>
+<span class="aay-counter" id="aayCounter">1/2</span>
+
+<div class="aay-nav" style="justify-content:center">
+  <button class="btn-aay-next" id="aayNavBtn" onclick="goTo('s-eating')">Next</button>
+</div>
+
 <!-- ════════════════════════════════════════════════════════════
      SCREEN 1 — Sleep/emotion connection (arc slider)
      ════════════════════════════════════════════════════════════ -->
 <div class="screen active" id="s-connection">
 <div class="aay-content">
-  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
-
-  <button class="btn-back" onclick="history.back()">
-    <svg viewBox="0 0 20 20" fill="none">
-      <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
-  <div class="aay-header">
-    <div class="aay-pill" data-content="all_about_spark_pill">
-      1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
-    </div>
-    <h1 class="aay-title" data-content="all_about_title">All about you</h1>
-  </div>
-  <span class="aay-counter">1/2</span>
 
   <div class="aay-bubble">
     <div class="aay-avatar">
@@ -325,9 +331,6 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     </div>
   </div>
 
-  <div class="aay-nav" style="justify-content:center">
-    <button class="btn-aay-next" onclick="goTo('s-eating')">Next</button>
-  </div>
 </div><!-- /aay-content -->
 </div><!-- /s-connection -->
 
@@ -337,21 +340,6 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
      ════════════════════════════════════════════════════════════ -->
 <div class="screen" id="s-eating">
 <div class="aay-content">
-  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
-
-  <button class="btn-back" onclick="goTo('s-connection')">
-    <svg viewBox="0 0 20 20" fill="none">
-      <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
-
-  <div class="aay-header">
-    <div class="aay-pill" data-content="all_about_spark_pill">
-      1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
-    </div>
-    <h1 class="aay-title" data-content="all_about_title">All about you</h1>
-  </div>
-  <span class="aay-counter">2/2</span>
 
   <div class="aay-bubble">
     <div class="aay-avatar">
@@ -411,9 +399,6 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     </button>
   </div>
 
-  <div class="aay-nav" style="justify-content:center">
-    <button class="btn-aay-save" onclick="saveAll()">Save</button>
-  </div>
 </div><!-- /aay-content -->
 </div><!-- /s-eating -->
 
@@ -470,9 +455,36 @@ const AAY_ORDER = ['s-connection', 's-eating'];
 const AAY_DUR = 800;
 const AAY_BEZ = 'cubic-bezier(0.81,0,0.26,0.98)';
 
+const AAY_SCREEN_DATA = {
+  's-connection': {
+    counter: '1/2',
+    navLabel: 'Next', navClass: 'btn-aay-next',
+    navFn: () => goTo('s-eating'),
+    backFn: () => history.back(),
+  },
+  's-eating': {
+    counter: '2/2',
+    navLabel: 'Save', navClass: 'btn-aay-save',
+    navFn: () => saveAll(),
+    backFn: () => goTo('s-connection'),
+  },
+};
+
+function updateShared(id) {
+  const cfg = AAY_SCREEN_DATA[id];
+  if (!cfg) return;
+  document.getElementById('aayCounter').textContent = cfg.counter;
+  const navBtn = document.getElementById('aayNavBtn');
+  navBtn.textContent = cfg.navLabel;
+  navBtn.className   = cfg.navClass;
+  navBtn.onclick     = cfg.navFn;
+  document.getElementById('aayBack').onclick = cfg.backFn;
+}
+
 function goTo(id) {
   if (_aayAnimating || id === cur) return;
   _aayAnimating = true;
+  updateShared(id);
   const dir         = AAY_ORDER.indexOf(id) > AAY_ORDER.indexOf(cur) ? 1 : -1;
   const fromEl      = document.getElementById(cur);
   const toEl        = document.getElementById(id);
