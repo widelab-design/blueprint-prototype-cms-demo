@@ -598,7 +598,7 @@ function eatConfirmAdd(el) {
   const emoji = el.querySelector('.eat-emoji').textContent;
   if (!val) { eatRevertAdd(el); return; }
   const newBlock = document.createElement('button');
-  newBlock.className = 'eat-block';
+  newBlock.className = 'eat-block sel';
   newBlock.onclick = function() { this.classList.toggle('sel'); };
   newBlock.innerHTML = `<div class="eat-icon"><span class="eat-emoji">${emoji}</span></div><span class="eat-label">${val}</span>`;
   el.parentElement.insertBefore(newBlock, el);
