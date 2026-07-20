@@ -578,16 +578,18 @@ const CONN_LEVELS = [
 const CHK_SVG = `<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="#f2f3e5"/><path d="M11 18l5 5 9-9" stroke="#1f1f25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function eatAddOther(el) {
-  el.className = 'eat-block eat-block--input sel';
-  el.onclick = null;
-  el.innerHTML = `
+  const div = document.createElement('div');
+  div.className = 'eat-block eat-block--input sel';
+  div.innerHTML = `
     <div class="eat-icon" style="cursor:pointer;flex-shrink:0" onclick="eatShowPicker(this)">
       <span class="eat-emoji">👀</span>
     </div>
-    <input class="eat-input-field" placeholder="Write down..." autofocus>
-    <button class="eat-confirm-btn" onclick="eatConfirmAdd(this.closest('.eat-block'))">${CHK_SVG}</button>`;
-  el.querySelector('.eat-input-field').addEventListener('keydown', e => {
-    if (e.key === 'Enter') eatConfirmAdd(el);
+    <input class="eat-input-field" placeholder="Write down...">
+    <div class="eat-confirm-btn" onclick="eatConfirmAdd(this.closest('.eat-block'))">${CHK_SVG}</div>`;
+  el.parentNode.replaceChild(div, el);
+  div.querySelector('.eat-input-field').focus();
+  div.querySelector('.eat-input-field').addEventListener('keydown', e => {
+    if (e.key === 'Enter') eatConfirmAdd(div);
   });
 }
 
@@ -596,7 +598,7 @@ function eatConfirmAdd(el) {
   const emoji = el.querySelector('.eat-emoji').textContent;
   if (!val) { eatRevertAdd(el); return; }
   const newBlock = document.createElement('button');
-  newBlock.className = 'eat-block sel';
+  newBlock.className = 'eat-block';
   newBlock.onclick = function() { this.classList.toggle('sel'); };
   newBlock.innerHTML = `<div class="eat-icon"><span class="eat-emoji">${emoji}</span></div><span class="eat-label">${val}</span>`;
   el.parentElement.insertBefore(newBlock, el);
@@ -604,9 +606,11 @@ function eatConfirmAdd(el) {
 }
 
 function eatRevertAdd(el) {
-  el.className = 'eat-block eat-block--add';
-  el.onclick = function() { eatAddOther(this); };
-  el.innerHTML = `<div class="eat-icon"><span style="font-size:20px;color:#a4a59f">+</span></div><span class="eat-label">Add other</span>`;
+  const btn = document.createElement('button');
+  btn.className = 'eat-block eat-block--add';
+  btn.onclick = function() { eatAddOther(this); };
+  btn.innerHTML = `<div class="eat-icon"><span style="font-size:20px;color:#a4a59f">+</span></div><span class="eat-label">Add other</span>`;
+  el.parentNode.replaceChild(btn, el);
 }
 
 const EAT_PICKER_EMOJI = [
