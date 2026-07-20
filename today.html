@@ -242,6 +242,20 @@ html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120p
 }
 .t-card.done .eye-overlay { display: none; }
 
+/* Spark count overlay — covers the baked-in "1" in the sleepy SVG */
+.card-spark-num {
+  display: none;
+  position: absolute; left: 101px; top: 260px;
+  align-items: center; gap: 4px;
+  background: #36363F;
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: #F2F3E5; letter-spacing: -0.3px; line-height: 1;
+  padding: 2px 2px 2px 0;
+  pointer-events: none; z-index: 2;
+}
+.t-card.sleepy .card-spark-num { display: flex; }
+.card-spark-num img { width: 13px; height: 13px; display: block; }
+
 /* ─── Footer ────────────────────────────────────────────────── */
 .today-footer { display: flex; justify-content: center; margin-top: 40px; padding-bottom: 40px; }
 .btn-summary {
@@ -614,6 +628,7 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
       <!-- Write it out — hero (recommended) -->
       <div class="t-card sleepy hero" id="card-write">
         <img class="card-img" src="./components/sleepy-2.svg" alt="Write it out">
+        <div class="card-spark-num">50 <img src="./components/spark.svg" alt=""></div>
         <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="cp-write-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
@@ -629,6 +644,7 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
       <!-- Notice your wins — sleepy -->
       <div class="t-card sleepy" id="card-wins">
         <img class="card-img" src="./components/sleepy-1.svg" alt="Notice your wins">
+        <div class="card-spark-num">50 <img src="./components/spark.svg" alt=""></div>
         <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="cp-wins-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
@@ -644,6 +660,7 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
       <!-- All about you — sleepy -->
       <div class="t-card sleepy" id="card-about">
         <img class="card-img" src="./components/sleepy-3.svg" alt="All about you">
+        <div class="card-spark-num">50 <img src="./components/spark.svg" alt=""></div>
         <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="cp-about-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
