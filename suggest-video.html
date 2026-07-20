@@ -216,7 +216,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <p class="sv-subtitle">Want to watch a quick video that could help?</p>
 
   <div class="sv-nav">
-    <button class="sv-btn-ghost"   onclick="window.location.href='today.html'">Maybe later</button>
+    <button class="sv-btn-ghost"   onclick="sessionStorage.setItem('bp_enter_anim','1');window.location.href='today.html'">Maybe later</button>
     <button class="sv-btn-primary" onclick="onPlay()">Yes, show me</button>
   </div>
 </div>
