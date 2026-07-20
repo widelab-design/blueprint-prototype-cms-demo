@@ -291,6 +291,12 @@ function saveNote() {
   }, 400);
 }
 
+// Pre-fill textarea if returning to edit
+(function() {
+  var saved = localStorage.getItem('bp_write_text') || sessionStorage.getItem('bp_write_text');
+  if (saved) document.getElementById('noteInput').value = saved;
+})();
+
 onInput();
 </script>
   <script src="./content-loader.js"></script>
