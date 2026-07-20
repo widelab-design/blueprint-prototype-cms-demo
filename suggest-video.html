@@ -268,11 +268,11 @@ scale(); addEventListener('resize', scale);
 (function() {
   var suggest = document.getElementById('s-suggest');
   var dome    = suggest.querySelector('.sv-dome');
-  // Start: dome high above screen, no transition
+  // Start: dome scaled to cover full screen, no transition
   dome.style.transition = 'none';
-  dome.style.transform  = 'translate(-50%, calc(-50% - 620px))';
+  dome.style.transform  = 'translate(-50%, -50%) scale(1.6)';
   void dome.offsetWidth; // force layout commit
-  // Slide dome down to resting position
+  // Shrink dome to resting size
   dome.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
   dome.style.transform  = 'translate(-50%, -50%)';
   // Fade in content after dome settles (same timing as today.html: 700ms)
