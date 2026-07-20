@@ -117,6 +117,17 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1; margin: 0;
 }
 
+/* ── s-suggest entry animation (dome slides down from top) ── */
+#s-suggest .sv-title,
+#s-suggest .sv-subtitle,
+#s-suggest .sv-nav { opacity: 0; }
+#s-suggest.sv-entered .sv-title,
+#s-suggest.sv-entered .sv-subtitle,
+#s-suggest.sv-entered .sv-nav {
+  opacity: 1;
+  transition: opacity 400ms ease;
+}
+
 /* ── s-feedback entry animation ── */
 #s-feedback .sv-reward-row,
 #s-feedback .sv-fb-title { transform: translateX(-50%) translateY(400px); opacity: 0; }
@@ -252,6 +263,23 @@ function scale() {
   document.getElementById('device').style.setProperty('--s', Math.min(innerWidth/1194, innerHeight/834)*0.96);
 }
 scale(); addEventListener('resize', scale);
+
+// ── S-suggest dome entry animation (same as today.html "all done" overlay) ──
+(function() {
+  var suggest = document.getElementById('s-suggest');
+  var dome    = suggest.querySelector('.sv-dome');
+  // Start: dome high above screen (covers everything), no transition
+  dome.style.transition = 'none';
+  dome.style.transform  = 'translateX(-50%) translateY(-607px)';
+  void dome.offsetWidth; // force layout commit
+  // Slide dome down to resting position
+  dome.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
+  dome.style.transform  = 'translateX(-50%)';
+  // Fade in content after dome settles (same timing as today.html: 700ms)
+  setTimeout(function() { suggest.classList.add('sv-entered'); }, 700);
+  // Clean up inline styles after animation finishes
+  setTimeout(function() { dome.style.transition = ''; dome.style.transform = ''; }, 820);
+})();
 
 // ── Video player ──────────────────────────────────────────────
 var _vidDur     = 0;
