@@ -27,12 +27,12 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .screen.active { display: block; }
 
 /* Blue bg + dark dome */
-.sv-bg   { position: absolute; inset: 0; background: #49aee1; }
+.sv-bg   { position: absolute; inset: 0; background: #3f50b8; }
 .sv-dome {
   position: absolute;
-  width: 1910px; height: 1910px;
-  left: 50%; top: 69px;
-  transform: translateX(-50%);
+  width: 1239px; height: 1239px;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
   background: #1f1f25; border-radius: 50%;
   pointer-events: none;
 }
@@ -48,7 +48,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 /* Shared bottom nav */
 .sv-nav {
-  position: absolute; bottom: 57px; left: 50%; transform: translateX(-50%);
+  position: absolute; top: 721px; left: 50%; transform: translateX(-50%);
   display: flex; gap: 24px; z-index: 10;
 }
 .sv-btn-ghost {
@@ -268,13 +268,13 @@ scale(); addEventListener('resize', scale);
 (function() {
   var suggest = document.getElementById('s-suggest');
   var dome    = suggest.querySelector('.sv-dome');
-  // Start: dome high above screen (covers everything), no transition
+  // Start: dome high above screen, no transition
   dome.style.transition = 'none';
-  dome.style.transform  = 'translateX(-50%) translateY(-607px)';
+  dome.style.transform  = 'translate(-50%, calc(-50% - 620px))';
   void dome.offsetWidth; // force layout commit
   // Slide dome down to resting position
   dome.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
-  dome.style.transform  = 'translateX(-50%)';
+  dome.style.transform  = 'translate(-50%, -50%)';
   // Fade in content after dome settles (same timing as today.html: 700ms)
   setTimeout(function() { suggest.classList.add('sv-entered'); }, 700);
   // Clean up inline styles after animation finishes
@@ -337,12 +337,12 @@ function completeVideo() {
     var dome = fb.querySelector('.sv-dome');
     // Set dome to full-screen scale instantly, before screen becomes visible
     dome.style.transition = 'none';
-    dome.style.transform  = 'translateX(-50%) scale(1.8)';
+    dome.style.transform  = 'translate(-50%, -50%) scale(1.8)';
     fb.classList.add('active');
     requestAnimationFrame(function() { requestAnimationFrame(function() {
       // Dome shrinks to resting position (same bezier as onboarding)
       dome.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
-      dome.style.transform  = 'translateX(-50%) scale(1)';
+      dome.style.transform  = 'translate(-50%, -50%) scale(1)';
       // Content animates in from below
       fb.classList.add('fb-entered');
       setTimeout(function() { fb.classList.add('fb-phase2'); }, 300);
