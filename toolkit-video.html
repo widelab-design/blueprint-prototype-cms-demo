@@ -273,6 +273,9 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div id="vid-pause-icon" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; border-radius:50%; background:rgba(0,0,0,0.55); align-items:center; justify-content:center; pointer-events:none;">
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="4" width="7" height="20" rx="2" fill="#fff"/><rect x="16" y="4" width="7" height="20" rx="2" fill="#fff"/></svg>
   </div>
+  <div id="vid-play-icon" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:88px; height:88px; border-radius:50%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; pointer-events:none;">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="margin-left:5px"><path d="M8 6l20 10L8 26V6z" fill="#fff"/></svg>
+  </div>
   <button id="vid-back-btn" onclick="event.stopPropagation(); history.back()" style="position:absolute; top:24px; left:32px; width:48px; height:48px; background:rgba(255,255,255,0.16); border:none; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
@@ -390,7 +393,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div class="thanks-dome"></div>
 
   <div class="thanks-reward" data-content="toolkit_video_thanks_reward">
-    +1 <img src="./components/Spark-4.svg" alt="spark">
+    +100 <img src="./components/Spark-4.svg" alt="spark">
   </div>
   <h1 class="thanks-title" data-content="toolkit_video_thanks_title">Thanks for sharing</h1>
 
@@ -443,6 +446,28 @@ const cfg = VIDEO_CFG[videoSlug] || null;
 // Set thumbnail
 if (cfg) {
   document.getElementById('vid-thumb-img').src = cfg.thumb;
+}
+
+// Skip thumbnail screen — show overlay with first video frame visible, waiting for tap
+if (urlParams.get('skipthumb') === '1' && cfg) {
+  window.addEventListener('load', function() {
+    localStorage.setItem('bp_video_watched', '1');
+    var overlay  = document.getElementById('vid-overlay');
+    var player   = document.getElementById('vid-player');
+    var playIcon = document.getElementById('vid-play-icon');
+    player.src = cfg.src;
+    player.load();
+    player.addEventListener('loadedmetadata', function() {
+      _vidDur = player.duration;
+      player.currentTime = 0.1;
+    }, { once: true });
+    overlay.style.display = 'block';
+    document.getElementById('vid-end-btns').style.display = 'none';
+    document.getElementById('vid-back-btn').style.display = 'flex';
+    playIcon.style.display = 'flex';
+    player.addEventListener('play', function() { playIcon.style.display = 'none'; }, { once: true });
+    player.addEventListener('ended', _onEnded, { once: true });
+  });
 }
 
 let cur = 's-video';

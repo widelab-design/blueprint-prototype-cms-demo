@@ -799,7 +799,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div class="done-center">
     <div class="done-top-group">
       <div class="reward-row">
-        <span class="reward-plus" data-content="mood_done_reward_plus">+10</span>
+        <span class="reward-plus" data-content="mood_done_reward_plus">+25</span>
         <div class="spark-badge">
           <img src="./components/Spark-4.svg" alt="spark">
           <img src="./components/Spark-01.svg" alt="spark">
@@ -864,6 +864,9 @@ let cur = 's0';
 let detailOrder = [];
 
 function goToDone() {
+  localStorage.setItem('bp_sleep_answer', document.getElementById('arcLabel-sleep').textContent);
+  localStorage.setItem('bp_mood_emotions', JSON.stringify(detailOrder));
+
   const sleep    = document.getElementById('s-sleep');
   const done     = document.getElementById('s-done');
   const doneBlob = done.querySelector('.done-blob');

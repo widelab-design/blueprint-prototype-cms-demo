@@ -26,6 +26,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* Entry animation — elements hidden before first paint when coming from completed.html */
 html[data-entry] .today-sidebar    { transform: translateY(-50%) translateX(-140px) !important; opacity: 0 !important; }
 html[data-entry] .today-header     { transform: translateY(-80px) !important;  opacity: 0 !important; }
+html[data-entry] .today-banner     { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] #cardRow          { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] .today-footer     { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120px) !important; opacity: 0 !important; }
@@ -123,12 +124,16 @@ html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120p
   position: absolute;
   left: 152px; top: 72px; bottom: 0;
   width: 998px;
-  display: flex; flex-direction: column; gap: 48px;
+  display: flex; flex-direction: column; gap: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
+.today-main::-webkit-scrollbar { display: none; }
 
 /* ─── Header row ────────────────────────────────────────────── */
 .today-header {
   display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 16px;
 }
 .today-greeting h1 {
   font-family: var(--font-display); font-weight: 400; font-size: 64px; line-height: 1.06;
@@ -157,6 +162,52 @@ html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120p
 }
 .spark-icon {
   width: 32px; height: 32px; flex-shrink: 0; display: block;
+}
+
+/* ─── Promo banner ──────────────────────────────────────────── */
+.today-banner {
+  position: relative;
+  background: #3f50b8;
+  height: 249px;
+  border-radius: 20px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+.today-banner-img {
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  width: auto;
+  display: block;
+  pointer-events: none;
+}
+.today-banner-text {
+  position: absolute;
+  right: 60px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 16px;
+  color: #f2f3e5;
+  text-align: center;
+  width: 370px;
+}
+.today-banner-attr {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  letter-spacing: -0.1px; line-height: 20px;
+  color: #f2f3e5;
+}
+.today-banner-quote {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: 27px; line-height: 1.06;
+  letter-spacing: 0.6px;
+  color: #f2f3e5;
+}
+.today-banner-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.16);
+  border: none; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
 }
 
 /* ─── Cards row ─────────────────────────────────────────────── */
@@ -192,7 +243,7 @@ html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120p
 .t-card.done .eye-overlay { display: none; }
 
 /* ─── Footer ────────────────────────────────────────────────── */
-.today-footer { position: absolute; bottom: 63px; left: 0; right: 0; display: flex; justify-content: center; }
+.today-footer { display: flex; justify-content: center; margin-top: 40px; padding-bottom: 40px; }
 .btn-summary {
   height: 48px; padding: 0 24px; width: 200px;
   background: transparent; color: #f5f5f5;
@@ -547,6 +598,17 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
       </div>
     </div>
 
+    <div class="today-banner" id="todayBanner" onclick="window.location.href='quote-screen.html'" style="cursor:pointer">
+      <img class="today-banner-img" src="./components/baner-03.png" alt="">
+      <div class="today-banner-text">
+        <p class="today-banner-attr">– Karl Anthony Tawns, NBA All Star</p>
+        <p class="today-banner-quote">"Resilience isn't just a buzz word. It's having the guts to chase your dreams no<br>matter what".</p>
+      </div>
+      <button class="today-banner-close" onclick="event.stopPropagation(); closeBanner()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
     <div class="today-cards" id="cardRow">
 
       <!-- Write it out — hero (recommended) -->
@@ -635,7 +697,7 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
     <div class="ado-ellipse"></div>
     <div class="ado-content">
       <div class="ado-reward-row">
-        <span class="ado-reward-plus" data-content="today_success_reward">+10</span>
+        <span class="ado-reward-plus" data-content="today_success_reward">+25</span>
         <div class="ado-spark-badge">
           <img src="./components/Spark-4.svg" alt="">
           <img src="./components/Spark-01.svg" alt="">
@@ -718,6 +780,8 @@ scale(); addEventListener('resize', scale);
     // Set transitions first, then remove data-entry — CSS goes from off-screen to default
     document.querySelector('.today-sidebar').style.transition = T;
     document.querySelector('.today-header').style.transition  = T;
+    var banner = document.getElementById('todayBanner');
+    if (banner) banner.style.transition = T;
     document.getElementById('cardRow').style.transition       = T;
     document.querySelector('.today-footer').style.transition  = T;
     document.querySelector('.support-handle').style.transition = T;
@@ -1356,6 +1420,26 @@ function closeSupport() {
     show(0);
   }
 })();
+
+function closeBanner() {
+  document.getElementById('todayBanner').style.display = 'none';
+  var footer = document.querySelector('.today-footer');
+  footer.style.position    = 'absolute';
+  footer.style.bottom      = '64px';
+  footer.style.left        = '0';
+  footer.style.right       = '0';
+  footer.style.marginTop   = '0';
+  footer.style.paddingBottom = '0';
+
+  var main   = document.querySelector('.today-main');
+  var header = document.querySelector('.today-header');
+  var cards  = document.getElementById('cardRow');
+  var headerBottom = header.offsetTop + header.offsetHeight + 16;
+  var footerTop    = main.offsetHeight - 64 - footer.offsetHeight;
+  var available    = footerTop - headerBottom;
+  var mt = Math.max(0, Math.round((available - cards.offsetHeight) / 2) - 24);
+  cards.style.marginTop = mt + 'px';
+}
 </script>
   <script src="./content-loader.js"></script>
 </body>

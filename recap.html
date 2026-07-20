@@ -244,14 +244,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   letter-spacing: 1.5px; color: #f2f3e5;
 }
 
-/* ─── Entry animation ──────────────────────────────────────── */
 #recap-inner {
   position: absolute; inset: 0;
-  animation: recap-slide-in 800ms cubic-bezier(0.81, 0, 0.26, 0.98) both;
-}
-@keyframes recap-slide-in {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
 }
 
 /* ── SLIDE 6: Final ─────────────────────────────────────────── */
@@ -501,15 +495,13 @@ function goToday() {
 
 updateUI();
 
-// Entry reveal — clip-path from bottom upward, 600ms delay
-setTimeout(function() {
+// Entry reveal — clip-path from bottom upward, no delay
+requestAnimationFrame(function() { requestAnimationFrame(function() {
   var d = document.getElementById('device');
-  requestAnimationFrame(function() { requestAnimationFrame(function() {
-    d.style.transition = 'clip-path 800ms cubic-bezier(0.81, 0, 0.26, 0.98)';
-    d.style.clipPath = 'inset(0px 0 0 0)';
-    setTimeout(function() { d.style.clipPath = 'none'; d.style.transition = ''; }, 810);
-  }); });
-}, 600);
+  d.style.transition = 'clip-path 800ms cubic-bezier(0.81, 0, 0.26, 0.98)';
+  d.style.clipPath = 'inset(0px 0 0 0)';
+  setTimeout(function() { d.style.clipPath = 'none'; d.style.transition = ''; }, 810);
+}); });
 </script>
 <script src="./content-loader.js"></script>
 </body>
