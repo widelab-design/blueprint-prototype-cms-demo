@@ -117,9 +117,51 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1; margin: 0;
 }
 
+/* ── Video overlay (outside device) ── */
+#vid-progress-wrap { opacity: 0; transition: opacity 200ms; }
+#vid-overlay:hover #vid-progress-wrap { opacity: 1; }
+#vid-progress::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer; margin-top: -5px;
+}
+#vid-progress::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #fff var(--pct,0%), rgba(255,255,255,0.25) var(--pct,0%));
+  border-radius: 2px; height: 4px;
+}
+
 </style>
 </head>
 <body>
+
+<!-- ── Video overlay — outside bp-device to avoid scale() rendering bug ── -->
+<div id="vid-overlay" style="display:none; position:fixed; inset:0; background:#000; z-index:999;" onclick="togglePause(event)">
+  <video id="vid-player" style="width:100%; height:100%; object-fit:contain; display:block;" playsinline preload="metadata"></video>
+  <div id="vid-progress-wrap" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()"
+       style="position:absolute; bottom:0; left:0; right:0; padding:16px 32px 20px; box-sizing:border-box;">
+    <input id="vid-progress" type="range" min="0" max="100" value="0" step="0.1"
+      onpointerdown="_isSeeking=true; _wasPlaying=!document.getElementById('vid-player').paused; document.getElementById('vid-player').pause();"
+      oninput="var b=this; b.style.setProperty('--pct',b.value+'%');"
+      onpointerup="_isSeeking=false; seekVideo(this.value); if(_wasPlaying) document.getElementById('vid-player').play();"
+      onpointercancel="_isSeeking=false;"
+      style="width:100%; height:14px; -webkit-appearance:none; appearance:none; background:transparent; outline:none; cursor:pointer;">
+  </div>
+  <div id="vid-pause-icon" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; border-radius:50%; background:rgba(0,0,0,0.55); align-items:center; justify-content:center; pointer-events:none;">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="4" width="7" height="20" rx="2" fill="#fff"/><rect x="16" y="4" width="7" height="20" rx="2" fill="#fff"/></svg>
+  </div>
+  <button id="vid-back-btn" onclick="event.stopPropagation(); closeVideo()"
+          style="position:absolute; top:24px; left:32px; width:48px; height:48px; background:rgba(255,255,255,0.16); border:none; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div id="vid-end-btns" style="display:none; position:absolute; bottom:100px; right:32px; gap:12px;">
+    <button onclick="event.stopPropagation(); playAgain()"
+            style="background:rgba(255,255,255,0.16); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Replay</button>
+    <button onclick="event.stopPropagation(); completeVideo()"
+            style="background:#f2f3e5; border:none; border-radius:8px; padding:12px 24px; color:#1f1f25; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
+  </div>
+</div>
+
+
 <div class="bp-stage">
 <div class="bp-device" id="device">
 
@@ -142,8 +184,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <p class="sv-subtitle">Want to see a short video that helps to handle the feeling?</p>
 
   <div class="sv-nav">
-    <button class="sv-btn-ghost" onclick="window.location.href='today.html'">Maybe later</button>
-    <button class="sv-btn-primary" onclick="window.location.href='toolkit-video.html?from=suggest&video=youve-done-hard-things'">Yes, show me</button>
+    <button class="sv-btn-ghost"   onclick="window.location.href='today.html'">Maybe later</button>
+    <button class="sv-btn-primary" onclick="onPlay()">Yes, show me</button>
   </div>
 </div>
 
@@ -191,10 +233,79 @@ function scale() {
 }
 scale(); addEventListener('resize', scale);
 
-if (new URLSearchParams(location.search).get('step') === 'feedback') {
+// ── Video player ──────────────────────────────────────────────
+var _vidDur     = 0;
+var _isSeeking  = false;
+var _wasPlaying = false;
+
+function onPlay() {
+  const overlay = document.getElementById('vid-overlay');
+  const player  = document.getElementById('vid-player');
+  _vidDur = 0;
+  player.src = './components/youve-done-hard-things.mp4';
+  player.load();
+  player.addEventListener('loadedmetadata', function() { _vidDur = player.duration; }, { once: true });
+  overlay.style.display = 'block';
+  document.getElementById('vid-end-btns').style.display = 'none';
+  document.getElementById('vid-back-btn').style.display = 'flex';
+  player.addEventListener('canplay', function() { player.play(); }, { once: true });
+  player.addEventListener('ended', _onEnded, { once: true });
+}
+
+function _onEnded() {
+  document.getElementById('vid-pause-icon').style.display = 'none';
+  document.getElementById('vid-end-btns').style.display = 'flex';
+  document.getElementById('vid-back-btn').style.display = 'none';
+}
+
+function playAgain() {
+  var player = document.getElementById('vid-player');
+  player.currentTime = 0;
+  player.play();
+  document.getElementById('vid-pause-icon').style.display = 'none';
+  document.getElementById('vid-end-btns').style.display = 'none';
+  document.getElementById('vid-back-btn').style.display = 'flex';
+  player.addEventListener('ended', _onEnded, { once: true });
+}
+
+function closeVideo() {
+  document.getElementById('vid-overlay').style.display = 'none';
+  document.getElementById('vid-player').pause();
+}
+
+function completeVideo() {
+  closeVideo();
   document.getElementById('s-suggest').classList.remove('active');
   document.getElementById('s-feedback').classList.add('active');
 }
+
+function seekVideo(val) {
+  var player = document.getElementById('vid-player');
+  var dur = _vidDur || player.duration;
+  if (dur && isFinite(dur) && !isNaN(dur)) {
+    player.currentTime = (val / 100) * dur;
+  }
+}
+
+function togglePause(e) {
+  var player = document.getElementById('vid-player');
+  var icon   = document.getElementById('vid-pause-icon');
+  if (player.paused) { player.play(); icon.style.display = 'none'; }
+  else               { player.pause(); icon.style.display = 'flex'; }
+}
+
+(function updateProgress() {
+  if (!_isSeeking) {
+    var player = document.getElementById('vid-player');
+    var bar    = document.getElementById('vid-progress');
+    if (player && bar && player.duration) {
+      var pct = (player.currentTime / player.duration) * 100;
+      bar.value = pct;
+      bar.style.setProperty('--pct', pct + '%');
+    }
+  }
+  requestAnimationFrame(updateProgress);
+})();
 </script>
 <script src="./content-loader.js"></script>
 </body>

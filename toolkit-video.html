@@ -422,13 +422,9 @@ scale(); addEventListener('resize', scale);
 
 const urlParams = new URLSearchParams(location.search);
 const fromWrite   = urlParams.get('from') === 'write';
-const fromSuggest = urlParams.get('from') === 'suggest';
 const fromGrades  = urlParams.get('from') === 'grades';
 const fromAttend  = urlParams.get('from') === 'grades-attend';
-const destAfter   = fromSuggest ? 'suggest-video.html?step=feedback'
-                  : fromWrite   ? 'today.html'
-                  : (fromGrades || fromAttend) ? 'grades.html' + (fromAttend ? '?tab=attend' : '')
-                  : 'my-toolkit.html';
+const destAfter   = fromWrite ? 'today.html' : (fromGrades || fromAttend) ? 'grades.html' + (fromAttend ? '?tab=attend' : '') : 'my-toolkit.html';
 const videoSlug = urlParams.get('video') || '';
 
 const VIDEO_CFG = {
