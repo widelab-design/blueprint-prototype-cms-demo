@@ -433,7 +433,7 @@ const EMOTION_NAMES = {
 };
 
 (function fillBubble() {
-  const sleep  = localStorage.getItem('bp_sleep_answer') || 'okay';
+  const sleep  = localStorage.getItem('bp_sleep_answer') || 'Okay';
   const keys   = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]');
   const names  = keys.length
     ? keys.map(k => (EMOTION_NAMES[k] || k).toLowerCase())
@@ -441,9 +441,20 @@ const EMOTION_NAMES = {
   const emotion = names.length > 1
     ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]
     : names[0];
+
+  let sleepClause;
+  if (sleep === 'Hard to fall asleep') {
+    sleepClause = 'You said it was hard to fall asleep last night,';
+  } else if (sleep === 'Woke up feeling great') {
+    sleepClause = 'You said you woke up feeling great,';
+  } else {
+    const word = sleep === 'Slept well' ? 'well' : sleep.toLowerCase();
+    sleepClause = `You said you slept ${word} last night,`;
+  }
+
   const msg = document.getElementById('connMsg');
   if (msg) {
-    msg.textContent = `You said you slept ${sleep} last night, and today felt ${emotion} — how much do you think they're connected?`;
+    msg.textContent = `${sleepClause} and today felt ${emotion} — how much do you think they're connected?`;
   }
 })();
 
