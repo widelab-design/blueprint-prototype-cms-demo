@@ -683,7 +683,7 @@ var KEY_SVG = '<svg viewBox="0 0 25 47" fill="none" xmlns="http://www.w3.org/200
 
 // Sync spark count from localStorage
 (function() {
-  const total = parseInt(localStorage.getItem('bp_sparks') || '360', 10);
+  const total = parseInt(localStorage.getItem('bp_sparks') || '45', 10);
   if (total > 0) document.getElementById('sparksCount').textContent = total;
   applyAffordability(total);
 })();
