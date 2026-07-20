@@ -117,6 +117,26 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1; margin: 0;
 }
 
+/* ── s-feedback entry animation ── */
+#s-feedback .sv-reward-row,
+#s-feedback .sv-fb-title { transform: translateX(-50%) translateY(400px); opacity: 0; }
+#s-feedback .sv-bubble    { transform: translateX(-50%) translateY(400px); opacity: 0; }
+#s-feedback .sv-nav       { transform: translateX(-50%) translateY(200px); opacity: 0; }
+
+#s-feedback.fb-entered .sv-reward-row,
+#s-feedback.fb-entered .sv-fb-title {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+#s-feedback.fb-entered .sv-bubble {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99) 80ms, opacity 400ms ease 80ms;
+}
+#s-feedback.fb-phase2 .sv-nav {
+  transform: translateX(-50%) translateY(0); opacity: 1;
+  transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 400ms ease;
+}
+
 /* ── Video overlay (outside device) ── */
 #vid-progress-wrap { opacity: 0; transition: opacity 200ms; }
 #vid-overlay:hover #vid-progress-wrap { opacity: 1; }
@@ -275,9 +295,23 @@ function closeVideo() {
 }
 
 function completeVideo() {
-  closeVideo();
-  document.getElementById('s-suggest').classList.remove('active');
-  document.getElementById('s-feedback').classList.add('active');
+  var overlay = document.getElementById('vid-overlay');
+  var player  = document.getElementById('vid-player');
+  player.pause();
+  overlay.style.transition = 'opacity 400ms ease';
+  overlay.style.opacity = '0';
+  setTimeout(function() {
+    overlay.style.display = 'none';
+    overlay.style.transition = '';
+    overlay.style.opacity = '';
+    document.getElementById('s-suggest').classList.remove('active');
+    var fb = document.getElementById('s-feedback');
+    fb.classList.add('active');
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      fb.classList.add('fb-entered');
+      setTimeout(function() { fb.classList.add('fb-phase2'); }, 300);
+    }); });
+  }, 400);
 }
 
 function seekVideo(val) {
