@@ -16,12 +16,9 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 
 /* ─── Screen transitions ────────────────────────────────────── */
-.screen {
-  position: absolute; inset: 0;
-  opacity: 0; pointer-events: none;
-  transition: opacity 280ms cubic-bezier(0.4,0,0.2,1);
-}
-.screen.active { opacity: 1; pointer-events: all; }
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+.aay-content { position: absolute; inset: 0; }
 
 /* ─── Status bar ────────────────────────────────────────────── */
 .sb {
@@ -33,7 +30,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 
 /* ─── Shared green screens ──────────────────────────────────── */
-.aay-screen { background: #58b880; }
+.aay-shared-bg { position: absolute; inset: 0; background: #58b880; z-index: 0; pointer-events: none; }
 
 .aay-bg-shape {
   position: absolute;
@@ -270,12 +267,16 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 <div class="bp-device" id="device">
 
 
+<!-- Shared green background — stays fixed during slide transitions -->
+<div class="aay-shared-bg">
+  <img class="aay-bg-shape" src="./components/asterisk-3.svg" alt="">
+</div>
+
 <!-- ════════════════════════════════════════════════════════════
      SCREEN 1 — Sleep/emotion connection (arc slider)
      ════════════════════════════════════════════════════════════ -->
-<div class="screen aay-screen active" id="s-connection">
-  <img class="aay-bg-shape" src="./components/asterisk-3.svg" alt="">
-
+<div class="screen active" id="s-connection">
+<div class="aay-content">
   <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
 
   <button class="btn-back" onclick="history.back()">
@@ -327,15 +328,15 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div class="aay-nav" style="justify-content:center">
     <button class="btn-aay-next" onclick="goTo('s-eating')">Next</button>
   </div>
-</div>
+</div><!-- /aay-content -->
+</div><!-- /s-connection -->
 
 
 <!-- ════════════════════════════════════════════════════════════
      SCREEN 2 — Eating habits grid
      ════════════════════════════════════════════════════════════ -->
-<div class="screen aay-screen" id="s-eating">
-  <img class="aay-bg-shape" src="./components/asterisk-3.svg" alt="">
-
+<div class="screen" id="s-eating">
+<div class="aay-content">
   <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
 
   <button class="btn-back" onclick="goTo('s-connection')">
@@ -413,7 +414,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div class="aay-nav" style="justify-content:center">
     <button class="btn-aay-save" onclick="saveAll()">Save</button>
   </div>
-</div>
+</div><!-- /aay-content -->
+</div><!-- /s-eating -->
 
 
 <!-- ════════════════════════════════════════════════════════════
@@ -463,10 +465,44 @@ function scale() {
 scale(); addEventListener('resize', scale);
 
 let cur = 's-connection';
+let _aayAnimating = false;
+const AAY_ORDER = ['s-connection', 's-eating'];
+const AAY_DUR = 800;
+const AAY_BEZ = 'cubic-bezier(0.81,0,0.26,0.98)';
+
 function goTo(id) {
-  document.getElementById(cur).classList.remove('active');
-  document.getElementById(id).classList.add('active');
-  cur = id;
+  if (_aayAnimating || id === cur) return;
+  _aayAnimating = true;
+  const dir         = AAY_ORDER.indexOf(id) > AAY_ORDER.indexOf(cur) ? 1 : -1;
+  const fromEl      = document.getElementById(cur);
+  const toEl        = document.getElementById(id);
+  const fromContent = fromEl.querySelector('.aay-content');
+  const toContent   = toEl.querySelector('.aay-content');
+
+  fromEl.style.display = 'block';
+  toEl.style.display   = 'block';
+  toContent.style.transition = 'none';
+  toContent.style.transform  = `translateX(${dir * 100}%)`;
+  toContent.offsetWidth;
+
+  const tr = `transform ${AAY_DUR}ms ${AAY_BEZ}`;
+  fromContent.style.transition = tr;
+  fromContent.style.transform  = `translateX(${dir * -100}%)`;
+  toContent.style.transition   = tr;
+  toContent.style.transform    = 'translateX(0)';
+
+  setTimeout(() => {
+    fromEl.classList.remove('active');
+    fromEl.style.display = '';
+    fromContent.style.transition = '';
+    fromContent.style.transform  = '';
+    toEl.classList.add('active');
+    toEl.style.display = '';
+    toContent.style.transition = '';
+    toContent.style.transform  = '';
+    cur = id;
+    _aayAnimating = false;
+  }, AAY_DUR + 50);
 }
 
 function saveAll() {
