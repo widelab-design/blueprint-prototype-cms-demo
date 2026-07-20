@@ -305,11 +305,20 @@ function completeVideo() {
     overlay.style.transition = '';
     overlay.style.opacity = '';
     document.getElementById('s-suggest').classList.remove('active');
-    var fb = document.getElementById('s-feedback');
+    var fb   = document.getElementById('s-feedback');
+    var dome = fb.querySelector('.sv-dome');
+    // Set dome to full-screen scale instantly, before screen becomes visible
+    dome.style.transition = 'none';
+    dome.style.transform  = 'translateX(-50%) scale(1.8)';
     fb.classList.add('active');
     requestAnimationFrame(function() { requestAnimationFrame(function() {
+      // Dome shrinks to resting position (same bezier as onboarding)
+      dome.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
+      dome.style.transform  = 'translateX(-50%) scale(1)';
+      // Content animates in from below
       fb.classList.add('fb-entered');
       setTimeout(function() { fb.classList.add('fb-phase2'); }, 300);
+      setTimeout(function() { dome.style.transition = ''; dome.style.transform = ''; }, 820);
     }); });
   }, 400);
 }
