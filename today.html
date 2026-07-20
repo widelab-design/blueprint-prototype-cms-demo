@@ -800,6 +800,12 @@ function updateSparks() {
 }
 updateSparks();
 
+// Hide banner permanently if user already closed it
+if (localStorage.getItem('bp_banner_closed') === '1') {
+  var _banner = document.getElementById('todayBanner');
+  if (_banner) _banner.style.display = 'none';
+}
+
 // Load username from onboarding
 (function(){
   var name = localStorage.getItem('bp_username') || 'Sophie';
@@ -1422,6 +1428,7 @@ function closeSupport() {
 })();
 
 function closeBanner() {
+  localStorage.setItem('bp_banner_closed', '1');
   document.getElementById('todayBanner').style.display = 'none';
   var footer = document.querySelector('.today-footer');
   footer.style.position    = 'absolute';
