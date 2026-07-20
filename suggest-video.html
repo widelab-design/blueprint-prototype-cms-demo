@@ -28,13 +28,20 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 /* Blue bg + dark dome */
 .sv-bg   { position: absolute; inset: 0; background: #3f50b8; }
+/* s-feedback dome: large arc anchored at top (same as today.html ado-ellipse) */
 .sv-dome {
   position: absolute;
-  width: 1239px; height: 1239px;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
+  width: 1910px; height: 1910px;
+  left: 50%; top: 69px;
+  transform: translateX(-50%);
   background: #1f1f25; border-radius: 50%;
   pointer-events: none;
+}
+/* s-suggest dome: smaller circle centered on screen */
+#s-suggest .sv-dome {
+  width: 1239px; height: 1239px;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .btn-back {
@@ -99,19 +106,13 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .sv-bubble {
   position: absolute; top: 447px; left: 50%; transform: translateX(-50%);
-  width: 457px; background: #b38aff; padding: 10px;
+  width: 457px; background: #f08b31; padding: 10px;
   display: flex; align-items: flex-start; gap: 12px; z-index: 5;
 }
 .sv-bubble-avatar {
   width: 48px; height: 48px; background: #f2f3e5;
   flex-shrink: 0; display: grid; place-items: center;
 }
-.sv-bubble-monster { position: relative; width: 40px; height: 40px; }
-.sv-bubble-eyes {
-  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 1px;
-}
-.sv-bubble-eye { width: 5.78px; height: 7.58px; display: block; }
 .sv-bubble-msg {
   font-family: var(--font-body); font-size: 20px; font-weight: 500;
   color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1; margin: 0;
@@ -237,13 +238,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
   <div class="sv-bubble">
     <div class="sv-bubble-avatar">
-      <div class="sv-bubble-monster">
-        <img src="./components/monster-butterfly.svg" alt="" style="position:absolute;width:36px;height:36px;top:2px;left:2px;">
-        <div class="sv-bubble-eyes">
-          <img class="sv-bubble-eye" src="./components/monster-eye.svg" alt="">
-          <img class="sv-bubble-eye" src="./components/monster-eye.svg" alt="">
-        </div>
-      </div>
+      <img src="./components/monster-01.svg" alt="" style="width:40px;height:40px;display:block;">
     </div>
     <p class="sv-bubble-msg">You made it through a tough moment and that counts.</p>
   </div>
@@ -337,12 +332,12 @@ function completeVideo() {
     var dome = fb.querySelector('.sv-dome');
     // Set dome to full-screen scale instantly, before screen becomes visible
     dome.style.transition = 'none';
-    dome.style.transform  = 'translate(-50%, -50%) scale(1.8)';
+    dome.style.transform  = 'translateX(-50%) scale(1.6)';
     fb.classList.add('active');
     requestAnimationFrame(function() { requestAnimationFrame(function() {
-      // Dome shrinks to resting position (same bezier as onboarding)
+      // Dome shrinks to resting arc position
       dome.style.transition = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
-      dome.style.transform  = 'translate(-50%, -50%) scale(1)';
+      dome.style.transform  = 'translateX(-50%) scale(1)';
       // Content animates in from below
       fb.classList.add('fb-entered');
       setTimeout(function() { fb.classList.add('fb-phase2'); }, 300);
