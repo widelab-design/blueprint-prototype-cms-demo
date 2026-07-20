@@ -281,9 +281,14 @@ setTimeout(() => {
 
 // 7. Redirect after slide-out finishes
 setTimeout(() => {
-  const dest = params.get('from') === 'journal' ? 'journal.html' : 'today.html';
-  if (dest === 'today.html') sessionStorage.setItem('bp_enter_anim', '1');
-  window.location.href = dest;
+  if (params.get('from') === 'journal') {
+    window.location.href = 'journal.html';
+  } else if (cardSlug === 'write') {
+    window.location.href = 'suggest-video.html';
+  } else {
+    sessionStorage.setItem('bp_enter_anim', '1');
+    window.location.href = 'today.html';
+  }
 }, 3900);
 }
 </script>

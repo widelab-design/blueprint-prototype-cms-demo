@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blueprint — Video Suggestion</title>
+<script>(function(){document.documentElement.style.setProperty('--s',Math.min(innerWidth/1194,innerHeight/834)*0.96);})()</script>
+<link rel="stylesheet" href="./foundations/tokens.css">
+<style>
+
+body { background: #0a0a0f; overflow: hidden; margin: 0; }
+.bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.bp-device {
+  width: 1194px; height: 834px; position: relative; overflow: hidden;
+  border-radius: 20px; transform-origin: center;
+  transform: scale(var(--s,1));
+}
+
+.sb {
+  position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+  font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
+  color: #fff; pointer-events: none;
+}
+
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+
+/* Blue bg + dark dome */
+.sv-bg   { position: absolute; inset: 0; background: #49aee1; }
+.sv-dome {
+  position: absolute;
+  width: 1910px; height: 1910px;
+  left: 50%; top: 69px;
+  transform: translateX(-50%);
+  background: #1f1f25; border-radius: 50%;
+  pointer-events: none;
+}
+
+.btn-back {
+  position: absolute; top: 48px; left: 24px; z-index: 20;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none; cursor: pointer;
+  display: grid; place-items: center; transition: background 120ms;
+}
+.btn-back:hover { background: rgba(255,255,255,0.24); }
+.btn-back svg { width: 20px; height: 20px; }
+
+/* Shared bottom nav */
+.sv-nav {
+  position: absolute; bottom: 57px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 24px; z-index: 10;
+}
+.sv-btn-ghost {
+  width: 270px; height: 48px;
+  background: rgba(255,255,255,0.16); color: #ededed;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.sv-btn-primary {
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer; letter-spacing: -0.1px;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03); transition: opacity 120ms;
+}
+.sv-btn-ghost:active   { opacity: 0.75; }
+.sv-btn-primary:active { opacity: 0.85; }
+
+/* ── Screen 1: suggest ── */
+.sv-title {
+  position: absolute; top: 300px; left: 50%; transform: translateX(-50%);
+  width: 613px; text-align: center; margin: 0;
+  font-family: var(--font-display); font-size: 80px; line-height: 1.06;
+  letter-spacing: 1.5px; color: #f2f3e5;
+}
+.sv-subtitle {
+  position: absolute; top: 494px; left: 50%; transform: translateX(-50%);
+  width: 357px; text-align: center; margin: 0;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  line-height: 1.25; letter-spacing: -0.1px; color: #f2f3e5;
+}
+
+/* ── Screen 2: feedback ── */
+.sv-reward-row {
+  position: absolute; top: 274px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; z-index: 5;
+}
+.sv-reward-plus {
+  font-family: var(--font-display); font-size: 32px; line-height: 40px;
+  letter-spacing: -0.8px; color: #f2f3e5;
+}
+.sv-fb-title {
+  position: absolute; top: 338px; left: 50%; transform: translateX(-50%);
+  width: 457px; text-align: center; margin: 0;
+  font-family: var(--font-display); font-size: 80px; line-height: 1.06;
+  letter-spacing: 1.5px; color: #f2f3e5; z-index: 5;
+}
+.sv-bubble {
+  position: absolute; top: 447px; left: 50%; transform: translateX(-50%);
+  width: 457px; background: #b38aff; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px; z-index: 5;
+}
+.sv-bubble-avatar {
+  width: 48px; height: 48px; background: #f2f3e5;
+  flex-shrink: 0; display: grid; place-items: center;
+}
+.sv-bubble-monster { position: relative; width: 40px; height: 40px; }
+.sv-bubble-eyes {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 1px;
+}
+.sv-bubble-eye { width: 5.78px; height: 7.58px; display: block; }
+.sv-bubble-msg {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1; margin: 0;
+}
+
+</style>
+</head>
+<body>
+<div class="bp-stage">
+<div class="bp-device" id="device">
+
+<div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+<button class="btn-back" onclick="history.back()">
+  <svg viewBox="0 0 20 20" fill="none">
+    <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 1 — Video suggestion
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="s-suggest">
+  <div class="sv-bg"></div>
+  <div class="sv-dome"></div>
+
+  <h1 class="sv-title">It is normal to feel this way.</h1>
+  <p class="sv-subtitle">Want to see a short video that helps to handle the feeling?</p>
+
+  <div class="sv-nav">
+    <button class="sv-btn-ghost" onclick="window.location.href='today.html'">Maybe later</button>
+    <button class="sv-btn-primary" onclick="window.location.href='toolkit-video.html?from=suggest&video=calming-breath'">Yes, show me</button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 2 — Did this help?
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s-feedback">
+  <div class="sv-bg"></div>
+  <div class="sv-dome"></div>
+
+  <div class="sv-reward-row">
+    <span class="sv-reward-plus">+1</span>
+    <img src="./components/spark.svg" alt="spark" style="width:32px;height:32px;display:block;">
+  </div>
+
+  <h1 class="sv-fb-title">Did this help?</h1>
+
+  <div class="sv-bubble">
+    <div class="sv-bubble-avatar">
+      <div class="sv-bubble-monster">
+        <img src="./components/monster-butterfly.svg" alt="" style="position:absolute;width:36px;height:36px;top:2px;left:2px;">
+        <div class="sv-bubble-eyes">
+          <img class="sv-bubble-eye" src="./components/monster-eye.svg" alt="">
+          <img class="sv-bubble-eye" src="./components/monster-eye.svg" alt="">
+        </div>
+      </div>
+    </div>
+    <p class="sv-bubble-msg">You made it through a tough moment and that counts.</p>
+  </div>
+
+  <div class="sv-nav">
+    <button class="sv-btn-ghost"   onclick="window.location.href='today.html'">Not really</button>
+    <button class="sv-btn-primary" onclick="window.location.href='today.html'">Yes, a bit!</button>
+  </div>
+</div>
+
+
+</div><!-- /bp-device -->
+</div><!-- /bp-stage -->
+
+<script>
+function scale() {
+  document.getElementById('device').style.setProperty('--s', Math.min(innerWidth/1194, innerHeight/834)*0.96);
+}
+scale(); addEventListener('resize', scale);
+
+if (new URLSearchParams(location.search).get('step') === 'feedback') {
+  document.getElementById('s-suggest').classList.remove('active');
+  document.getElementById('s-feedback').classList.add('active');
+}
+</script>
+<script src="./content-loader.js"></script>
+</body>
+</html>
