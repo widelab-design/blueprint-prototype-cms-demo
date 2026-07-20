@@ -32,13 +32,10 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #fff; pointer-events: none;
 }
 
-/* ════════════════════════════════════════════════════════════
-   SCREEN 1 — Survey
-   ════════════════════════════════════════════════════════════ */
-#s-survey { background: #58b880; }
+/* ─── Shared green screens ──────────────────────────────────── */
+.aay-screen { background: #58b880; }
 
-/* Dark asterisk background shape */
-.survey-bg-shape {
+.aay-bg-shape {
   position: absolute;
   width: 1189px; height: 1599px;
   left: 50%; top: 50%;
@@ -46,9 +43,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   pointer-events: none; z-index: 0;
 }
 
-/* back button */
 .btn-back {
-  position: absolute; top: 36px; left: 24px; z-index: 10;
+  position: absolute; top: 48px; left: 24px; z-index: 10;
   width: 48px; height: 48px; border-radius: 8px;
   background: rgba(255,255,255,0.16);
   border: none; cursor: pointer; display: grid; place-items: center;
@@ -57,122 +53,213 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .btn-back:hover { background: rgba(255,255,255,0.24); }
 .btn-back svg { width: 20px; height: 20px; }
 
-/* header + content flow */
-.survey-body {
-  position: absolute; top: 115px; left: 50%; transform: translateX(-50%); z-index: 5;
-  width: 440px; display: flex; flex-direction: column; align-items: center;
+.aay-counter {
+  position: absolute; top: 62px; right: 24px; z-index: 10;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #737472; letter-spacing: -0.1px;
 }
-.survey-header {
+
+.aay-header {
+  position: absolute; top: 48px; left: 50%; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 16px;
-  margin-bottom: 48px; width: 100%;
+  z-index: 5; width: 351px;
 }
-.spark-pill {
+.aay-pill {
   display: flex; align-items: center; gap: 8px;
   background: #2f2f37; border-radius: 99px;
   padding: 8px 12px;
-  font-family: var(--font-display); font-weight: 400; font-size: 20px; color: #f2f3e5; line-height: 1.05;
+  font-family: var(--font-display); font-weight: 400; font-size: 20px;
+  color: #f2f3e5; line-height: 1.05;
 }
-.survey-title {
-  font-family: var(--font-display); font-weight: 400; font-size: 32px; letter-spacing: -0.8px;
-  color: #f2f3e5; margin: 0; line-height: 40px; text-align: center;
-}
-
-/* content area */
-.survey-content {
-  width: 100%; display: flex; flex-direction: column; gap: 24px;
+.aay-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  letter-spacing: -0.8px; color: #f2f3e5; margin: 0; line-height: 40px; text-align: center;
 }
 
-/* message bubble */
-.msg-bubble {
-  background: #58b880; border-radius: 0;
-  padding: 10px; display: flex; align-items: flex-start; gap: 12px;
+.aay-bubble {
+  position: absolute; top: 190px; left: 50%; transform: translateX(-50%);
+  width: 439px; background: #58b880; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px; z-index: 5;
 }
-.msg-avatar {
+.aay-avatar {
   width: 48px; height: 48px; background: #f2f3e5;
   flex-shrink: 0; display: grid; place-items: center;
 }
-.msg-monster { position: relative; width: 40px; height: 40px; }
-.msg-butterfly { position: absolute; width: 36px; height: 36px; top: 2px; left: 2px; }
-.msg-eyes {
+.aay-monster { position: relative; width: 40px; height: 40px; }
+.aay-butterfly { position: absolute; width: 36px; height: 36px; top: 2px; left: 2px; }
+.aay-eyes {
   position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
   display: flex; gap: 1px;
 }
-.msg-eye { width: 5.78px; height: 7.58px; display: block; }
-.msg-text {
+.aay-eye { width: 5.78px; height: 7.58px; display: block; }
+.aay-msg {
   font-family: var(--font-body); font-size: 20px; font-weight: 500;
-  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1;
 }
 
-/* emoji grid */
-.emoji-grid {
-  display: flex; flex-direction: column; gap: 16px;
+.aay-nav {
+  position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; z-index: 20;
 }
-.emoji-row {
-  display: flex; justify-content: space-between; align-items: center;
+.btn-aay-back {
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16);
+  border: none; cursor: pointer; display: grid; place-items: center;
+  transition: opacity 120ms;
 }
-.emoji-btn {
-  width: 78px; height: 78px; border-radius: 50%;
-  background: #2f2f37; border: 8px solid #2f2f37;
-  cursor: pointer; display: grid; place-items: center;
-  font-size: 40px; line-height: 1;
-  transition: border 120ms;
-  box-sizing: border-box; flex-shrink: 0;
-  padding: 0;
-}
-.emoji-btn.selected { border: 3px solid #f2f3e5; }
-.emoji-btn:hover:not(.selected) { border-color: rgba(242,243,229,0.25); }
-
-/* save button */
-.btn-save-wrap {
-  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 10;
-}
-.btn-save {
-  width: 270px; height: 48px; border-radius: 8px;
+.btn-aay-back:active { opacity: 0.75; }
+.btn-aay-next {
+  width: 270px; height: 48px;
   background: #f2f3e5; color: #1f1f25;
   font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  border: none; cursor: pointer; transition: opacity 150ms, transform 120ms;
-  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; border: none; cursor: pointer; transition: opacity 120ms;
 }
-.btn-save:active { transform: scale(0.97); }
-.btn-save:disabled { opacity: 0.4; cursor: default; }
+.btn-aay-next:active { opacity: 0.85; }
+.btn-aay-save {
+  width: 270px; height: 48px;
+  background: #f2f3e5; color: #1f1f25;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  border-radius: 8px; border: none; cursor: pointer; transition: opacity 120ms;
+}
+.btn-aay-save:active { opacity: 0.85; }
 
-/* ════════════════════════════════════════════════════════════
-   SCREEN 2 — Completed
-   ════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════
+   SCREEN 1 — Arc slider
+   ══════════════════════════════════════════════════════════════ */
+
+.aay-slider-wrap {
+  position: absolute; top: 308px; left: 50%; transform: translateX(-50%); z-index: 5;
+}
+
+.arc-slider {
+  position: relative; width: 532px; height: 310px;
+  overflow: visible; outline: none;
+  cursor: grab; -webkit-user-select: none; user-select: none;
+}
+.arc-slider.is-dragging { cursor: grabbing; }
+.arc-slider svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
+.arc-slider__hit { position: absolute; inset: 0; }
+.arc-slider__thumb {
+  position: absolute; width: 104px; height: 104px; border-radius: 50%;
+  background: #58b880; border: 10px solid #2f2f37;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; line-height: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none; will-change: left, top, transform;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,.5));
+  transition: none;
+}
+.arc-slider__thumb.is-snapping {
+  transition: left .4s cubic-bezier(.34,1.56,.64,1), top .4s cubic-bezier(.34,1.56,.64,1);
+}
+.arc-slider.is-dragging .arc-slider__thumb {
+  transform: translate(-50%, -50%) scale(1.06);
+  transition: transform .12s ease;
+}
+.arc-slider__pill {
+  position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%);
+  background: #2f2f37; border-radius: 99px; padding: 0 24px;
+  min-width: 160px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.arc-slider__pill span {
+  color: #f2f3e5; font-family: var(--font-body);
+  font-size: 16px; font-weight: 600; text-align: center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SCREEN 2 — Eating grid
+   ══════════════════════════════════════════════════════════════ */
+
+.eat-grid {
+  position: absolute; top: 282px; left: 50%; transform: translateX(-50%);
+  width: 764px; z-index: 5;
+  display: grid; grid-template-columns: repeat(4, 179px); gap: 16px;
+}
+.eat-block {
+  background: #2f2f37; border: 1px solid rgba(92,92,101,0.3); border-radius: 8px;
+  height: 94px; padding: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; transition: background 160ms, border-color 160ms;
+  font-family: inherit;
+}
+.eat-block:hover { background: #3a3a44; }
+.eat-block.sel { background: #3a3a44; border: 3px solid #f2f3e5; }
+.eat-icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: #1f1f25; border: 1px solid rgba(92,92,101,0.3);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.eat-emoji { font-size: 18px; line-height: 1; }
+.eat-label {
+  font-family: var(--font-body); font-size: 14px; font-weight: 600;
+  color: #f2f3e5; text-align: center; line-height: 1.3;
+}
+
+.eat-block--add .eat-label { color: #a4a59f; }
+.eat-block--input {
+  grid-column: span 2; width: auto; height: 94px; box-sizing: border-box;
+  flex-direction: row; gap: 10px; padding: 0 12px; cursor: default;
+}
+.eat-block--input:hover { background: #2f2f37; }
+.eat-input-field {
+  flex: 1; background: none; border: none; outline: none;
+  color: #f2f3e5; font-family: var(--font-body); font-size: 14px; font-weight: 600; min-width: 0;
+}
+.eat-input-field::placeholder { color: #a4a59f; }
+.eat-confirm-btn {
+  width: 36px; height: 36px; background: none; border: none; padding: 0;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: opacity 120ms;
+}
+.eat-confirm-btn:active { opacity: 0.75; }
+.eat-emoji-picker {
+  position: absolute; background: #2b2b32; border: 1px solid #444450;
+  border-radius: 12px; width: 282px; z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7); display: none; overflow: hidden;
+}
+.eat-picker-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  padding: 8px; max-height: 228px; overflow-y: auto;
+}
+.eat-picker-grid button {
+  background: none; border: none; font-size: 24px; line-height: 1;
+  padding: 5px 2px; border-radius: 6px; cursor: pointer;
+  transition: background 80ms; text-align: center;
+}
+.eat-picker-grid button:hover { background: #3a3a44; }
+.eat-picker-overlay { position: absolute; inset: 0; z-index: 150; display: none; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   SCREEN 3 — Completed
+   ══════════════════════════════════════════════════════════════ */
 #s-done { background: #1f1f25; }
 
 .done-center {
   position: absolute; inset: 0; z-index: 5;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.done-reward-row {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
-}
+.done-reward-row { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
 .done-reward-text {
-  font-family: var(--font-display); font-weight: 400; font-size: 32px; color: #f2f3e5; line-height: 1;
+  font-family: var(--font-display); font-weight: 400; font-size: 32px;
+  color: #f2f3e5; line-height: 1;
 }
 .done-card-wrap {
   width: 237px; height: 353px; position: relative;
-  animation: float 3s ease-in-out infinite;
-  margin-bottom: 28px;
+  animation: float 3s ease-in-out infinite; margin-bottom: 28px;
 }
-.done-card-img {
-  width: 100%; height: 100%; border-radius: 19px; display: block;
-}
-.done-monster {
-  position: absolute; top: 20px; left: 50%;
-  transform: translateX(-50%);
-  width: 180px; height: 180px;
-  pointer-events: none;
-}
+.done-card-img { width: 100%; height: 100%; border-radius: 19px; display: block; }
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50%       { transform: translateY(-10px); }
 }
 .done-title {
   font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1;
-  color: #f2f3e5; letter-spacing: 1px;
-  text-align: center; margin: 0;
+  color: #f2f3e5; letter-spacing: 1px; text-align: center; margin: 0;
 }
 
 </style>
@@ -182,129 +269,420 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 <div class="bp-stage">
 <div class="bp-device" id="device">
 
-  <!-- SCREEN 1 — Survey -->
-  <div class="screen active" id="s-survey">
-    <img class="survey-bg-shape" src="./components/asterisk-3.svg" alt="">
 
-    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 1 — Sleep/emotion connection (arc slider)
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen aay-screen active" id="s-connection">
+  <img class="aay-bg-shape" src="./components/asterisk-3.svg" alt="">
 
-    <button class="btn-back" onclick="history.back()">
-      <svg viewBox="0 0 20 20" fill="none">
-        <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <button class="btn-back" onclick="history.back()">
+    <svg viewBox="0 0 20 20" fill="none">
+      <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="aay-header">
+    <div class="aay-pill" data-content="all_about_spark_pill">
+      1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+    </div>
+    <h1 class="aay-title" data-content="all_about_title">All about you</h1>
+  </div>
+  <span class="aay-counter">1/2</span>
+
+  <div class="aay-bubble">
+    <div class="aay-avatar">
+      <div class="aay-monster">
+        <img class="aay-butterfly" src="./components/monster-butterfly.svg" alt="">
+        <div class="aay-eyes">
+          <img class="aay-eye" src="./components/monster-eye.svg" alt="">
+          <img class="aay-eye" src="./components/monster-eye.svg" alt="">
+        </div>
+      </div>
+    </div>
+    <p class="aay-msg" id="connMsg">You said you slept [sleep_answer] last night, and today felt [emotion] — how much do you think they're connected?</p>
+  </div>
+
+  <div class="aay-slider-wrap">
+    <div class="arc-slider" id="arc-conn" tabindex="0">
+      <svg viewBox="0 0 532 310" width="532" height="310" overflow="visible">
+        <defs>
+          <linearGradient id="grad-conn" gradientUnits="userSpaceOnUse" x1="48" y1="247" x2="480" y2="247">
+            <stop offset="0%" stop-color="#2A5840"/>
+            <stop offset="100%" stop-color="#58b880"/>
+          </linearGradient>
+        </defs>
+        <path id="arcTrack-conn" fill="none" stroke="#2f2f37" stroke-width="68" stroke-linecap="round"/>
+        <path id="arcFill-conn"  fill="none" stroke="url(#grad-conn)" stroke-width="48" stroke-linecap="round"/>
+        <g id="arcDots-conn"></g>
       </svg>
+      <div class="arc-slider__hit" id="arcHit-conn"></div>
+      <div class="arc-slider__thumb" id="arcThumb-conn"><span id="arcEmoji-conn">💭</span></div>
+      <div class="arc-slider__pill"><span id="arcLabel-conn"></span></div>
+    </div>
+  </div>
+
+  <div class="aay-nav" style="justify-content:center">
+    <button class="btn-aay-next" onclick="goTo('s-eating')">Next</button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 2 — Eating habits grid
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen aay-screen" id="s-eating">
+  <img class="aay-bg-shape" src="./components/asterisk-3.svg" alt="">
+
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <button class="btn-back" onclick="goTo('s-connection')">
+    <svg viewBox="0 0 20 20" fill="none">
+      <path d="M12 5L7 10L12 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="aay-header">
+    <div class="aay-pill" data-content="all_about_spark_pill">
+      1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+    </div>
+    <h1 class="aay-title" data-content="all_about_title">All about you</h1>
+  </div>
+  <span class="aay-counter">2/2</span>
+
+  <div class="aay-bubble">
+    <div class="aay-avatar">
+      <div class="aay-monster">
+        <img class="aay-butterfly" src="./components/monster-butterfly.svg" alt="">
+        <div class="aay-eyes">
+          <img class="aay-eye" src="./components/monster-eye.svg" alt="">
+          <img class="aay-eye" src="./components/monster-eye.svg" alt="">
+        </div>
+      </div>
+    </div>
+    <p class="aay-msg">What we eat can shape how we feel.<br>How did eating go for you this week?</p>
+  </div>
+
+  <div class="eat-grid">
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🍽️</span></div>
+      <span class="eat-label">Ate well most days</span>
+    </button>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🥪</span></div>
+      <span class="eat-label">Mostly snacks</span>
+    </button>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">⏰</span></div>
+      <span class="eat-label">Often rushed</span>
+    </button>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">❌</span></div>
+      <span class="eat-label">Skipped meals</span>
     </button>
 
-    <div class="survey-body">
-      <div class="survey-header">
-        <div class="spark-pill" data-content="all_about_spark_pill">
-          1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
-        </div>
-        <h1 class="survey-title" data-content="all_about_title">All about you</h1>
-      </div>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🍭</span></div>
+      <span class="eat-label">Sugary drinks & snacks</span>
+    </button>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🥕</span></div>
+      <span class="eat-label">Healthy</span>
+    </button>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🍝</span></div>
+      <span class="eat-label">Home-cooked</span>
+    </button>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🍟</span></div>
+      <span class="eat-label">Fatty food</span>
+    </button>
 
-      <div class="survey-content">
-        <div class="msg-bubble">
-          <div class="msg-avatar">
-            <div class="msg-monster">
-              <img class="msg-butterfly" src="./components/monster-butterfly.svg" alt="">
-              <div class="msg-eyes">
-                <img class="msg-eye" src="./components/monster-eye.svg" alt="">
-                <img class="msg-eye" src="./components/monster-eye.svg" alt="">
-              </div>
-            </div>
-          </div>
-          <p class="msg-text" data-content="all_about_msg_bubble">Pick the emoji that best matches how you've felt this week.</p>
-        </div>
-
-        <div class="emoji-grid">
-          <div class="emoji-row">
-            <button class="emoji-btn" onclick="selectEmoji(this)">😔</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😟</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😐</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">🙂</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">🤩</button>
-          </div>
-          <div class="emoji-row">
-            <button class="emoji-btn" onclick="selectEmoji(this)">😄</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😤</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😰</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😴</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">🥳</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="btn-save-wrap">
-      <button class="btn-save" id="btnSave" disabled onclick="saveSurvey()" data-content="btn_save">
-        Save
-      </button>
-    </div>
+    <button class="eat-block" onclick="this.classList.toggle('sel')">
+      <div class="eat-icon"><span class="eat-emoji">🌙</span></div>
+      <span class="eat-label">Late night eating</span>
+    </button>
+    <button class="eat-block eat-block--add" onclick="eatAddOther(this)">
+      <div class="eat-icon"><span style="font-size:20px;color:#a4a59f">+</span></div>
+      <span class="eat-label">Add other</span>
+    </button>
   </div>
 
-  <!-- SCREEN 2 — Completed -->
-  <div class="screen" id="s-done">
-    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
-
-    <div class="done-center">
-      <div class="done-reward-row">
-        <span class="done-reward-text" data-content="all_about_reward_text">+1</span>
-        <img src="./components/spark.svg" alt="spark" style="width:28px;height:28px;display:block;">
-      </div>
-
-      <div class="done-card-wrap">
-        <img class="done-card-img" src="./components/challenge-card-6.svg" alt="All about you">
-      </div>
-
-      <p class="done-title" data-content="all_about_completed_title">Completed!</p>
-    </div>
+  <div class="aay-nav" style="justify-content:center">
+    <button class="btn-aay-save" onclick="saveAll()">Save</button>
   </div>
+</div>
 
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 3 — Completed
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s-done">
+  <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <div class="done-center">
+    <div class="done-reward-row">
+      <span class="done-reward-text" data-content="all_about_reward_text">+1</span>
+      <img src="./components/spark.svg" alt="spark" style="width:28px;height:28px;display:block;">
+    </div>
+    <div class="done-card-wrap">
+      <img class="done-card-img" src="./components/challenge-card-6.svg" alt="All about you">
+    </div>
+    <p class="done-title" data-content="all_about_completed_title">Completed!</p>
+  </div>
 </div>
-</div>
+
+
+</div><!-- /bp-device -->
+</div><!-- /bp-stage -->
 
 <script>
+const EMOTION_NAMES = {
+  curious:'Curious', happy:'Happy', excited:'Excited', okay:'Okay', grateful:'Grateful',
+  hopeful:'Hopeful', meh:'Meh', neutral:'Neutral', idontknow:"I don't know", sad:'Sad',
+  tired:'Tired', lonely:'Lonely', angry:'Angry', stressed:'Stressed', anxious:'Anxious',
+};
+
+(function fillBubble() {
+  const sleep   = localStorage.getItem('bp_sleep_answer') || 'okay';
+  const keys    = JSON.parse(localStorage.getItem('bp_mood_emotions') || '[]');
+  const emotion = (keys.length ? (EMOTION_NAMES[keys[0]] || keys[0]) : 'okay').toLowerCase();
+  const msg = document.getElementById('connMsg');
+  if (msg) {
+    msg.textContent = `You said you slept ${sleep} last night, and today felt ${emotion} — how much do you think they're connected?`;
+  }
+})();
+
+let _deviceScale = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
 function scale() {
-  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
-  document.getElementById('device').style.setProperty('--s', s);
+  _deviceScale = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', _deviceScale);
 }
 scale(); addEventListener('resize', scale);
 
-let cur = 's-survey';
+let cur = 's-connection';
 function goTo(id) {
   document.getElementById(cur).classList.remove('active');
   document.getElementById(id).classList.add('active');
   cur = id;
 }
 
-let selectedBtn = null;
-function selectEmoji(btn) {
-  if (selectedBtn) selectedBtn.classList.remove('selected');
-  btn.classList.add('selected');
-  selectedBtn = btn;
-  document.getElementById('btnSave').disabled = false;
-}
-
-function saveSurvey() {
-  if (!selectedBtn) return;
-  localStorage.setItem('bp_about_emoji', selectedBtn.textContent.trim());
+function saveAll() {
   localStorage.setItem('bp_about_done', '1');
   setTimeout(() => { window.location.href = 'completed.html?card=about'; }, 400);
 }
 
-// Pre-fill if returning to edit
-(function() {
-  const saved = localStorage.getItem('bp_about_emoji');
-  if (!saved) return;
-  document.querySelectorAll('.emoji-btn').forEach(btn => {
-    if (btn.textContent.trim() === saved) {
-      btn.classList.add('selected');
-      selectedBtn = btn;
-      document.getElementById('btnSave').disabled = false;
-    }
+// ─── Arc slider constants ─────────────────────────────────────
+const ARC_CX = 263, ARC_CY = 247, ARC_RM = 190.5;
+const ARC_FILL_START = 175, ARC_TRACK_END = 5;
+const ARC_A_MAX = 170, ARC_A_MIN = 10;
+const DEG = Math.PI / 180;
+const rnd = n => Math.round(n * 10) / 10;
+
+function arcPt(r, deg) {
+  return [ARC_CX + r * Math.cos(deg * DEG), ARC_CY - r * Math.sin(deg * DEG)];
+}
+function arcAng(x, y) {
+  return Math.atan2(ARC_CY - y, x - ARC_CX) / DEG;
+}
+function arcPath(from, to) {
+  if (from - to < 0.4) to = from - 0.4;
+  const [x1,y1] = arcPt(ARC_RM, from), [x2,y2] = arcPt(ARC_RM, to);
+  return `M${rnd(x1)},${rnd(y1)} A${ARC_RM},${ARC_RM} 0 ${(from-to)>=180?1:0},1 ${rnd(x2)},${rnd(y2)}`;
+}
+
+// ─── Connection slider (5 stops) ─────────────────────────────
+const CONN_LEVELS = [
+  { e:'😶', t:'Not at all' },
+  { e:'🤔', t:'A little' },
+  { e:'💭', t:'Somewhat' },
+  { e:'💡', t:'Quite a bit' },
+  { e:'🤯', t:'A lot' },
+];
+
+(function initConnSlider() {
+  const NS = 'http://www.w3.org/2000/svg';
+  const n = CONN_LEVELS.length;
+  const stops = CONN_LEVELS.map((_, i) => ARC_A_MAX - (i / (n-1)) * (ARC_A_MAX - ARC_A_MIN));
+
+  document.getElementById('arcTrack-conn').setAttribute('d', arcPath(ARC_FILL_START, ARC_TRACK_END));
+
+  const dotsG = document.getElementById('arcDots-conn');
+  const dotEls = stops.map(a => {
+    const [dx, dy] = arcPt(ARC_RM, a);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', rnd(dx)); c.setAttribute('cy', rnd(dy));
+    c.setAttribute('r', '6'); c.setAttribute('fill', '#18181f');
+    dotsG.appendChild(c); return c;
   });
+
+  let arcAngle = stops[2];
+
+  function arcMove(a) {
+    a = Math.max(ARC_A_MIN, Math.min(ARC_A_MAX, a)); arcAngle = a;
+    document.getElementById('arcFill-conn').setAttribute('d', arcPath(ARC_FILL_START, a));
+    const [tx, ty] = arcPt(ARC_RM, a);
+    const thumb = document.getElementById('arcThumb-conn');
+    thumb.style.left = tx+'px'; thumb.style.top = ty+'px';
+    const ni = stops.reduce((b,sa,i) => Math.abs(a-sa) < Math.abs(a-stops[b]) ? i : b, 0);
+    document.getElementById('arcEmoji-conn').textContent = CONN_LEVELS[ni].e;
+    document.getElementById('arcLabel-conn').textContent = CONN_LEVELS[ni].t;
+    dotEls.forEach((c,i) => c.setAttribute('fill', i===ni ? 'transparent' : '#18181f'));
+  }
+
+  function arcSnap(v, noAnim) {
+    const thumb = document.getElementById('arcThumb-conn');
+    if (!noAnim) {
+      thumb.classList.add('is-snapping');
+      thumb.addEventListener('transitionend', () => thumb.classList.remove('is-snapping'), { once: true });
+    }
+    arcMove(stops[v]);
+  }
+
+  function nearest(a) { return stops.reduce((b,sa,i) => Math.abs(a-sa) < Math.abs(a-stops[b]) ? i : b, 0); }
+
+  const sliderEl = document.getElementById('arc-conn');
+  const hitEl    = document.getElementById('arcHit-conn');
+  const thumbEl  = document.getElementById('arcThumb-conn');
+  let dragging = false;
+
+  function cta(e) {
+    const t = e.touches ? e.touches[0] : e;
+    const r = sliderEl.getBoundingClientRect();
+    return arcAng((t.clientX - r.left) / _deviceScale, (t.clientY - r.top) / _deviceScale);
+  }
+  function onStart(e) { dragging=true; sliderEl.classList.add('is-dragging'); thumbEl.classList.remove('is-snapping'); e.preventDefault(); arcMove(cta(e)); }
+  function onMove(e)  { if (!dragging) return; e.preventDefault(); arcMove(cta(e)); }
+  function onEnd()    { if (!dragging) return; dragging=false; sliderEl.classList.remove('is-dragging'); arcSnap(nearest(arcAngle)); }
+
+  hitEl.addEventListener('mousedown', onStart);
+  thumbEl.addEventListener('mousedown', onStart);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+  hitEl.addEventListener('touchstart', onStart, { passive: false });
+  thumbEl.addEventListener('touchstart', onStart, { passive: false });
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onEnd);
+  sliderEl.addEventListener('keydown', e => {
+    const ni = nearest(arcAngle);
+    if (e.key === 'ArrowRight') arcSnap(Math.min(ni+1, n-1));
+    if (e.key === 'ArrowLeft')  arcSnap(Math.max(ni-1, 0));
+  });
+
+  arcSnap(2, true);
 })();
+
+// ─── Eat grid — Add other ─────────────────────────────────────
+const CHK_SVG = `<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="#f2f3e5"/><path d="M11 18l5 5 9-9" stroke="#1f1f25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function eatAddOther(el) {
+  el.className = 'eat-block eat-block--input sel';
+  el.onclick = null;
+  el.innerHTML = `
+    <div class="eat-icon" style="cursor:pointer;flex-shrink:0" onclick="eatShowPicker(this)">
+      <span class="eat-emoji">👀</span>
+    </div>
+    <input class="eat-input-field" placeholder="Write down..." autofocus>
+    <button class="eat-confirm-btn" onclick="eatConfirmAdd(this.closest('.eat-block'))">${CHK_SVG}</button>`;
+  el.querySelector('.eat-input-field').addEventListener('keydown', e => {
+    if (e.key === 'Enter') eatConfirmAdd(el);
+  });
+}
+
+function eatConfirmAdd(el) {
+  const val   = el.querySelector('.eat-input-field').value.trim();
+  const emoji = el.querySelector('.eat-emoji').textContent;
+  if (!val) { eatRevertAdd(el); return; }
+  const newBlock = document.createElement('button');
+  newBlock.className = 'eat-block sel';
+  newBlock.onclick = function() { this.classList.toggle('sel'); };
+  newBlock.innerHTML = `<div class="eat-icon"><span class="eat-emoji">${emoji}</span></div><span class="eat-label">${val}</span>`;
+  el.parentElement.insertBefore(newBlock, el);
+  eatRevertAdd(el);
+}
+
+function eatRevertAdd(el) {
+  el.className = 'eat-block eat-block--add';
+  el.onclick = function() { eatAddOther(this); };
+  el.innerHTML = `<div class="eat-icon"><span style="font-size:20px;color:#a4a59f">+</span></div><span class="eat-label">Add other</span>`;
+}
+
+const EAT_PICKER_EMOJI = [
+  '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩',
+  '😘','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶',
+  '😏','😒','🙄','😬','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤧','🥵','🥶',
+  '😵','🤯','🤠','😎','🤓','😕','😟','🙁','☹️','😮','😯','😲','😳','🥺','😦','😧',
+  '😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠',
+  '👋','👌','👍','👎','✊','👏','🙌','🙏','💪','✍️',
+  '🐶','🐱','🐭','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐸','🐵','🐔','🦆','🦉','🦋',
+  '🍎','🍊','🍋','🍇','🍓','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥕',
+  '🌽','🌶️','🍔','🍟','🍕','🌭','🌮','🌯','🍜','🍛','🍣','🍱','🍤','🎂','🍰','🧁',
+  '🍩','🍪','🍫','🍬','🍭','🍿','☕','🍵','🧋','🍺','🍷',
+  '⚽','🏀','🎾','🏆','🥇','🎮','🎲','🧩','🎯','🎨','🎤','🎧','🎹','🎸','🎺','🎻',
+  '❤️','🧡','💛','💚','💙','💜','🖤','🤍','💔','💕','💞','💓','💗','💖','💘','💝',
+  '✨','⭐','🌟','💫','🌈','🔥','💥','❄️','🌊','💧','🌸','🌺','🌻','🌹','🌷','🌼',
+  '🍀','🍁','🌿','🌱','💡','🔦','💎','🔮','🪄','🎩','📱','💻','📷','📝','📚','📖',
+  '💰','💵','💳','✉️','💼','🎁','🎀','🏅','🎟️',
+];
+
+function eatBuildPicker() {
+  const div = document.createElement('div');
+  div.className = 'eat-emoji-picker';
+  div.innerHTML = `<div class="eat-picker-grid">${
+    EAT_PICKER_EMOJI.map(e => `<button onclick="event.stopPropagation();eatSelectEmoji('${e}')">${e}</button>`).join('')
+  }</div>`;
+  return div;
+}
+
+function eatShowPicker(iconEl) {
+  const screen = document.getElementById('s-eating');
+  let overlay = screen.querySelector('.eat-picker-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'eat-picker-overlay';
+    overlay.onclick = () => eatHidePicker();
+    screen.appendChild(overlay);
+  }
+  let picker = screen.querySelector('.eat-emoji-picker');
+  if (!picker) { picker = eatBuildPicker(); screen.appendChild(picker); }
+  picker._iconEl = iconEl;
+
+  const device = document.getElementById('device');
+  const dRect  = device.getBoundingClientRect();
+  const iRect  = iconEl.getBoundingClientRect();
+  const scale  = dRect.width / 1194;
+  const cx = (iRect.left - dRect.left) / scale;
+  const cy = (iRect.top  - dRect.top)  / scale;
+  const iH = iRect.height / scale;
+  const pw = 282, ph = 244;
+  let pl = Math.max(8, Math.min(cx - 20, 1194 - pw - 8));
+  let pt = cy - ph - 8;
+  if (pt < 50) pt = cy + iH + 8;
+  picker.style.left = pl + 'px';
+  picker.style.top  = pt + 'px';
+
+  overlay.style.display = 'block';
+  picker.style.display  = 'block';
+}
+
+function eatHidePicker() {
+  const screen = document.getElementById('s-eating');
+  if (!screen) return;
+  const overlay = screen.querySelector('.eat-picker-overlay');
+  const picker  = screen.querySelector('.eat-emoji-picker');
+  if (overlay) overlay.style.display = 'none';
+  if (picker)  picker.style.display  = 'none';
+}
+
+function eatSelectEmoji(emoji) {
+  const screen = document.getElementById('s-eating');
+  const picker = screen && screen.querySelector('.eat-emoji-picker');
+  if (picker && picker._iconEl) picker._iconEl.querySelector('.eat-emoji').textContent = emoji;
+  eatHidePicker();
+}
 </script>
-  <script src="./content-loader.js"></script>
+<script src="./content-loader.js"></script>
 </body>
 </html>
