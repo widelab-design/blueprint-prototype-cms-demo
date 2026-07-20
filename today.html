@@ -804,6 +804,7 @@ updateSparks();
 if (localStorage.getItem('bp_banner_closed') === '1') {
   var _banner = document.getElementById('todayBanner');
   if (_banner) _banner.style.display = 'none';
+  requestAnimationFrame(function() { requestAnimationFrame(applyBannerClosedLayout); });
 }
 
 // Load username from onboarding
@@ -1427,9 +1428,7 @@ function closeSupport() {
   }
 })();
 
-function closeBanner() {
-  localStorage.setItem('bp_banner_closed', '1');
-  document.getElementById('todayBanner').style.display = 'none';
+function applyBannerClosedLayout() {
   var footer = document.querySelector('.today-footer');
   footer.style.position    = 'absolute';
   footer.style.bottom      = '64px';
@@ -1446,6 +1445,12 @@ function closeBanner() {
   var available    = footerTop - headerBottom;
   var mt = Math.max(0, Math.round((available - cards.offsetHeight) / 2) - 24);
   cards.style.marginTop = mt + 'px';
+}
+
+function closeBanner() {
+  localStorage.setItem('bp_banner_closed', '1');
+  document.getElementById('todayBanner').style.display = 'none';
+  applyBannerClosedLayout();
 }
 </script>
   <script src="./content-loader.js"></script>
