@@ -266,7 +266,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     <input id="vid-progress" type="range" min="0" max="100" value="0" step="0.1"
       onpointerdown="_isSeeking=true; _wasPlaying=!document.getElementById('vid-player').paused; document.getElementById('vid-player').pause();"
       oninput="var b=this; b.style.setProperty('--pct',b.value+'%');"
-      onpointerup="_isSeeking=false; seekVideo(this.value); if(_wasPlaying) document.getElementById('vid-player').play();"
+      onpointerup="_isSeeking=false; seekVideo(this.value); if(_wasPlaying) document.getElementById('vid-player').play(); _justSeeked=true; setTimeout(function(){_justSeeked=false;},300);"
       onpointercancel="_isSeeking=false;"
       style="width:100%; height:14px; -webkit-appearance:none; appearance:none; background:transparent; outline:none; cursor:pointer;">
   </div>
@@ -513,6 +513,7 @@ function playAgain() {
 
 var _isSeeking  = false;
 var _wasPlaying = false;
+var _justSeeked = false;
 
 function seekVideo(val) {
   var player = document.getElementById('vid-player');
@@ -539,6 +540,7 @@ function seekVideo(val) {
 })();
 
 function togglePause(e) {
+  if (_justSeeked) return;
   var player = document.getElementById('vid-player');
   var icon   = document.getElementById('vid-pause-icon');
   if (player.paused) {
