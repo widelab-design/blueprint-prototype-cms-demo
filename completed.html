@@ -252,7 +252,8 @@ setTimeout(() => {
   flyingCard.style.opacity   = '1';
 }, 60);
 
-// 2. +1 spark
+// 2. spark badge + award points
+(function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+50); })();
 setTimeout(() => sparkBadge.classList.add('show'), 120);
 
 // 3. "Completed!" text

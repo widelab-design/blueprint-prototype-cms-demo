@@ -883,6 +883,7 @@ function goToDone() {
     sleep.classList.remove('active');
     done.classList.add('active');
     cur = 's-done';
+    (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+25); })();
     requestAnimationFrame(() => requestAnimationFrame(() => {
       done.classList.add('done-entered');
       // Blob grows 20% and shifts down — only top arch visible

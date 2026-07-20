@@ -793,7 +793,7 @@ scale(); addEventListener('resize', scale);
 
 // ─── Sparkz total ─────────────────────────────────────────────
 function updateSparks() {
-  if (!localStorage.getItem('bp_sparks')) localStorage.setItem('bp_sparks', '360');
+  if (!localStorage.getItem('bp_sparks')) localStorage.setItem('bp_sparks', '45');
   const sparks = parseInt(localStorage.getItem('bp_sparks'), 10);
   const el = document.getElementById('sparksTotal');
   el.childNodes[0].textContent = sparks;

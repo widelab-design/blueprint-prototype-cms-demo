@@ -1692,6 +1692,7 @@ function curtainS4toS5() {
 }
 
 function slideS6toS7() {
+  (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+20); })();
   const s6      = document.getElementById('s6');
   const s7      = document.getElementById('s7');
   const s6sl    = document.getElementById('s6-slide');

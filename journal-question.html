@@ -352,6 +352,7 @@ function saveAnswer() {
   const val = document.getElementById('wTextarea').value.trim();
   if (!val) return;
   localStorage.setItem(q.key, val);
+  (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+50); })();
   goTo('s-saved');
 }
 

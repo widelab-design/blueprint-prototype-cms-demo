@@ -487,6 +487,7 @@ function goTo(id) {
     });
   }
   if (id === 's-thanks') {
+    (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+100); })();
     el.classList.remove('st-entered', 'st-phase2');
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {

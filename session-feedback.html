@@ -328,7 +328,10 @@ function selectAnswer(el, nextId) {
 }
 
 function saveAnswer() {
-  if (pendingNext) goTo(pendingNext);
+  if (pendingNext) {
+    (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+50); })();
+    goTo(pendingNext);
+  }
 }
 
 function goTo(id) {

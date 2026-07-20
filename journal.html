@@ -613,7 +613,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
     <div class="wov-body">
       <div class="wov-spark-pill">
-        1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+        50 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
       </div>
       <h1 class="wov-title" data-content="journal_wov_title">Write It Out.</h1>
 
@@ -673,7 +673,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     <!-- Step 2: Write body -->
     <div class="wov-body" id="qovBody" style="display:none">
       <div class="wov-spark-pill">
-        1 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
+        50 <img src="./components/spark.svg" alt="spark" style="width:20px;height:20px;display:block;">
       </div>
       <div class="wov-bubble" id="qovBubble">
         <div class="wov-avatar">
@@ -1149,6 +1149,7 @@ function openEditNoteOverlay(noteDate) {
 function doWovSave() {
   var val = document.getElementById('wovInput').value.trim();
   if (!val) return;
+  (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+50); })();
   document.getElementById('wovDone').style.display = 'flex';
 
   if (_editNoteDate) {
@@ -1309,6 +1310,7 @@ function _updatePastNotesMeta(notes) {
 function saveQAnswer() {
   var val  = document.getElementById('qovInput').value.trim();
   if (!val) return;
+  (function(){ var c=parseInt(localStorage.getItem('bp_sparks')||'0',10); localStorage.setItem('bp_sparks',c+50); })();
 
   if (_addNoteMode) {
     var notes = [];

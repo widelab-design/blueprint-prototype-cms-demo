@@ -175,6 +175,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #f2f3e5; letter-spacing: -0.2px;
 }
 .video-sparks img { width: 16px; height: 16px; display: block; }
+.video-sparks:empty { display: none; }
 .video-title {
   font-family: var(--font-display); font-weight: 400; font-size: 24px; color: #f2f3e5;
   line-height: 1.12; letter-spacing: -0.4px; margin: 0;
@@ -753,7 +754,7 @@ function renderSaved() {
         <div class="video-info">
           <div class="video-meta">
             <span class="video-duration">1:07</span>
-            <span class="video-sparks">1 <img src="./components/spark.svg" alt="spark"></span>
+            <span class="video-sparks">100 <img src="./components/spark.svg" alt="spark"></span>
           </div>
           <p class="video-title">${v.title}</p>
         </div>
