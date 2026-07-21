@@ -285,6 +285,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     <button data-content="toolkit_video_btn_replay" onclick="event.stopPropagation(); playAgain()" style="background:rgba(255,255,255,0.16); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Replay</button>
     <button data-content="toolkit_video_btn_complete" onclick="event.stopPropagation(); skipVideo()" style="background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
   </div>
+  <button id="vid-complete-btn" onclick="event.stopPropagation(); skipVideo()" style="display:none; position:absolute; bottom:100px; right:32px; background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
 </div>
 
 <div class="bp-device" id="device">
@@ -465,6 +466,7 @@ if (urlParams.get('skipthumb') === '1' && cfg) {
     }, { once: true });
     overlay.style.display = 'block';
     document.getElementById('vid-end-btns').style.display = 'none';
+    document.getElementById('vid-complete-btn').style.display = 'block';
     document.getElementById('vid-back-btn').style.display = 'flex';
     playIcon.style.display = 'flex';
     player.addEventListener('play', function() { playIcon.style.display = 'none'; }, { once: true });
@@ -504,6 +506,7 @@ var _vidDur = 0;
 
 function _onEnded() {
   document.getElementById('vid-pause-icon').style.display = 'none';
+  document.getElementById('vid-complete-btn').style.display = 'none';
   document.getElementById('vid-end-btns').style.display = 'flex';
   document.getElementById('vid-back-btn').style.display = 'none';
 }
@@ -520,6 +523,7 @@ function onPlay() {
     player.addEventListener('loadedmetadata', function() { _vidDur = player.duration; }, { once: true });
     overlay.style.display = 'block';
     document.getElementById('vid-end-btns').style.display = 'none';
+    document.getElementById('vid-complete-btn').style.display = 'block';
     document.getElementById('vid-back-btn').style.display = 'flex';
     player.addEventListener('canplay', function() { player.play(); }, { once: true });
     player.addEventListener('ended', _onEnded, { once: true });
@@ -535,6 +539,7 @@ function playAgain() {
   player.play();
   icon.style.display = 'none';
   document.getElementById('vid-end-btns').style.display = 'none';
+  document.getElementById('vid-complete-btn').style.display = 'block';
   document.getElementById('vid-back-btn').style.display = 'flex';
   player.addEventListener('ended', _onEnded, { once: true });
 }
