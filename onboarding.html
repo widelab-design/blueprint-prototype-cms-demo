@@ -142,7 +142,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .sname-title {
   font-family: var(--font-display); font-weight: 400;
   font-size: var(--title-large-size); line-height: var(--title-large-lh);
-  color: #f2f3e5; margin: 0 0 32px;
+  color: #f2f3e5; margin: 0 0 24px;
 }
 .sname-sub {
   font-family: var(--font-body); font-size: 18px; font-weight: 500;
@@ -1201,8 +1201,14 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 <div class="screen active" id="s-name">
   <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
 
+  <div style="position:absolute; top:32px; left:50%; transform:translateX(-50%);">
+    <div class="lms-sparkz-btn" style="width:56px; height:56px; border-radius:14px;">
+      <div class="lsz-row1"><span class="lsz-spark" style="font-size:13px;">Spark</span><svg class="lsz-bolt" style="width:7px;height:13px;" viewBox="0 0 14 25" fill="none"><path d="M7.875 10.5H14L6.125 25V14.5H0L7.875 0V10.5Z" fill="white"/></svg></div>
+      <span class="lsz-eq" style="font-size:10px;">EQ</span>
+    </div>
+  </div>
+
   <div class="sname-wrap">
-    <p class="sname-badge" data-content="onboarding_badge">Sparkz EQ</p>
     <h1 class="sname-title" data-content="onboarding_welcome_title">Welcome!</h1>
     <p class="sname-sub" data-content="onboarding_welcome_sub">You're taking part in a prototype<br>study of the Sparkz EQ app.</p>
     <div class="sname-field">
