@@ -907,6 +907,169 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
 
+/* ══════════════════════════════════════════════════════════════
+   S-LMS — Canvas-like wrapper screen
+   ══════════════════════════════════════════════════════════════ */
+#s-lms { background: #fff; font-family: -apple-system, 'Segoe UI', sans-serif; }
+
+.lms-wrap {
+  position: absolute; inset: 0;
+  display: flex; overflow: hidden;
+}
+
+/* ── Global rail (far-left dark column) ── */
+.lms-rail {
+  width: 60px; flex-shrink: 0;
+  background: #2d3b45;
+  display: flex; flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 8px;
+}
+.lms-rail-top { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.lms-rail-item {
+  width: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 10px 0; gap: 3px; cursor: pointer;
+  transition: background 120ms;
+}
+.lms-rail-item:hover { background: rgba(255,255,255,0.08); }
+.lms-rail-item.active { background: rgba(255,255,255,0.12); }
+.lms-rail-icon {
+  width: 36px; height: 36px; display: flex;
+  align-items: center; justify-content: center;
+}
+.lms-rail-icon svg { width: 24px; height: 24px; display: block; }
+.lms-rail-label {
+  font-size: 9px; font-weight: 500; color: rgba(255,255,255,0.7);
+  text-align: center; line-height: 1.1; letter-spacing: 0.1px;
+}
+.lms-rail-item.active .lms-rail-label { color: #fff; }
+.lms-rail-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #6b7f8a; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: #fff;
+}
+/* Sparkz EQ button in rail */
+.lms-sparkz-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: #e8f0fe; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.lms-sparkz-btn img { width: 30px; height: 30px; display: block; object-fit: contain; }
+
+/* ── Course nav sidebar ── */
+.lms-course-nav {
+  width: 174px; flex-shrink: 0;
+  background: #fff;
+  border-right: 1px solid #e5e5e5;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.lms-course-nav::-webkit-scrollbar { display: none; }
+.lms-course-header {
+  padding: 10px 16px 6px;
+  font-size: 11px; font-weight: 600; color: #6b6b6b;
+  letter-spacing: 0.2px; border-bottom: 1px solid #e5e5e5;
+}
+.lms-course-links { display: flex; flex-direction: column; }
+.lms-course-link {
+  padding: 7px 16px;
+  font-size: 13px; color: #0770a3;
+  cursor: pointer; text-decoration: none;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 100ms;
+}
+.lms-course-link:hover { background: #f5f5f5; }
+.lms-course-link.active {
+  font-weight: 600; color: #1a1a1a; background: #f0f0f0;
+}
+.lms-badge {
+  background: #e66000; color: #fff;
+  font-size: 10px; font-weight: 700;
+  min-width: 18px; height: 18px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+.lms-sparkz-link { font-weight: 600; color: #0770a3; }
+
+/* ── Main content ── */
+.lms-main {
+  flex: 1; display: flex; flex-direction: column;
+  overflow-y: auto; background: #fff;
+}
+.lms-main::-webkit-scrollbar { display: none; }
+.lms-topbar {
+  display: flex; align-items: center;
+  padding: 10px 20px; border-bottom: 1px solid #e5e5e5;
+  gap: 6px; flex-shrink: 0;
+}
+.lms-topbar-hamburger { font-size: 18px; color: #555; cursor: pointer; margin-right: 4px; }
+.lms-breadcrumb {
+  font-size: 13px; color: #0770a3;
+  display: flex; align-items: center; gap: 6px;
+}
+.lms-breadcrumb-sep { color: #888; }
+.lms-breadcrumb-current { color: #333; font-weight: 500; }
+.lms-content-area { flex: 1; display: flex; padding: 16px; gap: 16px; }
+.lms-modules { flex: 1; }
+.lms-modules-header {
+  display: flex; align-items: center; justify-content: flex-end;
+  margin-bottom: 12px;
+}
+.lms-collapse-btn {
+  font-size: 12px; color: #444; border: 1px solid #c7c7c7;
+  background: #fff; border-radius: 4px; padding: 5px 12px;
+  cursor: pointer;
+}
+.lms-module-group {
+  border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 16px; overflow: hidden;
+}
+.lms-module-title {
+  background: #f5f5f5; border-bottom: 1px solid #e0e0e0;
+  padding: 8px 14px;
+  font-size: 13px; font-weight: 600; color: #333;
+  display: flex; align-items: center; gap: 8px;
+}
+.lms-module-title::before {
+  content: '▾'; font-size: 11px; color: #666;
+}
+.lms-module-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+.lms-module-item:last-child { border-bottom: none; }
+.lms-item-icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: #888;
+}
+.lms-item-title { flex: 1; color: #0770a3; cursor: pointer; }
+.lms-item-meta { font-size: 11px; color: #888; }
+
+/* ── Right sidebar ── */
+.lms-sidebar-right {
+  width: 216px; flex-shrink: 0;
+  border-left: 1px solid #e5e5e5;
+  padding: 16px 0;
+  display: flex; flex-direction: column; gap: 0;
+  overflow-y: auto;
+}
+.lms-sidebar-right::-webkit-scrollbar { display: none; }
+.lms-sidebar-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; font-size: 13px; color: #0770a3;
+  cursor: pointer; background: #f9f9f9;
+  border-bottom: 1px solid #e5e5e5;
+  transition: background 100ms;
+}
+.lms-sidebar-link:hover { background: #f0f0f0; }
+.lms-sidebar-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+.lms-sidebar-section { padding: 12px 16px 4px; }
+.lms-sidebar-section-title { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 4px; }
+.lms-sidebar-section-empty { font-size: 12px; color: #888; }
+
 </style>
 </head>
 <body>
@@ -954,6 +1117,132 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
   <div class="sname-cta">
     <button class="btn-cta" data-content="onboarding_btn_lets_go" onclick="submitName()">Let's go</button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     S-LMS — Canvas-like app wrapper
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s-lms">
+  <div class="lms-wrap">
+
+    <!-- Global rail -->
+    <nav class="lms-rail">
+      <div class="lms-rail-top">
+        <div class="lms-rail-item" style="padding:12px 0 8px;">
+          <div class="lms-rail-avatar">S</div>
+          <span class="lms-rail-label">Account</span>
+        </div>
+        <div class="lms-rail-item">
+          <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/><rect x="13" y="3" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/></svg></div>
+          <span class="lms-rail-label">Dashboard</span>
+        </div>
+        <div class="lms-rail-item active">
+          <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19h16M9 10h6M9 13h4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <span class="lms-rail-label" style="color:#fff;">Courses</span>
+        </div>
+        <div class="lms-rail-item">
+          <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M16 2v4M8 2v4M3 10h18" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <span class="lms-rail-label">Calendar</span>
+        </div>
+        <div class="lms-rail-item">
+          <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4z" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M4 4l8 7 8-7" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <span class="lms-rail-label">Inbox</span>
+        </div>
+        <div class="lms-rail-item">
+          <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <span class="lms-rail-label">History</span>
+        </div>
+        <!-- Sparkz EQ — clickable -->
+        <div class="lms-rail-item" onclick="goToSparkz()" style="cursor:pointer; margin-top:4px;">
+          <div class="lms-sparkz-btn">
+            <svg viewBox="0 0 30 30" width="30" height="30"><rect width="30" height="30" rx="6" fill="#e65800"/><path d="M15 6l2.5 6h6l-5 4 2 6-5.5-4-5.5 4 2-6-5-4h6z" fill="#f2f3e5"/></svg>
+          </div>
+          <span class="lms-rail-label" style="color:#fff; font-weight:600;">Sparkz EQ</span>
+        </div>
+      </div>
+      <div class="lms-rail-item" style="padding-bottom:12px;">
+        <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <span class="lms-rail-label">Help</span>
+      </div>
+    </nav>
+
+    <!-- Course nav -->
+    <aside class="lms-course-nav">
+      <div class="lms-course-header">Sandbox 2026</div>
+      <div class="lms-course-links">
+        <span class="lms-course-link active">Home</span>
+        <span class="lms-course-link">Announcements</span>
+        <span class="lms-course-link">Assignments</span>
+        <span class="lms-course-link">Discussions</span>
+        <span class="lms-course-link">Grades <span class="lms-badge">11</span></span>
+        <span class="lms-course-link">People</span>
+        <span class="lms-course-link">Syllabus</span>
+        <span class="lms-course-link">Modules</span>
+        <span class="lms-course-link">BigBlueButton</span>
+        <span class="lms-course-link">Collaborations</span>
+        <span class="lms-course-link">Lucid (Whiteboard)</span>
+        <span class="lms-course-link lms-sparkz-link" onclick="goToSparkz()" style="cursor:pointer;">Sparkz EQ</span>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="lms-main">
+      <div class="lms-topbar">
+        <span class="lms-topbar-hamburger">☰</span>
+        <div class="lms-breadcrumb">
+          <span>Spanish</span>
+          <span class="lms-breadcrumb-sep">›</span>
+          <span class="lms-breadcrumb-current">Modules</span>
+        </div>
+      </div>
+      <div class="lms-content-area">
+        <div class="lms-modules">
+          <div class="lms-modules-header">
+            <button class="lms-collapse-btn">Collapse All</button>
+          </div>
+
+          <div class="lms-module-group">
+            <div class="lms-module-title">Week 1</div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Verb Conjugation Review</span><span class="lms-item-meta">May 7 · 10 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Cultural Reading and Comprehension</span><span class="lms-item-meta">May 7 · 20 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Dialogue Creation and Recording</span><span class="lms-item-meta">May 6 · 10 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#888" stroke-width="1.5"/><path d="M6 8l1.5 1.5L10 6" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Week 1 Discussion – Spanish III</span><span class="lms-item-meta"></span></div>
+          </div>
+
+          <div class="lms-module-group">
+            <div class="lms-module-title">Week 2</div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Preterite Tense Narrative Writing</span><span class="lms-item-meta">May 14 · 10 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Present Perfect and Vocabulary Quiz</span><span class="lms-item-meta">May 11 · 25 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#888" stroke-width="1.5"/></svg></span><span class="lms-item-title">Week 2 Discussion – Spanish III</span><span class="lms-item-meta"></span></div>
+          </div>
+
+          <div class="lms-module-group">
+            <div class="lms-module-title">Week 3</div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Preterite Tense Narrative Writing</span><span class="lms-item-meta">May 18 · 50 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M4 5h8M4 8h6M4 11h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="lms-item-title">Subjunctive Mood Practice Worksheet</span><span class="lms-item-meta">May 19 · 10 pts</span></div>
+            <div class="lms-module-item"><span class="lms-item-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="#888" stroke-width="1.5"/></svg></span><span class="lms-item-title">Spanish Media Discussion and Reflection</span><span class="lms-item-meta">May 18 · 10 pts</span></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="lms-sidebar-right">
+      <div class="lms-sidebar-link"><svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4z" stroke="#0770a3" stroke-width="1.5"/><path d="M2 4l6 5 6-5" stroke="#0770a3" stroke-width="1.5"/></svg> View Course Stream</div>
+      <div class="lms-sidebar-link"><svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="13" rx="2" stroke="#0770a3" stroke-width="1.5"/><path d="M1 6h14M5 1v3M11 1v3" stroke="#0770a3" stroke-width="1.5" stroke-linecap="round"/></svg> View Course Calendar</div>
+      <div class="lms-sidebar-link"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 0 1 5 5v2l1.5 2H1.5L3 9V7a5 5 0 0 1 5-5z" stroke="#0770a3" stroke-width="1.5"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="#0770a3" stroke-width="1.5"/></svg> View Course Notifications</div>
+      <div class="lms-sidebar-section">
+        <div class="lms-sidebar-section-title">To Do</div>
+        <div class="lms-sidebar-section-empty">Nothing for now</div>
+      </div>
+      <div class="lms-sidebar-section">
+        <div class="lms-sidebar-section-title">Recent Feedback</div>
+        <div class="lms-sidebar-section-empty">Nothing for now</div>
+      </div>
+    </aside>
+
   </div>
 </div>
 
@@ -1835,6 +2124,11 @@ function submitName() {
   var name = (document.getElementById('nameInput').value || '').trim() || 'Friend';
   localStorage.setItem('bp_username', name);
   document.getElementById('s-name').classList.remove('active');
+  document.getElementById('s-lms').classList.add('active');
+}
+
+function goToSparkz() {
+  document.getElementById('s-lms').classList.remove('active');
   document.getElementById('s0').classList.add('active');
 }
 document.getElementById('nameInput').addEventListener('keydown', function(e) {
