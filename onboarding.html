@@ -1070,6 +1070,98 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .lms-sidebar-section-title { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 4px; }
 .lms-sidebar-section-empty { font-size: 12px; color: #888; }
 
+/* ── Dashboard screen ── */
+#s-dashboard { background: #fff; font-family: -apple-system, 'Segoe UI', sans-serif; }
+.lms-dash-main {
+  flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+}
+.lms-dash-main::-webkit-scrollbar { display: none; }
+.lms-dash-scroll { flex: 1; padding: 0 20px 20px; }
+.lms-announce {
+  border: 1px solid #b3d4e8; border-left: 4px solid #1a7fbf;
+  border-radius: 4px; padding: 14px 16px; margin-bottom: 10px;
+  background: #fff; position: relative;
+}
+.lms-announce-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+.lms-announce-body { font-size: 12px; color: #555; margin-bottom: 10px; }
+.lms-announce-imgs { display: flex; gap: 8px; margin-bottom: 8px; }
+.lms-announce-img {
+  width: 150px; height: 90px; border-radius: 4px; object-fit: cover;
+  background: #dce8f0; flex-shrink: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #888; font-weight: 500; text-align: center;
+}
+.lms-announce-from { font-size: 11px; color: #666; }
+.lms-announce-from strong { font-weight: 600; }
+.lms-announce-close {
+  position: absolute; top: 10px; right: 10px;
+  width: 24px; height: 24px; border: none; background: none;
+  cursor: pointer; color: #666; font-size: 16px; line-height: 1;
+}
+.lms-notif {
+  border: 1px solid #b3d4e8; border-left: 4px solid #1a7fbf;
+  border-radius: 4px; padding: 12px 16px; margin-bottom: 16px;
+  background: #fff; display: flex; align-items: flex-start; gap: 10px;
+}
+.lms-notif-icon { color: #1a7fbf; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.lms-notif-text { font-size: 13px; color: #333; }
+.lms-notif-text strong { font-weight: 700; }
+.lms-notif-btn {
+  display: inline-block; margin-top: 6px;
+  background: #1a7fbf; color: #fff; border: none; border-radius: 4px;
+  padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer;
+}
+.lms-dash-title-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.lms-dash-title { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+.lms-dash-menu { font-size: 20px; color: #555; cursor: pointer; }
+.lms-course-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+.lms-course-card {
+  border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+  background: #fff; cursor: pointer;
+}
+.lms-card-header {
+  height: 90px; position: relative;
+  display: flex; align-items: flex-start; justify-content: flex-end; padding: 8px;
+}
+.lms-card-dots {
+  width: 24px; height: 24px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px; cursor: pointer;
+}
+.lms-card-dots span { display: block; width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.8); }
+.lms-card-body { padding: 10px 12px 8px; }
+.lms-card-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.lms-card-sub { font-size: 12px; color: #555; margin-bottom: 1px; }
+.lms-card-meta { font-size: 11px; color: #888; margin-bottom: 8px; }
+.lms-card-icons { display: flex; gap: 10px; }
+.lms-card-icons svg { width: 16px; height: 16px; color: #888; display: block; }
+.lms-dash-right {
+  width: 216px; flex-shrink: 0; border-left: 1px solid #e5e5e5;
+  display: flex; flex-direction: column; overflow-y: auto;
+}
+.lms-dash-right::-webkit-scrollbar { display: none; }
+.lms-grades-btn {
+  margin: 16px; border: 1px solid #c7c7c7; background: #f9f9f9;
+  border-radius: 4px; padding: 8px 12px; font-size: 13px;
+  color: #333; cursor: pointer; text-align: left; font-weight: 500;
+}
+.lms-footer {
+  background: #fff; border-top: 1px solid #e5e5e5;
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; color: #888; flex-shrink: 0;
+}
+.lms-footer-brand { display: flex; align-items: center; gap: 6px; font-weight: 700; color: #e65800; font-size: 13px; }
+.lms-footer-links { display: flex; gap: 12px; }
+.lms-footer-links span { cursor: pointer; }
+.lms-footer-links span:hover { text-decoration: underline; }
+
 </style>
 </head>
 <body>
@@ -1122,6 +1214,168 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 
 <!-- ════════════════════════════════════════════════════════════
+     S-DASHBOARD — Canvas dashboard view
+     ════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s-dashboard">
+  <div class="lms-wrap" style="flex-direction:column;">
+    <div style="display:flex;flex:1;overflow:hidden;">
+
+      <!-- Rail (Dashboard active) -->
+      <nav class="lms-rail">
+        <div class="lms-rail-top">
+          <div class="lms-rail-item" style="padding:12px 0 8px;">
+            <div class="lms-rail-avatar">S</div>
+            <span class="lms-rail-label">Account</span>
+          </div>
+          <div class="lms-rail-item active">
+            <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="#fff"/><rect x="13" y="3" width="8" height="8" rx="1.5" fill="#fff"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="#fff"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="#fff"/></svg></div>
+            <span class="lms-rail-label" style="color:#fff;">Dashboard</span>
+          </div>
+          <div class="lms-rail-item" onclick="document.getElementById('s-dashboard').classList.remove('active');document.getElementById('s-lms').classList.add('active');" style="cursor:pointer;">
+            <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/><path d="M4 19h16M9 10h6M9 13h4" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <span class="lms-rail-label">Courses</span>
+          </div>
+          <div class="lms-rail-item">
+            <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M16 2v4M8 2v4M3 10h18" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <span class="lms-rail-label">Calendar</span>
+          </div>
+          <div class="lms-rail-item">
+            <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4z" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M4 4l8 7 8-7" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <span class="lms-rail-label">Inbox</span>
+          </div>
+          <div class="lms-rail-item">
+            <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <span class="lms-rail-label">History</span>
+          </div>
+          <div class="lms-rail-item" onclick="goToSparkz()" style="cursor:pointer; margin-top:4px;">
+            <div class="lms-sparkz-btn"><svg viewBox="0 0 30 30" width="30" height="30"><rect width="30" height="30" rx="6" fill="#e65800"/><path d="M15 6l2.5 6h6l-5 4 2 6-5.5-4-5.5 4 2-6-5-4h6z" fill="#f2f3e5"/></svg></div>
+            <span class="lms-rail-label" style="color:#fff;font-weight:600;">Sparkz EQ</span>
+          </div>
+        </div>
+        <div class="lms-rail-item" style="padding-bottom:12px;">
+          <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span class="lms-rail-label">Help</span>
+        </div>
+      </nav>
+
+      <!-- Main -->
+      <main class="lms-dash-main">
+        <div class="lms-dash-scroll">
+          <!-- Announcement banner -->
+          <div class="lms-announce" style="margin-top:14px;">
+            <div class="lms-announce-title">Welcome to Your Partner Sandbox!</div>
+            <div class="lms-announce-body">Welcome to your partner sandbox! Click any course resource below to learn more about Canvas, Learning Tools Interoperability (LTI) &amp; the Canvas API or other Instructure products.</div>
+            <div class="lms-announce-imgs">
+              <div class="lms-announce-img" style="background:#c0392b;">Canvas Basics</div>
+              <div class="lms-announce-img" style="background:#1a7fbf;">Evidence as a Service</div>
+              <div class="lms-announce-img" style="background:#2c3e50;">Best Practices: LTI &amp; API Integration</div>
+            </div>
+            <div class="lms-announce-from">This is an announcement from <strong>Blueprint · Online Mental and Emotional Wellness for Young Minds</strong></div>
+            <button class="lms-announce-close">×</button>
+          </div>
+
+          <!-- Notifications banner -->
+          <div class="lms-notif">
+            <span class="lms-notif-icon">ℹ</span>
+            <div class="lms-notif-text">
+              <strong>Notifications.</strong> Tell us how and when you would like to be notified of events in Canvas.
+              <br><button class="lms-notif-btn">Notification Preferences</button>
+            </div>
+          </div>
+
+          <!-- Dashboard title -->
+          <div class="lms-dash-title-row">
+            <span class="lms-dash-title">Dashboard</span>
+            <span class="lms-dash-menu">⋮</span>
+          </div>
+
+          <!-- Course grid -->
+          <div class="lms-course-grid">
+            <div class="lms-course-card">
+              <div class="lms-card-header" style="background:#c0392b;"><div class="lms-card-dots"><span></span><span></span><span></span></div></div>
+              <div class="lms-card-body">
+                <div class="lms-card-title" style="color:#c0392b;">Art – Evergreen High</div>
+                <div class="lms-card-sub">Art</div>
+                <div class="lms-card-meta">Sandbox 2026</div>
+                <div class="lms-card-icons"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.2 2 3 4.2 3 7v1l-1 2h12l-1-2V7c0-2.8-2.2-5-5-5z" stroke="#888" stroke-width="1.2"/><path d="M6.5 12.5a1.5 1.5 0 0 0 3 0" stroke="#888" stroke-width="1.2"/></svg><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#888" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg><svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 3V11H2V3z" stroke="#888" stroke-width="1.2"/></svg></div>
+              </div>
+            </div>
+            <div class="lms-course-card">
+              <div class="lms-card-header" style="background:#922b21;"><div class="lms-card-dots"><span></span><span></span><span></span></div></div>
+              <div class="lms-card-body">
+                <div class="lms-card-title" style="color:#922b21;">Biology – Evergreen High</div>
+                <div class="lms-card-sub">Biology</div>
+                <div class="lms-card-meta">Sandbox 2026</div>
+                <div class="lms-card-icons"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.2 2 3 4.2 3 7v1l-1 2h12l-1-2V7c0-2.8-2.2-5-5-5z" stroke="#888" stroke-width="1.2"/><path d="M6.5 12.5a1.5 1.5 0 0 0 3 0" stroke="#888" stroke-width="1.2"/></svg><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#888" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg><svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 3V11H2V3z" stroke="#888" stroke-width="1.2"/></svg></div>
+              </div>
+            </div>
+            <div class="lms-course-card">
+              <div class="lms-card-header" style="background:#b03a7e;"><div class="lms-card-dots"><span></span><span></span><span></span></div></div>
+              <div class="lms-card-body">
+                <div class="lms-card-title" style="color:#b03a7e;">Chemistry – Evergreen High</div>
+                <div class="lms-card-sub">Chemistry</div>
+                <div class="lms-card-meta">Sandbox 2026</div>
+                <div class="lms-card-icons"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.2 2 3 4.2 3 7v1l-1 2h12l-1-2V7c0-2.8-2.2-5-5-5z" stroke="#888" stroke-width="1.2"/><path d="M6.5 12.5a1.5 1.5 0 0 0 3 0" stroke="#888" stroke-width="1.2"/></svg><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#888" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg><svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 3V11H2V3z" stroke="#888" stroke-width="1.2"/></svg></div>
+              </div>
+            </div>
+            <div class="lms-course-card">
+              <div class="lms-card-header" style="background:#7d6608;"><div class="lms-card-dots"><span></span><span></span><span></span></div></div>
+              <div class="lms-card-body">
+                <div class="lms-card-title" style="color:#7d6608;">Economics – Evergreen High</div>
+                <div class="lms-card-sub">Economics</div>
+                <div class="lms-card-meta">Sandbox 2026</div>
+                <div class="lms-card-icons"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.2 2 3 4.2 3 7v1l-1 2h12l-1-2V7c0-2.8-2.2-5-5-5z" stroke="#888" stroke-width="1.2"/><path d="M6.5 12.5a1.5 1.5 0 0 0 3 0" stroke="#888" stroke-width="1.2"/></svg><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#888" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg><svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 3V11H2V3z" stroke="#888" stroke-width="1.2"/></svg></div>
+              </div>
+            </div>
+            <div class="lms-course-card">
+              <div class="lms-card-header" style="background:#37474f;"><div class="lms-card-dots"><span></span><span></span><span></span></div></div>
+              <div class="lms-card-body">
+                <div class="lms-card-title" style="color:#37474f;">Physical Education – Evergreen Hi…</div>
+                <div class="lms-card-sub">Physical Education</div>
+                <div class="lms-card-meta">Sandbox 2026</div>
+                <div class="lms-card-icons"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.2 2 3 4.2 3 7v1l-1 2h12l-1-2V7c0-2.8-2.2-5-5-5z" stroke="#888" stroke-width="1.2"/><path d="M6.5 12.5a1.5 1.5 0 0 0 3 0" stroke="#888" stroke-width="1.2"/></svg><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#888" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg><svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 3V11H2V3z" stroke="#888" stroke-width="1.2"/></svg></div>
+              </div>
+            </div>
+            <div class="lms-course-card" style="grid-column:1;" onclick="document.getElementById('s-dashboard').classList.remove('active');document.getElementById('s-lms').classList.add('active');" >
+              <div class="lms-card-header" style="background:#7d6608; cursor:pointer;"><div class="lms-card-dots"><span></span><span></span><span></span></div></div>
+              <div class="lms-card-body">
+                <div class="lms-card-title" style="color:#7d6608; cursor:pointer;">Spanish – Evergreen High</div>
+                <div class="lms-card-sub">Spanish</div>
+                <div class="lms-card-meta">Sandbox 2026</div>
+                <div class="lms-card-icons"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.2 2 3 4.2 3 7v1l-1 2h12l-1-2V7c0-2.8-2.2-5-5-5z" stroke="#888" stroke-width="1.2"/><path d="M6.5 12.5a1.5 1.5 0 0 0 3 0" stroke="#888" stroke-width="1.2"/></svg><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#888" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="#888" stroke-width="1.2" stroke-linecap="round"/></svg><svg viewBox="0 0 16 16" fill="none"><path d="M2 3h12v8H9l-3 3V11H2V3z" stroke="#888" stroke-width="1.2"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="lms-footer">
+          <div class="lms-footer-brand">⚡ INSTRUCTURE</div>
+          <div class="lms-footer-links">
+            <span>Privacy Policy</span><span>Cookie Notice</span><span>Acceptable Use Policy</span><span>Facebook</span><span>X.com</span>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right sidebar -->
+      <aside class="lms-dash-right">
+        <div class="lms-sidebar-section">
+          <div class="lms-sidebar-section-title">To Do</div>
+          <div class="lms-sidebar-section-empty">Nothing for now</div>
+        </div>
+        <div class="lms-sidebar-section">
+          <div class="lms-sidebar-section-title">Recent Feedback</div>
+          <div class="lms-sidebar-section-empty">Nothing for now</div>
+        </div>
+        <button class="lms-grades-btn">View Grades</button>
+      </aside>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
      S-LMS — Canvas-like app wrapper
      ════════════════════════════════════════════════════════════ -->
 <div class="screen" id="s-lms">
@@ -1134,7 +1388,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
           <div class="lms-rail-avatar">S</div>
           <span class="lms-rail-label">Account</span>
         </div>
-        <div class="lms-rail-item">
+        <div class="lms-rail-item" onclick="goToDashboard()" style="cursor:pointer;">
           <div class="lms-rail-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/><rect x="13" y="3" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="rgba(255,255,255,0.7)"/></svg></div>
           <span class="lms-rail-label">Dashboard</span>
         </div>
@@ -2129,7 +2383,13 @@ function submitName() {
 
 function goToSparkz() {
   document.getElementById('s-lms').classList.remove('active');
+  document.getElementById('s-dashboard').classList.remove('active');
   document.getElementById('s0').classList.add('active');
+}
+
+function goToDashboard() {
+  document.getElementById('s-lms').classList.remove('active');
+  document.getElementById('s-dashboard').classList.add('active');
 }
 document.getElementById('nameInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') submitName();
