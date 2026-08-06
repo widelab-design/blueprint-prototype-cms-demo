@@ -101,6 +101,16 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   width: 377px;
 }
 
+/* Day mode button */
+.day-btn {
+  position: absolute; right: 24px; top: 48px;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 120ms; z-index: 20;
+}
+.day-btn:hover { background: rgba(255,255,255,0.22); }
+
 /* Message bubble */
 .sleep-bubble {
   background: #f08b31; padding: 10px;
@@ -127,6 +137,11 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 <div class="bp-device" id="device">
 
   <div class="sb"><span data-content="sleeping_status_time">9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- Day mode button -->
+  <button class="day-btn" style="position:absolute;right:24px;top:48px;z-index:30;" onclick="history.back()">
+    <img src="./components/sun-icon.svg" width="20" height="20" alt="day mode">
+  </button>
 
   <!-- Moon — stays fixed, behind circle -->
   <img class="sleep-moon" src="./components/sleeping-moon.svg" alt="">
@@ -166,6 +181,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <p class="sleep-bubble-text" data-content="sleeping_bubble_text">It is available Monday through Friday, from 9:00 AM to 5:00 PM.</p>
     </div>
   </div>
+
 
 </div>
 </div>
