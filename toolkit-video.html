@@ -451,14 +451,6 @@ if (cfg) {
   document.getElementById('vid-thumb-img').src = cfg.thumb;
 }
 
-// Jump straight to feedback flow (e.g. from external video player)
-if (urlParams.get('feedback') === '1') {
-  localStorage.setItem('bp_video_watched', '1');
-  window.addEventListener('load', function() {
-    goTo('s-did-try');
-  });
-}
-
 // Skip thumbnail screen — show overlay with first video frame visible, waiting for tap
 if (urlParams.get('skipthumb') === '1' && cfg) {
   window.addEventListener('load', function() {
@@ -484,6 +476,12 @@ if (urlParams.get('skipthumb') === '1' && cfg) {
 
 let cur = 's-video';
 let didTryNext = 's-thanks';
+
+// Jump straight to feedback flow (e.g. from KAT video or suggest-video)
+if (urlParams.get('feedback') === '1') {
+  localStorage.setItem('bp_video_watched', '1');
+  setTimeout(function() { goTo('s-did-try'); }, 0);
+}
 function goTo(id) {
   document.getElementById(cur).classList.remove('active');
   var el = document.getElementById(id);
