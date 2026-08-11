@@ -322,26 +322,10 @@ function closeVideo() {
 }
 
 function completeVideo() {
-  var overlay = document.getElementById('vid-overlay');
-  var player  = document.getElementById('vid-player');
+  var player = document.getElementById('vid-player');
   player.pause();
-  // Hide video instantly — dome takes over the dark-screen effect seamlessly
-  overlay.style.display = 'none';
-  document.getElementById('s-suggest').classList.remove('active');
-  var fb   = document.getElementById('s-feedback');
-  var dome = fb.querySelector('.sv-dome');
-  // Dome starts scaled to cover full screen (matches the black video overlay)
-  dome.style.transition = 'none';
-  dome.style.transform  = 'translateX(-50%) scale(2)';
-  fb.classList.add('active');
-  requestAnimationFrame(function() { requestAnimationFrame(function() {
-    // Dome shrinks into arc position, content fades in
-    dome.style.transition = 'transform 900ms cubic-bezier(0.81,0,0.26,0.98)';
-    dome.style.transform  = 'translateX(-50%) scale(1)';
-    setTimeout(function() { fb.classList.add('fb-entered'); }, 200);
-    setTimeout(function() { fb.classList.add('fb-phase2'); }, 500);
-    setTimeout(function() { dome.style.transition = ''; dome.style.transform = ''; }, 920);
-  }); });
+  document.getElementById('vid-overlay').style.display = 'none';
+  window.location.href = 'toolkit-video.html?feedback=1&from=write';
 }
 
 function seekVideo(val) {
