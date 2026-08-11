@@ -267,6 +267,19 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .explore-back:active { opacity: 0.7; }
 
 
+/* ── Video player overlay ────────────────────────────────────── */
+#yt-progress-wrap { opacity: 0; transition: opacity 200ms; }
+#yt-overlay:hover #yt-progress-wrap { opacity: 1; }
+#yt-progress::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; cursor: pointer; margin-top: -5px;
+}
+#yt-progress::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #fff var(--pct, 0%), rgba(255,255,255,0.25) var(--pct, 0%));
+  border-radius: 2px; height: 4px;
+}
+
 /* ── Support handle + panel ──────────────────────────────────── */
 .support-handle {
   position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
@@ -389,7 +402,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     </div>
 
     <div class="tk-featured-video" onclick="openKatVideo()">
-      <div class="video-tile-bg"><img src="https://img.youtube.com/vi/pveIsjXGs44/maxresdefault.jpg" alt="KAT Overcoming Challenges"></div>
+      <div class="video-tile-bg"><img src="./components/kat-thumbnail.png" alt="KAT Overcoming Challenges"></div>
       <div style="position:absolute;inset:0;background:linear-gradient(182deg,rgba(0,0,0,0) 44%,rgba(0,0,0,0.5) 84%);"></div>
       <div class="heart-btn" data-vid="v2" onclick="event.stopPropagation();toggleHeart(this)" style="z-index:2">
         <img src="./components/heart-default.svg" alt="save">
@@ -602,26 +615,40 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 </div>
 </div>
 
-<!-- YouTube iframe overlay for KAT video -->
-<div id="yt-iframe-overlay" style="display:none; position:fixed; inset:0; background:#000; z-index:999;">
-  <iframe id="yt-iframe" src="" frameborder="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen
-    style="width:100%; height:100%; display:block;"></iframe>
-  <button onclick="closeKatVideo()"
-    style="position:absolute; top:24px; right:32px; background:rgba(0,0,0,0.6); color:#fff;
-           border:none; border-radius:20px; padding:8px 20px; font-size:16px; cursor:pointer; z-index:2;">
-    ✕ Zamknij
-  </button>
-</div>
-
 <!-- Video overlay — outside bp-device so transform:scale() doesn't block video frames -->
-<div id="yt-overlay" style="display:none; position:fixed; left:0; top:0; right:0; bottom:0; background:#000; z-index:999; -webkit-transform:translateZ(0); transform:translateZ(0);">
+<div id="yt-overlay" style="display:none; position:fixed; inset:0; background:#000; z-index:999; -webkit-transform:translateZ(0); transform:translateZ(0);" onclick="ytTogglePause(event)">
   <video id="yt-player" playsinline webkit-playsinline
-    style="width:100%; height:100%; display:block; -webkit-transform:translateZ(0); transform:translateZ(0);"></video>
-  <button onclick="closeYT()" data-content="toolkit_video_close_btn"
-    style="position:absolute; top:24px; right:32px; background:rgba(0,0,0,0.6); color:#fff;
-           border:none; border-radius:20px; padding:8px 20px; font-size:16px; cursor:pointer; z-index:2;">
-    ✕ Zamknij
+    style="width:100%; height:100%; object-fit:contain; display:block; -webkit-transform:translateZ(0); transform:translateZ(0);"></video>
+
+  <!-- Progress bar -->
+  <div id="yt-progress-wrap" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()"
+    style="position:absolute; bottom:0; left:0; right:0; padding:16px 32px 20px; box-sizing:border-box;">
+    <input id="yt-progress" type="range" min="0" max="100" value="0" step="0.1"
+      onpointerdown="_ytSeeking=true; _ytWasPlaying=!document.getElementById('yt-player').paused; document.getElementById('yt-player').pause();"
+      oninput="this.style.setProperty('--pct',this.value+'%');"
+      onpointerup="_ytSeeking=false; ytSeek(this.value); if(_ytWasPlaying) document.getElementById('yt-player').play();"
+      onpointercancel="_ytSeeking=false;"
+      style="width:100%; height:14px; -webkit-appearance:none; appearance:none; background:transparent; outline:none; cursor:pointer;">
+  </div>
+
+  <!-- Pause icon -->
+  <div id="yt-pause-icon" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; border-radius:50%; background:rgba(0,0,0,0.55); align-items:center; justify-content:center; pointer-events:none;">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="4" width="7" height="20" rx="2" fill="#fff"/><rect x="16" y="4" width="7" height="20" rx="2" fill="#fff"/></svg>
+  </div>
+
+  <!-- Back button -->
+  <button onclick="event.stopPropagation(); closeYT()" style="position:absolute; top:24px; left:32px; width:48px; height:48px; background:rgba(255,255,255,0.16); border:none; border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
+
+  <!-- End buttons (Replay + Complete) -->
+  <div id="yt-end-btns" style="display:none; position:absolute; bottom:100px; right:32px; gap:12px;">
+    <button onclick="event.stopPropagation(); ytPlayAgain()" style="background:rgba(255,255,255,0.16); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Replay</button>
+    <button onclick="event.stopPropagation(); closeYT()" style="background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
+  </div>
+
+  <!-- Complete button (during playback) -->
+  <button id="yt-complete-btn" onclick="event.stopPropagation(); closeYT()" style="display:none; position:absolute; bottom:100px; right:32px; background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
 </div>
 
 <script>
@@ -645,7 +672,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       const backBtn = document.createElement('button');
       backBtn.className = 'explore-back';
       backBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-      backBtn.onclick = () => history.back();
+      backBtn.onclick = () => window.location.href = 'my-toolkit.html';
       document.getElementById('device').appendChild(backBtn);
 
       // Center the main content — same top/spacing as other sections
@@ -817,31 +844,81 @@ function closeSupport() {
   document.getElementById('spBackdrop').classList.remove('sp-open');
 }
 
+var _ytSeeking = false, _ytWasPlaying = false;
+
 function openKatVideo() {
   localStorage.setItem('bp_video_watched', '1');
-  document.getElementById('yt-iframe').src = 'https://www.youtube.com/embed/pveIsjXGs44?autoplay=1&rel=0';
-  document.getElementById('yt-iframe-overlay').style.display = 'block';
-}
-function closeKatVideo() {
-  document.getElementById('yt-iframe').src = '';
-  document.getElementById('yt-iframe-overlay').style.display = 'none';
+  openYT('https://www.dropbox.com/scl/fi/jjjqa1nmu9i9gffmdh7la/KAT-Overcoming-Challenges-2.mp4?rlkey=pv8h7fnjymrt7ao98dhozv5a1&st=vta9c8l3&raw=1');
 }
 
 function openYT(src) {
-  var overlay = document.getElementById('yt-overlay');
-  var player  = document.getElementById('yt-player');
+  var overlay  = document.getElementById('yt-overlay');
+  var player   = document.getElementById('yt-player');
+  var progress = document.getElementById('yt-progress');
   overlay.style.display = 'block';
+  document.getElementById('yt-end-btns').style.display     = 'none';
+  document.getElementById('yt-complete-btn').style.display = 'block';
+  document.getElementById('yt-pause-icon').style.display   = 'none';
+  progress.value = 0;
+  progress.style.setProperty('--pct', '0%');
   player.src = src;
-  requestAnimationFrame(function() {
+  player.load();
+  player.addEventListener('canplay', function cb() {
+    player.removeEventListener('canplay', cb);
     player.play().catch(function(){});
   });
+  player.addEventListener('timeupdate', ytUpdateProgress);
+  player.addEventListener('ended', ytOnEnded, { once: true });
 }
+
 function closeYT() {
   var overlay = document.getElementById('yt-overlay');
   var player  = document.getElementById('yt-player');
   overlay.style.display = 'none';
   player.pause();
+  player.removeEventListener('timeupdate', ytUpdateProgress);
   player.src = '';
+}
+
+function ytUpdateProgress() {
+  if (_ytSeeking) return;
+  var player   = document.getElementById('yt-player');
+  var progress = document.getElementById('yt-progress');
+  if (!player.duration) return;
+  var pct = (player.currentTime / player.duration) * 100;
+  progress.value = pct;
+  progress.style.setProperty('--pct', pct + '%');
+}
+
+function ytSeek(val) {
+  var player = document.getElementById('yt-player');
+  if (player.duration) player.currentTime = (val / 100) * player.duration;
+}
+
+function ytOnEnded() {
+  document.getElementById('yt-pause-icon').style.display   = 'none';
+  document.getElementById('yt-complete-btn').style.display = 'none';
+  document.getElementById('yt-end-btns').style.display     = 'flex';
+}
+
+function ytPlayAgain() {
+  var player = document.getElementById('yt-player');
+  document.getElementById('yt-end-btns').style.display     = 'none';
+  document.getElementById('yt-complete-btn').style.display = 'block';
+  player.currentTime = 0;
+  player.play().catch(function(){});
+}
+
+function ytTogglePause(e) {
+  var player    = document.getElementById('yt-player');
+  var pauseIcon = document.getElementById('yt-pause-icon');
+  if (player.paused) {
+    player.play();
+    pauseIcon.style.display = 'none';
+  } else {
+    player.pause();
+    pauseIcon.style.display = 'flex';
+  }
 }
 </script>
 <script src="./content-loader.js"></script>
