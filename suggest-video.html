@@ -191,6 +191,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     <button onclick="event.stopPropagation(); completeVideo()"
             style="background:#f2f3e5; border:none; border-radius:8px; padding:12px 24px; color:#1f1f25; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
   </div>
+  <button id="vid-complete-btn" onclick="event.stopPropagation(); completeVideo()"
+          style="display:none; position:absolute; bottom:100px; right:32px; background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
 </div>
 
 
@@ -216,7 +218,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <p class="sv-subtitle">Want to watch a quick video that could help?</p>
 
   <div class="sv-nav">
-    <button class="sv-btn-ghost"   onclick="sessionStorage.setItem('bp_enter_anim','1');window.location.href='today.html'">Maybe later</button>
+    <button class="sv-btn-ghost"   onclick="window.location.href='today.html'">Maybe later</button>
     <button class="sv-btn-primary" onclick="onPlay()">Yes, show me</button>
   </div>
 </div>
@@ -290,16 +292,18 @@ function onPlay() {
   player.load();
   player.addEventListener('loadedmetadata', function() { _vidDur = player.duration; }, { once: true });
   overlay.style.display = 'block';
-  document.getElementById('vid-end-btns').style.display = 'none';
-  document.getElementById('vid-back-btn').style.display = 'flex';
+  document.getElementById('vid-end-btns').style.display    = 'none';
+  document.getElementById('vid-complete-btn').style.display = 'block';
+  document.getElementById('vid-back-btn').style.display    = 'flex';
   player.addEventListener('canplay', function() { player.play(); }, { once: true });
   player.addEventListener('ended', _onEnded, { once: true });
 }
 
 function _onEnded() {
-  document.getElementById('vid-pause-icon').style.display = 'none';
-  document.getElementById('vid-end-btns').style.display = 'flex';
-  document.getElementById('vid-back-btn').style.display = 'none';
+  document.getElementById('vid-pause-icon').style.display    = 'none';
+  document.getElementById('vid-complete-btn').style.display  = 'none';
+  document.getElementById('vid-end-btns').style.display      = 'flex';
+  document.getElementById('vid-back-btn').style.display      = 'none';
 }
 
 function playAgain() {
