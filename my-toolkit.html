@@ -388,18 +388,18 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <p class="toolkit-desc" data-content="toolkit_desc">Content for how you feel.</p>
     </div>
 
-    <div class="tk-featured-video" onclick="window.location.href='toolkit-video.html?video=youve-done-hard-things&skipthumb=1'">
-      <div class="video-tile-bg"><img src="./components/01-thumbnail+long.png" alt="Calming Breath"></div>
+    <div class="tk-featured-video" onclick="openKatVideo()">
+      <div class="video-tile-bg"><img src="https://img.youtube.com/vi/pveIsjXGs44/maxresdefault.jpg" alt="KAT Overcoming Challenges"></div>
       <div style="position:absolute;inset:0;background:linear-gradient(182deg,rgba(0,0,0,0) 44%,rgba(0,0,0,0.5) 84%);"></div>
       <div class="heart-btn" data-vid="v2" onclick="event.stopPropagation();toggleHeart(this)" style="z-index:2">
         <img src="./components/heart-default.svg" alt="save">
       </div>
       <div class="video-info" style="z-index:2">
         <div class="video-meta">
-          <span class="video-duration" data-content="toolkit_video_duration_simple">1:04</span>
-          <span class="video-sparks" data-content="toolkit_video_sparks_simple">1 <img src="./components/spark-color.svg" alt="spark"></span>
+          <span class="video-duration">1:38</span>
+          <span class="video-sparks">1 <img src="./components/spark-color.svg" alt="spark"></span>
         </div>
-        <p class="video-title" data-content="toolkit_video_title_calming_breath_simple">Calming Breath</p>
+        <p class="video-title">KAT Overcoming Challenges</p>
       </div>
     </div>
 
@@ -600,6 +600,17 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   </div>
 
 </div>
+</div>
+
+<!-- YouTube iframe overlay for KAT video -->
+<div id="yt-iframe-overlay" style="display:none; position:fixed; inset:0; background:#000; z-index:999;">
+  <iframe id="yt-iframe" src="" frameborder="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen
+    style="width:100%; height:100%; display:block;"></iframe>
+  <button onclick="closeKatVideo()"
+    style="position:absolute; top:24px; right:32px; background:rgba(0,0,0,0.6); color:#fff;
+           border:none; border-radius:20px; padding:8px 20px; font-size:16px; cursor:pointer; z-index:2;">
+    ✕ Zamknij
+  </button>
 </div>
 
 <!-- Video overlay — outside bp-device so transform:scale() doesn't block video frames -->
@@ -804,6 +815,16 @@ function openSupport() {
 function closeSupport() {
   document.getElementById('supportPanel').classList.remove('sp-open');
   document.getElementById('spBackdrop').classList.remove('sp-open');
+}
+
+function openKatVideo() {
+  localStorage.setItem('bp_video_watched', '1');
+  document.getElementById('yt-iframe').src = 'https://www.youtube.com/embed/pveIsjXGs44?autoplay=1&rel=0';
+  document.getElementById('yt-iframe-overlay').style.display = 'block';
+}
+function closeKatVideo() {
+  document.getElementById('yt-iframe').src = '';
+  document.getElementById('yt-iframe-overlay').style.display = 'none';
 }
 
 function openYT(src) {
