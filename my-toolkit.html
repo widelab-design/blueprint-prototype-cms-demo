@@ -644,7 +644,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <!-- End buttons (Replay + Complete) -->
   <div id="yt-end-btns" style="display:none; position:absolute; bottom:100px; right:32px; gap:12px;">
     <button onclick="event.stopPropagation(); ytPlayAgain()" style="background:rgba(255,255,255,0.16); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Replay</button>
-    <button onclick="event.stopPropagation(); closeYT()" style="background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
+    <button onclick="event.stopPropagation(); ytComplete()" style="background:rgba(255,255,255,0.18); border:none; border-radius:8px; padding:12px 24px; color:#fff; font-family:var(--font-body); font-size:16px; font-weight:500; cursor:pointer; letter-spacing:-0.1px;">Complete</button>
   </div>
 
   <!-- Complete button (during playback) -->
@@ -907,6 +907,14 @@ function ytPlayAgain() {
   document.getElementById('yt-complete-btn').style.display = 'block';
   player.currentTime = 0;
   player.play().catch(function(){});
+}
+
+function ytComplete() {
+  var player = document.getElementById('yt-player');
+  player.pause();
+  player.src = '';
+  document.getElementById('yt-overlay').style.display = 'none';
+  window.location.href = 'toolkit-video.html?feedback=1';
 }
 
 function ytTogglePause(e) {
