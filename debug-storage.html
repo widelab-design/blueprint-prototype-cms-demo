@@ -13,6 +13,8 @@ pre{background:#2b2b32;padding:12px;border-radius:8px;white-space:pre-wrap;word-
 <button onclick="resetTour()" style="background:#3f50b8;">Reset tutorial (spotlight)</button>
 <button onclick="resetBanner()" style="background:#219653;">Reset banera (today)</button>
 <button onclick="resetSparks()" style="background:#b38aff;">Reset sparks do 45</button>
+<button onclick="toggleSparkzGiving()" style="background:#1a6a8a;" id="btnSparkzGiving">Sparkz Giving: ...</button>
+<button onclick="resetClassSparks()" style="background:#1a6a8a;">Reset class sparks do 12450</button>
 <pre id="out">Kliknij przycisk...</pre>
 <script>
 var NOTE_KEYS = ['bp_write_text','bp_journal_q1','bp_journal_q2','bp_journal_notes','bp_today_sections'];
@@ -73,6 +75,26 @@ function resetSparks() {
   document.getElementById('out').textContent = 'bp_sparks ustawione na 45.';
   testRead();
 }
+function toggleSparkzGiving() {
+  var cur = localStorage.getItem('bp_sparkz_giving');
+  var next = (cur === '0') ? '1' : '0';
+  localStorage.setItem('bp_sparkz_giving', next);
+  updateSparkzGivingBtn();
+  document.getElementById('out').textContent = 'bp_sparkz_giving = ' + next + '\nOdswierz today.html zeby zobaczyc zmiane.';
+  testRead();
+}
+function resetClassSparks() {
+  localStorage.setItem('bp_class_sparks', '12450');
+  document.getElementById('out').textContent = 'bp_class_sparks ustawione na 12450.';
+  testRead();
+}
+function updateSparkzGivingBtn() {
+  var cur = localStorage.getItem('bp_sparkz_giving');
+  var enabled = cur !== '0';
+  var btn = document.getElementById('btnSparkzGiving');
+  if (btn) btn.textContent = 'Sparkz Giving: ' + (enabled ? 'WLACZONE (kliknij zeby wylaczyc)' : 'WYLACZONE (kliknij zeby wlaczyc)');
+}
+updateSparkzGivingBtn();
 testRead();
 </script>
 </body>

@@ -472,6 +472,37 @@ html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120p
 }
 .support-handle.tour-pulse { animation: handle-nudge 1.4s ease-in-out infinite; }
 
+/* ─── Sparkz Giving Goal Bar ───────────────────────────────── */
+.sparkz-goal-bar {
+  position: absolute;
+  left: 154px; bottom: 62px;
+  width: 974px; height: 36px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  cursor: pointer; z-index: 20;
+  transition: opacity 120ms;
+}
+.sparkz-goal-bar:hover { opacity: 0.85; }
+.sgb-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sgb-label {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: rgba(242,243,229,0.4); letter-spacing: -0.1px; line-height: 20px;
+}
+.sgb-cta {
+  font-family: var(--font-body); font-size: 16px; font-weight: 700;
+  color: #f2f3e5; text-decoration: underline; letter-spacing: -0.1px;
+}
+.sgb-track {
+  position: relative; height: 4px; border-radius: 99px;
+  background: #444450;
+}
+.sgb-fill {
+  position: absolute; left: 0; top: 0; height: 4px;
+  background: #f2f3e5; border-radius: 99px;
+  transition: width 600ms ease;
+}
+
 /* Show overlay before JS runs to prevent flash of cards */
 html[data-success-incoming] #allDoneOv { display: block; }
 html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,-688px); }
@@ -731,6 +762,15 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
     <div class="ado-cta-wrap">
       <button class="ado-btn" data-content="today_success_btn_done" onclick="sessionStorage.setItem('bp_skip_success','1');sessionStorage.setItem('bp_enter_anim','1');window.location.href='today.html'">Done</button>
     </div>
+  </div>
+
+  <!-- ── Sparkz Giving Goal Bar ───────────────────────────────── -->
+  <div id="sparkzGoalBar" class="sparkz-goal-bar" onclick="window.location.href='sparkz-giving.html'">
+    <div class="sgb-row">
+      <span class="sgb-label" id="sgbLabel">Clean water for 20 families</span>
+      <span class="sgb-cta">Donate</span>
+    </div>
+    <div class="sgb-track"><div class="sgb-fill" id="sgbFill" style="width:45%"></div></div>
   </div>
 
   <!-- ── Support handle ──────────────────────────────────────── -->
@@ -1467,6 +1507,25 @@ function applyBannerClosedLayout() {
   var mt = Math.max(0, Math.round((available - cards.offsetHeight) / 2) - 24);
   cards.style.marginTop = mt + 'px';
 }
+
+// ─── Sparkz Giving module toggle ─────────────────────────────
+(function() {
+  var bar = document.getElementById('sparkzGoalBar');
+  if (!bar) return;
+  var enabled = localStorage.getItem('bp_sparkz_giving') !== '0';
+  bar.style.display = enabled ? 'flex' : 'none';
+  // Update fill from stored class progress
+  var classTotal = parseInt(localStorage.getItem('bp_class_sparks') || '12450', 10);
+  var goal = 20000;
+  var pct = Math.min(100, Math.round(classTotal / goal * 100));
+  var fill = document.getElementById('sgbFill');
+  if (fill) fill.style.width = pct + '%';
+  var lbl = document.getElementById('sgbLabel');
+  if (lbl) {
+    var families = Math.floor(classTotal / 100);
+    lbl.textContent = 'Clean water for ' + families + ' famili' + (families === 1 ? 'y' : 'es');
+  }
+})();
 
 function closeBanner() {
   localStorage.setItem('bp_banner_closed', '1');
