@@ -19,8 +19,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* ─── Status bar ─────────────────────────────────────────────── */
 .sb {
   position: absolute; top: 0; left: 0; right: 0; height: 24px; z-index: 30;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
   font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 500;
   color: rgba(255,255,255,0.9); pointer-events: none;
 }
@@ -30,8 +29,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   position: absolute; left: 24px; top: 48px;
   width: 48px; height: 48px;
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 20; transition: opacity 120ms;
 }
 .back-btn:active { opacity: 0.7; }
@@ -44,40 +42,102 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .screen.active { opacity: 1; pointer-events: all; }
 
-/* ═══════════════════════════════════════════════════════════════
-   SCREEN 1 — Campaign
-═══════════════════════════════════════════════════════════════ */
-#s-campaign {
-  display: flex; flex-direction: row;
-}
+.spark-sm { width: 20px; height: 20px; display: inline-block; vertical-align: middle; flex-shrink: 0; }
 
-/* Left visual panel */
-.camp-visual {
-  width: 420px; flex-shrink: 0; height: 100%;
-  background: #0d2234;
+/* ════════════════════════════════════════════════════════════════
+   SCREEN 0 — Choose organisation
+════════════════════════════════════════════════════════════════ */
+#s-orgs {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 24px; padding: 48px 32px; box-sizing: border-box;
+  padding: 64px 60px 48px; box-sizing: border-box; gap: 32px;
+}
+.orgs-heading {
+  font-family: var(--font-display); font-weight: 400; font-size: 64px;
+  line-height: 1.06; color: #f2f3e5; text-align: center; margin: 0;
+}
+.orgs-sub {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: rgba(242,243,229,0.4); text-align: center; margin: -8px 0 0;
+}
+.orgs-row { display: flex; gap: 20px; justify-content: center; }
+
+.org-card {
+  width: 320px; border-radius: 20px; overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms;
+}
+.org-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+.org-card-top {
+  height: 156px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px; padding: 24px;
+  position: relative; overflow: hidden;
+}
+.org-card-top::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 120%, rgba(255,255,255,0.08) 0%, transparent 70%);
+}
+.org-card-icon { width: 56px; height: 56px; flex-shrink: 0; }
+.org-card-name {
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; text-align: center;
+}
+.org-card-bottom {
+  background: #252528; padding: 20px 20px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.org-card-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 18px;
+  color: #f2f3e5; line-height: 1.2;
+}
+.org-card-bar-wrap {
+  height: 4px; border-radius: 99px; background: #3a3a44; position: relative;
+}
+.org-card-bar-fill {
+  position: absolute; left: 0; top: 0; height: 4px; border-radius: 99px;
+}
+.org-card-meta {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.org-card-pct {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: rgba(242,243,229,0.35);
+}
+.org-card-num {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: rgba(242,243,229,0.35); display: flex; align-items: center; gap: 4px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SCREEN 1 — Campaign detail
+════════════════════════════════════════════════════════════════ */
+#s-campaign { display: flex; flex-direction: row; }
+
+.camp-visual {
+  width: 420px; flex-shrink: 0; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 24px; padding: 80px 32px 48px; box-sizing: border-box;
   position: relative; overflow: hidden;
 }
 .camp-visual::before {
-  content: '';
-  position: absolute; top: -200px; left: -100px;
+  content: ''; position: absolute; top: -200px; left: -100px;
   width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(73,174,225,0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--org-color-a, rgba(73,174,225,0.15)) 0%, transparent 70%);
   pointer-events: none;
 }
-.camp-drop {
-  width: 120px; height: 148px;
-  flex-shrink: 0;
-}
+.camp-drop { width: 120px; height: 148px; flex-shrink: 0; }
 .camp-org {
-  font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  color: #49aee1; letter-spacing: 1.5px; text-transform: uppercase;
+  font-family: var(--font-body); font-size: 13px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--org-color, #49aee1);
 }
-.camp-visual-count {
-  text-align: center;
-}
+.camp-visual-count { text-align: center; }
 .camp-visual-num {
   font-family: var(--font-display); font-weight: 400; font-size: 48px;
   line-height: 1; letter-spacing: -1px; color: #f2f3e5;
@@ -93,49 +153,39 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .camp-visual-bar-fill {
   position: absolute; left: 0; top: 0; height: 6px;
-  background: #49aee1; border-radius: 99px;
-  transition: width 800ms ease;
+  background: var(--org-color, #49aee1); border-radius: 99px;
 }
 .camp-visual-pct {
   font-family: var(--font-body); font-size: 12px; font-weight: 500;
-  color: #49aee1; text-align: right;
+  color: var(--org-color, #49aee1); text-align: right;
 }
 
-/* Right info panel */
 .camp-info {
   flex: 1; height: 100%;
   padding: 80px 60px 60px; box-sizing: border-box;
-  display: flex; flex-direction: column; justify-content: space-between;
-  overflow: hidden;
+  display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
 }
 .camp-title {
-  font-family: var(--font-display); font-weight: 400; font-size: 64px;
-  line-height: 1.06; letter-spacing: 0; color: #f2f3e5; margin: 0 0 16px;
+  font-family: var(--font-display); font-weight: 400; font-size: 56px;
+  line-height: 1.06; color: #f2f3e5; margin: 0 0 16px;
 }
 .camp-impact {
   font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: rgba(242,243,229,0.5); line-height: 1.5; margin-bottom: 0;
-  max-width: 400px;
+  color: rgba(242,243,229,0.5); line-height: 1.5; margin: 0; max-width: 400px;
 }
-.camp-progress-section {
-  display: flex; flex-direction: column; gap: 12px;
-}
+.camp-progress-section { display: flex; flex-direction: column; gap: 12px; }
 .camp-progress-label {
   font-family: var(--font-body); font-size: 13px; font-weight: 500;
   color: rgba(242,243,229,0.4); letter-spacing: 0.8px; text-transform: uppercase;
 }
 .camp-progress-bar-wrap {
-  position: relative; height: 8px;
-  background: #2b2b32; border-radius: 99px;
+  position: relative; height: 8px; background: #2b2b32; border-radius: 99px;
 }
 .camp-progress-bar-fill {
   position: absolute; left: 0; top: 0; height: 8px;
-  background: #49aee1; border-radius: 99px;
-  transition: width 600ms ease;
+  background: var(--org-color, #49aee1); border-radius: 99px;
 }
-.camp-progress-nums {
-  display: flex; justify-content: space-between; align-items: center;
-}
+.camp-progress-nums { display: flex; justify-content: space-between; align-items: center; }
 .camp-progress-current {
   font-family: var(--font-display); font-weight: 400; font-size: 32px;
   line-height: 1; letter-spacing: -0.8px; color: #f2f3e5;
@@ -145,33 +195,28 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   font-family: var(--font-body); font-size: 14px; font-weight: 500;
   color: rgba(242,243,229,0.4);
 }
-.camp-cta-wrap {
-  display: flex; flex-direction: column; gap: 12px;
-}
+.camp-cta-wrap { display: flex; flex-direction: column; gap: 12px; }
 .camp-class-note {
   font-family: var(--font-body); font-size: 14px; font-weight: 500;
   color: rgba(242,243,229,0.4); line-height: 1.4;
 }
 .btn-donate {
   height: 56px; width: 100%;
-  background: #49aee1; border: none; border-radius: 12px;
+  background: var(--org-color, #49aee1); border: none; border-radius: 12px;
   font-family: var(--font-body); font-size: 16px; font-weight: 700;
-  color: #0d2234; cursor: pointer; letter-spacing: -0.1px;
+  color: var(--org-dark, #0d2234); cursor: pointer; letter-spacing: -0.1px;
   transition: opacity 120ms; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn-donate:hover { opacity: 0.9; }
 .btn-donate:active { opacity: 0.75; }
-.spark-sm {
-  width: 20px; height: 20px; display: block; flex-shrink: 0;
-}
 
-/* ═══════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════
    SCREEN 2 — Donate Amount
-═══════════════════════════════════════════════════════════════ */
+════════════════════════════════════════════════════════════════ */
 #s-donate {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 80px 120px 60px; box-sizing: border-box; gap: 40px;
+  padding: 80px 120px 60px; box-sizing: border-box; gap: 36px;
 }
 .donate-heading {
   font-family: var(--font-display); font-weight: 400; font-size: 64px;
@@ -182,21 +227,16 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: rgba(242,243,229,0.4); text-align: center;
   display: flex; align-items: center; gap: 6px; justify-content: center;
 }
-.donate-balance strong {
-  color: #f2f3e5; font-weight: 700;
-  display: flex; align-items: center; gap: 4px;
-}
-.donate-chips {
-  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-}
+.donate-balance strong { color: #f2f3e5; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+.donate-chips { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
 .donate-chip {
-  width: 168px; height: 96px;
+  width: 168px; height: 80px;
   background: #2b2b32; border: 2px solid #444450; border-radius: 16px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; transition: border-color 150ms, background 150ms;
 }
-.donate-chip:hover { border-color: #49aee1; background: rgba(73,174,225,0.08); }
-.donate-chip.selected { border-color: #49aee1; background: rgba(73,174,225,0.12); }
+.donate-chip:hover { border-color: var(--org-color, #49aee1); background: rgba(73,174,225,0.08); }
+.donate-chip.selected { border-color: var(--org-color, #49aee1); background: rgba(73,174,225,0.12); }
 .donate-chip-amount {
   font-family: var(--font-display); font-weight: 400; font-size: 32px;
   line-height: 1; letter-spacing: -0.8px; color: #f2f3e5;
@@ -207,11 +247,11 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: rgba(242,243,229,0.4); text-align: center; padding: 0 8px;
 }
 .donate-impact-preview {
-  background: rgba(73,174,225,0.1); border: 1px solid rgba(73,174,225,0.2);
-  border-radius: 12px; padding: 16px 24px;
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 24px;
   font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: #49aee1; text-align: center; min-width: 400px;
+  color: var(--org-color, #49aee1); text-align: center; min-width: 400px;
   min-height: 56px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.03);
   transition: opacity 200ms;
 }
 .donate-impact-preview.empty { opacity: 0; }
@@ -226,41 +266,34 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .btn-confirm.ready:hover { opacity: 0.85; }
 .btn-confirm.ready:active { opacity: 0.7; }
 
-/* ═══════════════════════════════════════════════════════════════
-   SCREEN 3 — Thanks / Confirmation
-═══════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   SCREEN 3 — Confirmation
+════════════════════════════════════════════════════════════════ */
 #s-thanks {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 80px 120px; box-sizing: border-box; gap: 32px;
-  text-align: center;
+  padding: 80px 120px; box-sizing: border-box; gap: 28px; text-align: center;
 }
-.thanks-drop {
-  width: 80px; height: 98px; flex-shrink: 0;
-}
+.thanks-icon { width: 72px; height: 72px; flex-shrink: 0; }
 .thanks-headline {
   font-family: var(--font-display); font-weight: 400; font-size: 64px;
   line-height: 1.06; color: #f2f3e5; margin: 0;
 }
 .thanks-donated {
-  display: flex; align-items: center; gap: 8px; justify-content: center;
   font-family: var(--font-display); font-weight: 400; font-size: 40px;
-  line-height: 1; letter-spacing: -1px; color: #49aee1;
+  line-height: 1; letter-spacing: -1px;
+  color: var(--org-color, #49aee1);
+  display: flex; align-items: center; gap: 8px; justify-content: center;
 }
-.thanks-progress-wrap {
-  display: flex; flex-direction: column; gap: 12px; width: 520px;
-}
+.thanks-progress-wrap { display: flex; flex-direction: column; gap: 12px; width: 520px; }
 .thanks-progress-label {
   font-family: var(--font-body); font-size: 14px; font-weight: 500;
   color: rgba(242,243,229,0.5); text-align: center;
 }
-.thanks-bar-wrap {
-  position: relative; height: 8px;
-  background: #2b2b32; border-radius: 99px;
-}
+.thanks-bar-wrap { position: relative; height: 8px; background: #2b2b32; border-radius: 99px; }
 .thanks-bar-fill {
   position: absolute; left: 0; top: 0; height: 8px;
-  background: #49aee1; border-radius: 99px;
+  background: var(--org-color, #49aee1); border-radius: 99px;
   transition: width 1000ms cubic-bezier(0.4,0,0.2,1);
 }
 .thanks-pct {
@@ -273,15 +306,13 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .thanks-balance {
   font-family: var(--font-body); font-size: 14px; font-weight: 500;
-  color: rgba(242,243,229,0.35);
-  display: flex; align-items: center; gap: 4px; justify-content: center;
+  color: rgba(242,243,229,0.35); display: flex; align-items: center; gap: 4px; justify-content: center;
 }
 .btn-done {
   height: 56px; width: 280px; margin-top: 8px;
   background: #f2f3e5; border: none; border-radius: 12px;
   font-family: var(--font-body); font-size: 16px; font-weight: 700;
-  color: #1f1f25; cursor: pointer; letter-spacing: -0.1px;
-  transition: opacity 120ms;
+  color: #1f1f25; cursor: pointer; letter-spacing: -0.1px; transition: opacity 120ms;
 }
 .btn-done:hover { opacity: 0.85; }
 .btn-done:active { opacity: 0.7; }
@@ -296,9 +327,9 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
 
   <!-- ══════════════════════════════════════════════════════════
-       SCREEN 1 — Campaign
+       SCREEN 0 — Choose organisation
   ══════════════════════════════════════════════════════════════ -->
-  <div id="s-campaign" class="screen active">
+  <div id="s-orgs" class="screen active">
 
     <button class="back-btn" onclick="window.location.href='today.html'">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -306,59 +337,71 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </svg>
     </button>
 
-    <!-- Left visual panel -->
-    <div class="camp-visual">
-      <span class="camp-org">charity: water</span>
+    <h1 class="orgs-heading">Choose a cause</h1>
+    <p class="orgs-sub">Your Sparks go toward real-world impact.</p>
 
-      <!-- Water drop SVG -->
-      <svg class="camp-drop" viewBox="0 0 120 148" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M60 6 C60 6, 106 68, 106 96 C106 123.614, 85.196 146, 60 146 C34.804 146, 14 123.614, 14 96 C14 68, 60 6 60 6Z" fill="#49aee1" opacity="0.2"/>
-        <path d="M60 20 C60 20, 98 72, 98 96 C98 119.196, 81.196 136, 60 136 C38.804 136, 22 119.196, 22 96 C22 72, 60 20 60 20Z" fill="#49aee1" opacity="0.5"/>
-        <path d="M60 36 C60 36, 90 76, 90 96 C90 113.673, 76.568 128, 60 128 C43.432 128, 30 113.673, 30 96 C30 76, 60 36 60 36Z" fill="#49aee1"/>
-        <path d="M46 90 C46 82, 52 76, 60 76" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+    <div class="orgs-row" id="orgsRow">
+      <!-- rendered by JS -->
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN 1 — Campaign detail
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="s-campaign" class="screen">
+
+    <button class="back-btn" onclick="goTo('s-orgs')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
+    </button>
+
+    <!-- Left visual panel -->
+    <div class="camp-visual" id="campVisualPanel">
+      <span class="camp-org" id="campOrgName">charity: water</span>
+
+      <div id="campIconWrap"><!-- icon injected by JS --></div>
 
       <div class="camp-visual-count">
-        <div class="camp-visual-num" id="campNum">
-          12,450 <img class="spark-sm" src="./components/spark-color.svg" alt="">
-        </div>
+        <div class="camp-visual-num" id="campNum">12,450 <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
         <div class="camp-visual-sub">collected by your class</div>
       </div>
 
       <div style="width:100%;display:flex;flex-direction:column;gap:6px;">
         <div class="camp-visual-bar-wrap">
-          <div class="camp-visual-bar-fill" id="campVisualFill" style="width:62%"></div>
+          <div class="camp-visual-bar-fill" id="campVisualFill"></div>
         </div>
-        <div class="camp-visual-pct" id="campVisualPct">62% of goal reached</div>
+        <div class="camp-visual-pct" id="campVisualPct"></div>
       </div>
     </div>
 
     <!-- Right info panel -->
     <div class="camp-info">
       <div>
-        <h1 class="camp-title">Clean water<br>for your<br>community</h1>
-        <p class="camp-impact">When your class reaches the goal, charity: water funds clean water access for 200 families in need.</p>
+        <h1 class="camp-title" id="campTitle"></h1>
+        <p class="camp-impact" id="campDesc"></p>
       </div>
 
       <div class="camp-progress-section">
         <span class="camp-progress-label">Class progress</span>
         <div class="camp-progress-bar-wrap">
-          <div class="camp-progress-bar-fill" id="campFill" style="width:62%"></div>
+          <div class="camp-progress-bar-fill" id="campFill"></div>
         </div>
         <div class="camp-progress-nums">
           <div class="camp-progress-current" id="campCurrent">
-            12,450 <img class="spark-sm" src="./components/spark-color.svg" alt="">
+            — <img class="spark-sm" src="./components/spark-color.svg" alt="">
           </div>
-          <span class="camp-progress-goal">goal: 20,000 ✦</span>
+          <span class="camp-progress-goal" id="campGoal">goal: 20,000 ✦</span>
         </div>
       </div>
 
       <div class="camp-cta-wrap">
-        <p class="camp-class-note" id="campNote">Your class needs <strong>7,550 more Sparks</strong> to complete this goal.</p>
-        <button class="btn-donate" onclick="goTo('s-donate')">
+        <p class="camp-class-note" id="campNote"></p>
+        <button class="btn-donate" id="btnDonate" onclick="goTo('s-donate')">
           Donate Sparks
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="#0d2234" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
       </div>
@@ -380,36 +423,17 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
     <div class="donate-balance">
       You have&nbsp;
-      <strong id="donateBalance">220 <img class="spark-sm" src="./components/spark-color.svg" alt="" style="vertical-align:middle"></strong>
+      <strong id="donateBalance">— <img class="spark-sm" src="./components/spark-color.svg" alt=""></strong>
       &nbsp;available
     </div>
 
-    <div class="donate-chips">
-      <div class="donate-chip" onclick="selectAmount(10)">
-        <div class="donate-chip-amount">10 <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
-        <div class="donate-chip-impact">a glass of water</div>
-      </div>
-      <div class="donate-chip" onclick="selectAmount(25)">
-        <div class="donate-chip-amount">25 <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
-        <div class="donate-chip-impact">a day's supply</div>
-      </div>
-      <div class="donate-chip" onclick="selectAmount(50)">
-        <div class="donate-chip-amount">50 <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
-        <div class="donate-chip-impact">a week for one child</div>
-      </div>
-      <div class="donate-chip" onclick="selectAmount(100)">
-        <div class="donate-chip-amount">100 <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
-        <div class="donate-chip-impact">a month for a family</div>
-      </div>
+    <div class="donate-chips" id="donateChips">
+      <!-- rendered by JS -->
     </div>
 
-    <div class="donate-impact-preview empty" id="donateImpact">
-      Select an amount to see your impact
-    </div>
+    <div class="donate-impact-preview empty" id="donateImpact">Select an amount</div>
 
-    <button class="btn-confirm" id="btnConfirm" onclick="confirmDonate()">
-      Confirm donation
-    </button>
+    <button class="btn-confirm" id="btnConfirm" onclick="confirmDonate()">Confirm donation</button>
 
   </div>
 
@@ -418,29 +442,23 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   ══════════════════════════════════════════════════════════════ -->
   <div id="s-thanks" class="screen">
 
-    <svg class="thanks-drop" viewBox="0 0 80 98" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M40 4 C40 4, 72 46, 72 64 C72 82.778, 57.464 96, 40 96 C22.536 96, 8 82.778, 8 64 C8 46, 40 4 40 4Z" fill="#49aee1" opacity="0.3"/>
-      <path d="M40 16 C40 16, 66 50, 66 64 C66 79.464, 54.464 90, 40 90 C25.536 90, 14 79.464, 14 64 C14 50, 40 16 40 16Z" fill="#49aee1"/>
-      <path d="M30 60 C30 54, 34 50, 40 50" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
-    </svg>
+    <div id="thanksIconWrap"><!-- icon injected --></div>
 
-    <h1 class="thanks-headline">You donated<br><span id="thanksAmount" style="color:#49aee1;">50 Sparks!</span></h1>
+    <h1 class="thanks-headline">You donated<br><span id="thanksAmount" style="color:var(--org-color,#49aee1)">50 Sparks!</span></h1>
 
     <div class="thanks-progress-wrap">
       <div class="thanks-bar-wrap">
-        <div class="thanks-bar-fill" id="thanksBarFill" style="width:62%"></div>
+        <div class="thanks-bar-fill" id="thanksBarFill"></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span class="thanks-progress-label" id="thanksProgressMsg">Your class is 65% there</span>
-        <span class="thanks-pct" id="thanksPct">65%</span>
+        <span class="thanks-progress-label" id="thanksProgressMsg"></span>
+        <span class="thanks-pct" id="thanksPct"></span>
       </div>
     </div>
 
-    <p class="thanks-msg" id="thanksMsg">Just 7,500 more Sparks to go. Every contribution brings your class closer.</p>
+    <p class="thanks-msg" id="thanksMsg"></p>
 
-    <div class="thanks-balance" id="thanksBalance">
-      You have 170 <img class="spark-sm" src="./components/spark-color.svg" alt="" style="vertical-align:middle"> remaining
-    </div>
+    <div class="thanks-balance" id="thanksBalance"></div>
 
     <button class="btn-done" onclick="doneDonate()">Back to Today</button>
 
@@ -450,115 +468,275 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 </div>
 
 <script>
-function scale() {
-  const s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
-  document.getElementById('device').style.setProperty('--s', s);
+
+// ─── Org data ─────────────────────────────────────────────────
+var ORGS = [
+  {
+    id: 'charity-water',
+    name: 'charity: water',
+    color: '#49aee1',
+    darkBg: '#0d2234',
+    classTotal: 12450,
+    goal: 20000,
+    campaign: 'Clean water for your community',
+    desc: 'When your class reaches the goal, charity: water funds clean water access for 200 families in need.',
+    impacts: {
+      10:  'a glass of clean water for someone in need',
+      25:  "a full day's water supply for one person",
+      50:  'a week of clean water for one child',
+      100: 'clean water for a whole family for a month'
+    },
+    icon: 'drop'
+  },
+  {
+    id: 'wwf',
+    name: 'WWF',
+    color: '#5cc47a',
+    darkBg: '#0b2018',
+    classTotal: 4600,
+    goal: 20000,
+    campaign: 'Protect the Amazon rainforest',
+    desc: 'Help WWF preserve critical rainforest habitat and protect endangered species from deforestation.',
+    impacts: {
+      10:  '10 sq m of rainforest protected',
+      25:  "enough to shelter a bird's habitat",
+      50:  'habitat for a family of animals',
+      100: 'a patch of rainforest for a full year'
+    },
+    icon: 'leaf'
+  },
+  {
+    id: 'foodbank',
+    name: 'Local Food Bank',
+    color: '#f08b31',
+    darkBg: '#1f1408',
+    classTotal: 9000,
+    goal: 20000,
+    campaign: 'Feed families this winter',
+    desc: 'Your Sparks help provide nutritious meals to local families facing food insecurity right now.',
+    impacts: {
+      10:  'a healthy snack for a child',
+      25:  'a full hot meal for someone in need',
+      50:  'a family dinner for four people',
+      100: "a week's groceries for a family"
+    },
+    icon: 'heart'
+  }
+];
+
+// ─── SVG icons ────────────────────────────────────────────────
+function orgIcon(type, size, color) {
+  size = size || 56;
+  color = color || 'currentColor';
+  if (type === 'drop') {
+    return '<svg width="' + size + '" height="' + Math.round(size * 1.23) + '" viewBox="0 0 56 69" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M28 3 C28 3 50 32 50 46 C50 58.7 40.15 68 28 68 C15.85 68 6 58.7 6 46 C6 32 28 3 28 3Z" fill="' + color + '" opacity="0.25"/>' +
+      '<path d="M28 12 C28 12 46 36 46 46 C46 56.49 37.94 65 28 65 C18.06 65 10 56.49 10 46 C10 36 28 12 28 12Z" fill="' + color + '" opacity="0.6"/>' +
+      '<path d="M28 22 C28 22 42 40 42 46 C42 54.28 35.73 61 28 61 C20.27 61 14 54.28 14 46 C14 40 28 22 28 22Z" fill="' + color + '"/>' +
+      '<path d="M20 42 C20 37 23 34 28 34" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+  if (type === 'leaf') {
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M28 6 C28 6, 52 16, 50 34 C48 50, 32 54, 18 48 C6 42, 4 28, 8 18 C12 8, 28 6 28 6Z" fill="' + color + '" opacity="0.3"/>' +
+      '<path d="M28 10 C28 10, 48 20, 46 34 C44 48, 30 52, 18 46 C10 42, 8 30, 12 20 C16 10, 28 10 28 10Z" fill="' + color + '" opacity="0.6"/>' +
+      '<path d="M28 14 C28 14, 44 24, 42 36 C40 46, 28 50, 18 44 C12 40, 12 30, 16 22 C20 14 28 14 28 14Z" fill="' + color + '"/>' +
+      '<path d="M20 46 C20 46, 22 32, 28 14" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M20 36 C20 36, 28 34, 36 28" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+  if (type === 'heart') {
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M28 48 C28 48, 6 34, 6 20 C6 12, 12 6, 20 8 C24 9, 27 12, 28 14 C29 12, 32 9, 36 8 C44 6, 50 12, 50 20 C50 34, 28 48, 28 48Z" fill="' + color + '" opacity="0.3"/>' +
+      '<path d="M28 44 C28 44, 9 31, 9 20 C9 13.4, 14 8.5, 21 10 C24.5 11, 27 14, 28 16 C29 14, 31.5 11, 35 10 C42 8.5, 47 13.4, 47 20 C47 31, 28 44, 28 44Z" fill="' + color + '" opacity="0.65"/>' +
+      '<path d="M28 40 C28 40, 12 28, 12 20 C12 15, 16 11, 22 12.5 C25 13.5, 27 16, 28 18 C29 16, 31 13.5, 34 12.5 C40 11, 44 15, 44 20 C44 28, 28 40, 28 40Z" fill="' + color + '"/>' +
+      '</svg>';
+  }
+  return '';
 }
-scale(); addEventListener('resize', scale);
 
 // ─── State ────────────────────────────────────────────────────
-var classTotal = parseInt(localStorage.getItem('bp_class_sparks') || '12450', 10);
-var goalTotal  = 20000;
-var userSparks = parseInt(localStorage.getItem('bp_sparks') || '45', 10);
+var selectedOrg = null;
 var selectedAmt = 0;
+var userSparks = parseInt(localStorage.getItem('bp_sparks') || '45', 10);
+var cur = 's-orgs';
 
-var IMPACT_MAP = {
-  10:  'a glass of clean water for someone in need',
-  25:  "a full day's water supply for one person",
-  50:  'a week of clean water for one child',
-  100: 'clean water for a whole family for a month',
-};
-
-// ─── Screen navigation ────────────────────────────────────────
-var cur = 's-campaign';
+// ─── Screen nav ───────────────────────────────────────────────
 function goTo(id) {
   document.getElementById(cur).classList.remove('active');
   document.getElementById(id).classList.add('active');
   cur = id;
 }
 
-// ─── Init campaign screen ─────────────────────────────────────
-(function initCampaign() {
-  var pct = Math.min(100, Math.round(classTotal / goalTotal * 100));
-  var remaining = goalTotal - classTotal;
+// ─── Set org CSS vars on device ───────────────────────────────
+function setOrgColors(org) {
+  var dev = document.getElementById('device');
+  dev.style.setProperty('--org-color', org.color);
+  dev.style.setProperty('--org-dark',  org.darkBg);
+  dev.style.setProperty('--org-color-a', hexToRgba(org.color, 0.15));
+}
 
-  document.getElementById('campFill').style.width = pct + '%';
+function hexToRgba(hex, a) {
+  var r = parseInt(hex.slice(1,3), 16);
+  var g = parseInt(hex.slice(3,5), 16);
+  var b = parseInt(hex.slice(5,7), 16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+}
+
+// ─── Render org cards ─────────────────────────────────────────
+(function renderOrgs() {
+  var row = document.getElementById('orgsRow');
+  ORGS.forEach(function(org) {
+    var classTotal = parseInt(localStorage.getItem('bp_class_sparks_' + org.id) || org.classTotal, 10);
+    var pct = Math.min(100, Math.round(classTotal / org.goal * 100));
+
+    var card = document.createElement('div');
+    card.className = 'org-card';
+    card.onclick = function() { selectOrg(org); };
+    card.innerHTML =
+      '<div class="org-card-top" style="background:' + org.darkBg + ';">' +
+        orgIcon(org.icon, 48, org.color) +
+        '<span class="org-card-name" style="color:' + org.color + '">' + org.name + '</span>' +
+      '</div>' +
+      '<div class="org-card-bottom">' +
+        '<div class="org-card-title">' + org.campaign + '</div>' +
+        '<div class="org-card-bar-wrap">' +
+          '<div class="org-card-bar-fill" style="width:' + pct + '%;background:' + org.color + '"></div>' +
+        '</div>' +
+        '<div class="org-card-meta">' +
+          '<span class="org-card-pct">' + pct + '% to goal</span>' +
+          '<span class="org-card-num">' + classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="width:14px;height:14px;"></span>' +
+        '</div>' +
+      '</div>';
+    row.appendChild(card);
+  });
+})();
+
+// ─── Select org & populate campaign screen ────────────────────
+function selectOrg(org) {
+  selectedOrg = org;
+  selectedAmt = 0;
+
+  var classTotal = parseInt(localStorage.getItem('bp_class_sparks_' + org.id) || org.classTotal, 10);
+  var pct = Math.min(100, Math.round(classTotal / org.goal * 100));
+  var remaining = org.goal - classTotal;
+
+  setOrgColors(org);
+
+  // Visual panel
+  document.getElementById('campVisualPanel').style.background = org.darkBg;
+  document.getElementById('campOrgName').textContent = org.name;
+  document.getElementById('campIconWrap').innerHTML = orgIcon(org.icon, 96, org.color);
+  document.getElementById('campNum').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
   document.getElementById('campVisualFill').style.width = pct + '%';
   document.getElementById('campVisualPct').textContent = pct + '% of goal reached';
-  document.getElementById('campCurrent').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
-  document.getElementById('campNum').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
-  document.getElementById('campNote').innerHTML = 'Your class needs <strong>' + remaining.toLocaleString() + ' more Sparks</strong> to complete this goal.';
-})();
 
-// ─── Init donate screen ───────────────────────────────────────
-(function initDonate() {
+  // Info panel
+  document.getElementById('campTitle').textContent = org.campaign;
+  document.getElementById('campDesc').textContent = org.desc;
+  document.getElementById('campFill').style.width = pct + '%';
+  document.getElementById('campCurrent').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
+  document.getElementById('campGoal').textContent = 'goal: ' + org.goal.toLocaleString() + ' ✦';
+  document.getElementById('campNote').innerHTML = 'Your class needs <strong>' + remaining.toLocaleString() + ' more Sparks</strong> to complete this goal.';
+
+  // Chips on donate screen
+  renderChips(org);
+
+  // Balance
   document.getElementById('donateBalance').innerHTML = userSparks + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="vertical-align:middle">';
-})();
+
+  // Reset chip selection
+  document.getElementById('donateImpact').classList.add('empty');
+  document.getElementById('btnConfirm').classList.remove('ready');
+  document.getElementById('btnConfirm').textContent = 'Confirm donation';
+
+  goTo('s-campaign');
+}
+
+function renderChips(org) {
+  var container = document.getElementById('donateChips');
+  container.innerHTML = '';
+  var amts = [10, 25, 50, 100];
+  amts.forEach(function(amt) {
+    var chip = document.createElement('div');
+    chip.className = 'donate-chip';
+    chip.onclick = function() { selectAmount(amt); };
+    chip.innerHTML =
+      '<div class="donate-chip-amount">' + amt + ' <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>';
+    container.appendChild(chip);
+  });
+}
 
 // ─── Amount selection ─────────────────────────────────────────
 function selectAmount(amt) {
-  // Deselect all chips
-  document.querySelectorAll('.donate-chip').forEach(function(c) { c.classList.remove('selected'); });
-  // Find and select clicked chip
-  document.querySelectorAll('.donate-chip').forEach(function(c) {
-    var num = parseInt(c.querySelector('.donate-chip-amount').textContent.trim(), 10);
-    if (num === amt) c.classList.add('selected');
-  });
-
   selectedAmt = amt;
 
-  // Update impact preview
+  document.querySelectorAll('.donate-chip').forEach(function(c) { c.classList.remove('selected'); });
+  var chips = document.querySelectorAll('.donate-chip');
+  var amounts = [10, 25, 50, 100];
+  chips.forEach(function(c, i) { if (amounts[i] === amt) c.classList.add('selected'); });
+
   var preview = document.getElementById('donateImpact');
   preview.classList.remove('empty');
-  preview.textContent = '💧 ' + (IMPACT_MAP[amt] || amt + ' Sparks donated');
+  var impact = selectedOrg && selectedOrg.impacts[amt] ? selectedOrg.impacts[amt] : amt + ' Sparks donated';
+  preview.textContent = '💧 ' + impact;
 
-  // Enable confirm button (only if user has enough sparks)
   var btn = document.getElementById('btnConfirm');
   if (amt <= userSparks) {
     btn.classList.add('ready');
     btn.textContent = 'Donate ' + amt + ' Sparks';
   } else {
     btn.classList.remove('ready');
-    btn.textContent = "You don't have enough Sparks";
+    btn.textContent = "Not enough Sparks";
   }
 }
 
 // ─── Confirm donation ─────────────────────────────────────────
 function confirmDonate() {
-  if (!selectedAmt || selectedAmt > userSparks) return;
+  if (!selectedAmt || !selectedOrg || selectedAmt > userSparks) return;
 
-  // Update state
+  var orgKey = 'bp_class_sparks_' + selectedOrg.id;
+  var classTotal = parseInt(localStorage.getItem(orgKey) || selectedOrg.classTotal, 10);
+
   userSparks  -= selectedAmt;
   classTotal  += selectedAmt;
-  var newPct   = Math.min(100, Math.round(classTotal / goalTotal * 100));
-  var remaining = Math.max(0, goalTotal - classTotal);
+  var newPct   = Math.min(100, Math.round(classTotal / selectedOrg.goal * 100));
+  var remaining = Math.max(0, selectedOrg.goal - classTotal);
 
-  // Persist
   localStorage.setItem('bp_sparks', userSparks);
-  localStorage.setItem('bp_class_sparks', classTotal);
+  localStorage.setItem(orgKey, classTotal);
+  localStorage.setItem('bp_class_sparks', classTotal); // also update generic key for today.html
 
-  // Prep thanks screen
+  // Populate thanks screen
+  document.getElementById('thanksIconWrap').innerHTML = orgIcon(selectedOrg.icon, 72, selectedOrg.color);
   document.getElementById('thanksAmount').textContent = selectedAmt + ' Sparks!';
+  document.getElementById('thanksAmount').style.color = selectedOrg.color;
   document.getElementById('thanksPct').textContent = newPct + '%';
   document.getElementById('thanksProgressMsg').textContent = 'Your class is ' + newPct + '% there';
   document.getElementById('thanksMsg').textContent = remaining > 0
     ? 'Just ' + remaining.toLocaleString() + ' more Sparks to go. Every contribution brings your class closer.'
-    : 'Your class reached the goal! 🎉 Clean water is on its way.';
+    : 'Your class reached the goal! 🎉 Amazing work.';
   document.getElementById('thanksBalance').innerHTML =
     'You have ' + userSparks + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="vertical-align:middle"> remaining';
 
   goTo('s-thanks');
 
-  // Animate bar after brief delay so transition fires
   setTimeout(function() {
     document.getElementById('thanksBarFill').style.width = newPct + '%';
   }, 50);
 }
 
-// ─── Done — back to today ─────────────────────────────────────
+// ─── Done ─────────────────────────────────────────────────────
 function doneDonate() {
   window.location.href = 'today.html';
 }
+
+function scale() {
+  var s = Math.min(innerWidth / 1194, innerHeight / 834) * 0.96;
+  document.getElementById('device').style.setProperty('--s', s);
+}
+scale(); addEventListener('resize', scale);
+
 </script>
 </body>
 </html>
