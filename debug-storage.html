@@ -1,108 +1,299 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>Debug Storage</title>
-<style>body{font-family:monospace;padding:24px;background:#1f1f25;color:#f2f3e5;font-size:14px;}
-button{background:#b38aff;border:none;padding:8px 16px;color:#fff;cursor:pointer;border-radius:6px;margin:4px;}
-pre{background:#2b2b32;padding:12px;border-radius:8px;white-space:pre-wrap;word-break:break-all;}
-</style></head>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Debug Panel · Blueprint</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0f; color: #f2f3e5; min-height: 100vh;
+    padding: 40px 48px; font-size: 14px;
+  }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 36px;
+  }
+  header h1 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.3px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  header h1 span { opacity: 0.35; font-weight: 400; font-size: 14px; letter-spacing: 0; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .group {
+    background: #1e1e26; border-radius: 14px;
+    padding: 20px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .group-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; opacity: 0.35; padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .group-desc {
+    font-size: 12px; opacity: 0.4; line-height: 1.5; margin-top: -4px;
+  }
+
+  .btn {
+    width: 100%; padding: 10px 14px; border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    text-align: left; transition: opacity 120ms; line-height: 1.3;
+    color: #fff; background: #2b2b38;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:active { opacity: 0.65; }
+  .btn small { display: block; font-weight: 400; opacity: 0.6; font-size: 11px; margin-top: 2px; }
+
+  .btn-danger  { background: #7a1e0e; color: #ffb4a0; }
+  .btn-purple  { background: #3d2b6e; color: #c9aaff; }
+  .btn-blue    { background: #1a3a5c; color: #7ec8f8; }
+  .btn-green   { background: #1a3d28; color: #7ee8a2; }
+  .btn-teal    { background: #0f3535; color: #5cd4c4; }
+  .btn-neutral { background: #2b2b38; color: #f2f3e5; }
+  .btn-primary { background: #f2f3e5; color: #1f1f25; }
+
+  .storage-panel {
+    background: #1e1e26; border-radius: 14px; overflow: hidden;
+  }
+  .storage-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .storage-header span {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; opacity: 0.35;
+  }
+  .storage-header button {
+    font-size: 12px; font-weight: 600; background: none; border: none;
+    color: rgba(242,243,229,0.4); cursor: pointer; padding: 4px 8px;
+    border-radius: 6px; transition: background 120ms;
+  }
+  .storage-header button:hover { background: rgba(255,255,255,0.06); color: #f2f3e5; }
+
+  #out {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px; padding: 16px 20px; white-space: pre-wrap;
+    word-break: break-all; color: rgba(242,243,229,0.6); min-height: 120px;
+    max-height: 320px; overflow-y: auto; line-height: 1.6;
+  }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .toggle-label { font-size: 13px; font-weight: 600; }
+  .toggle-sub { font-size: 11px; opacity: 0.4; margin-top: 1px; }
+  .toggle-switch {
+    flex-shrink: 0; width: 44px; height: 26px; border-radius: 13px;
+    border: none; cursor: pointer; position: relative;
+    background: #3a3a48; transition: background 200ms;
+  }
+  .toggle-switch.on { background: #5cd4c4; }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%; background: #fff;
+    transition: left 200ms;
+  }
+  .toggle-switch.on::after { left: 21px; }
+</style>
+</head>
 <body>
-<h2>LocalStorage Debug</h2>
-<button onclick="clearNotes()" style="background:#e65800;font-size:16px;padding:12px 24px;">Wyczysc notatki</button>
-<button onclick="testRead()" style="margin-top:16px;background:#555;">Pokaz co jest zapisane</button>
-<button onclick="resetVideo()" style="background:#555;">Reset "video watched"</button>
-<button onclick="resetTour()" style="background:#3f50b8;">Reset tutorial (spotlight)</button>
-<button onclick="resetBanner()" style="background:#219653;">Reset banera (today)</button>
-<button onclick="addSparks(200)" style="background:#b38aff;">+ 200 sparks</button>
-<button onclick="resetSparks()" style="background:#555;">Reset sparks do 0</button>
-<button onclick="toggleSparkzGiving()" style="background:#1a6a8a;" id="btnSparkzGiving">Sparkz Giving: ...</button>
-<button onclick="resetClassSparks()" style="background:#1a6a8a;">Reset class sparks do 12450</button>
-<pre id="out">Kliknij przycisk...</pre>
+
+<header>
+  <h1>Debug Panel <span>blueprint-prototype</span></h1>
+  <a href="today.html" style="font-size:13px;color:rgba(242,243,229,0.4);text-decoration:none;">← Back to app</a>
+</header>
+
+<div class="grid">
+
+  <!-- Onboarding -->
+  <div class="group">
+    <div class="group-title">Onboarding</div>
+    <button class="btn btn-blue" onclick="resetVideo()">
+      Reset intro video
+      <small>Re-shows the welcome video on next visit</small>
+    </button>
+    <button class="btn btn-blue" onclick="resetTour()">
+      Reset spotlight tour
+      <small>Re-triggers the today.html walkthrough</small>
+    </button>
+    <button class="btn btn-green" onclick="resetBanner()">
+      Reset welcome banner
+      <small>Re-shows the top banner on today.html</small>
+    </button>
+  </div>
+
+  <!-- Sparks -->
+  <div class="group">
+    <div class="group-title">Sparks — Personal</div>
+    <button class="btn btn-purple" onclick="addSparks(200)">
+      + 200 Sparks
+      <small id="sparksBalance">Current balance: —</small>
+    </button>
+    <button class="btn btn-purple" onclick="addSparks(1000)">
+      + 1000 Sparks
+      <small>Quick fill for testing donations</small>
+    </button>
+    <button class="btn btn-neutral" onclick="resetSparks()">
+      Reset to 0
+      <small>Clears personal spark balance</small>
+    </button>
+  </div>
+
+  <!-- Sparkz Giving -->
+  <div class="group">
+    <div class="group-title">Sparkz Giving</div>
+    <div class="toggle-row" style="padding:4px 0;">
+      <div>
+        <div class="toggle-label">Module visible</div>
+        <div class="toggle-sub">Shows/hides bar on today.html</div>
+      </div>
+      <button class="toggle-switch" id="toggleGiving" onclick="toggleSparkzGiving()"></button>
+    </div>
+    <button class="btn btn-teal" onclick="resetClassSparks()">
+      Reset class sparks
+      <small>Sets bp_class_sparks back to 12,450</small>
+    </button>
+    <button class="btn btn-teal" onclick="resetDonationHistory()">
+      Clear donation history
+      <small>Removes bp_sparkz_donations</small>
+    </button>
+  </div>
+
+  <!-- Storage -->
+  <div class="group">
+    <div class="group-title">Storage</div>
+    <button class="btn btn-primary" onclick="testRead()">
+      Refresh storage view
+      <small>Reloads the output panel below</small>
+    </button>
+    <button class="btn btn-danger" onclick="clearAll()">
+      Clear ALL bp_ keys
+      <small>Full reset — like a fresh install</small>
+    </button>
+  </div>
+
+</div>
+
+<div class="storage-panel">
+  <div class="storage-header">
+    <span>Storage output</span>
+    <button onclick="testRead()">Refresh</button>
+  </div>
+  <pre id="out">Loading…</pre>
+</div>
+
 <script>
 var NOTE_KEYS = ['bp_write_text','bp_journal_q1','bp_journal_q2','bp_journal_notes','bp_today_sections'];
 
-function clearNotes() {
-  try {
-    NOTE_KEYS.forEach(function(k) {
-      localStorage.removeItem(k);
-      sessionStorage.removeItem(k);
-    });
-    // also clear any bp_ keys that might exist
-    var lsKeys = [];
-    for (var i = 0; i < localStorage.length; i++) lsKeys.push(localStorage.key(i));
-    lsKeys.filter(function(k){ return k.startsWith('bp_'); }).forEach(function(k){ localStorage.removeItem(k); });
-    var ssKeys = [];
-    for (var i = 0; i < sessionStorage.length; i++) ssKeys.push(sessionStorage.key(i));
-    ssKeys.filter(function(k){ return k.startsWith('bp_'); }).forEach(function(k){ sessionStorage.removeItem(k); });
-    document.getElementById('out').textContent = 'Notatki wyczyszczone. Mozesz wrocic do apki.';
-  } catch(e) {
-    document.getElementById('out').textContent = 'Blad:\n' + e.message;
-  }
+function out(msg) {
+  document.getElementById('out').textContent = msg;
 }
+
 function testRead() {
   try {
-    var all = 'localStorage:\n';
-    for (var i = 0; i < localStorage.length; i++) {
-      var k = localStorage.key(i);
-      all += '  ' + k + ' = ' + localStorage.getItem(k).substring(0, 120) + '\n';
-    }
-    all += '\nsessionStorage:\n';
-    for (var i = 0; i < sessionStorage.length; i++) {
-      var k = sessionStorage.key(i);
-      all += '  ' + k + ' = ' + sessionStorage.getItem(k).substring(0, 120) + '\n';
-    }
-    document.getElementById('out').textContent = all || '(pusto)';
+    var all = '';
+    var lsKeys = [];
+    for (var i = 0; i < localStorage.length; i++) lsKeys.push(localStorage.key(i));
+    lsKeys.sort().forEach(function(k) {
+      all += k + '\n  = ' + localStorage.getItem(k).substring(0, 200) + '\n\n';
+    });
+    document.getElementById('out').textContent = all || '(empty)';
+    updateSparksLabel();
+    updateGivingToggle();
   } catch(e) {
-    document.getElementById('out').textContent = 'Blad:\n' + e.message;
+    out('Error:\n' + e.message);
   }
 }
+
+function updateSparksLabel() {
+  var n = parseInt(localStorage.getItem('bp_sparks') || '0', 10);
+  var el = document.getElementById('sparksBalance');
+  if (el) el.textContent = 'Current balance: ' + n + ' Sparks';
+}
+
+function updateGivingToggle() {
+  var enabled = localStorage.getItem('bp_sparkz_giving') === '1';
+  var btn = document.getElementById('toggleGiving');
+  if (btn) btn.className = 'toggle-switch' + (enabled ? ' on' : '');
+}
+
 function resetVideo() {
   localStorage.removeItem('bp_video_watched');
   sessionStorage.removeItem('bp_video_watched');
-  document.getElementById('out').textContent = 'bp_video_watched usuniety';
+  out('✓ bp_video_watched removed — intro video will replay on next visit.');
   testRead();
 }
+
 function resetTour() {
   localStorage.removeItem('bp_tour_done');
-  document.getElementById('out').textContent = 'bp_tour_done usuniety — otworz today.html zeby zobaczyc tutorial od nowa.';
+  out('✓ bp_tour_done removed — spotlight tour will replay on today.html.');
   testRead();
 }
+
 function resetBanner() {
   localStorage.removeItem('bp_banner_closed');
-  document.getElementById('out').textContent = 'bp_banner_closed usuniety — baner pojawi sie ponownie na today.html.';
+  out('✓ bp_banner_closed removed — welcome banner will show on today.html.');
   testRead();
 }
+
 function addSparks(n) {
   var cur = parseInt(localStorage.getItem('bp_sparks') || '0', 10);
   var next = cur + n;
   localStorage.setItem('bp_sparks', next);
-  document.getElementById('out').textContent = 'Dodano ' + n + ' sparkow. Teraz masz: ' + next + '.';
+  out('✓ Added ' + n + ' Sparks. New balance: ' + next + '.');
   testRead();
 }
+
 function resetSparks() {
   localStorage.setItem('bp_sparks', '0');
-  document.getElementById('out').textContent = 'bp_sparks ustawione na 0.';
+  out('✓ bp_sparks set to 0.');
   testRead();
 }
+
 function toggleSparkzGiving() {
   var cur = localStorage.getItem('bp_sparkz_giving');
-  var next = (cur === '0') ? '1' : '0';
+  var next = (cur === '1') ? '0' : '1';
   localStorage.setItem('bp_sparkz_giving', next);
-  updateSparkzGivingBtn();
-  document.getElementById('out').textContent = 'bp_sparkz_giving = ' + next + '\nOdswierz today.html zeby zobaczyc zmiane.';
+  updateGivingToggle();
+  out('✓ bp_sparkz_giving = ' + next + '\nRefresh today.html to see the change.');
   testRead();
 }
+
 function resetClassSparks() {
   localStorage.setItem('bp_class_sparks', '12450');
-  document.getElementById('out').textContent = 'bp_class_sparks ustawione na 12450.';
+  out('✓ bp_class_sparks reset to 12,450.');
   testRead();
 }
-function updateSparkzGivingBtn() {
-  var cur = localStorage.getItem('bp_sparkz_giving');
-  var enabled = cur !== '0';
-  var btn = document.getElementById('btnSparkzGiving');
-  if (btn) btn.textContent = 'Sparkz Giving: ' + (enabled ? 'WLACZONE (kliknij zeby wylaczyc)' : 'WYLACZONE (kliknij zeby wlaczyc)');
+
+function resetDonationHistory() {
+  localStorage.removeItem('bp_sparkz_donations');
+  // also clear per-org keys
+  var keys = [];
+  for (var i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+  keys.filter(function(k) { return k.startsWith('bp_class_sparks_'); })
+      .forEach(function(k) { localStorage.removeItem(k); });
+  out('✓ Donation history cleared. Student will see "Choose a cause" on next visit to Sparkz Giving.');
+  testRead();
 }
-updateSparkzGivingBtn();
+
+function clearAll() {
+  var keys = [];
+  for (var i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+  keys.filter(function(k) { return k.startsWith('bp_'); }).forEach(function(k) { localStorage.removeItem(k); });
+  var ssKeys = [];
+  for (var i = 0; i < sessionStorage.length; i++) ssKeys.push(sessionStorage.key(i));
+  ssKeys.filter(function(k) { return k.startsWith('bp_'); }).forEach(function(k) { sessionStorage.removeItem(k); });
+  out('✓ All bp_ keys cleared from localStorage and sessionStorage.\nThe app will behave like a fresh install.');
+  testRead();
+}
+
+// Init
 testRead();
 </script>
 </body>

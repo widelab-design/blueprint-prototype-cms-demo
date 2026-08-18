@@ -47,70 +47,63 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* ════════════════════════════════════════════════════════════════
    SCREEN 0 — Choose organisation
 ════════════════════════════════════════════════════════════════ */
-#s-orgs {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 64px 60px 48px; box-sizing: border-box; gap: 32px;
-}
+#s-orgs { /* position: absolute; inset: 0 inherited from .screen */ }
+
 .orgs-heading {
-  font-family: var(--font-display); font-weight: 400; font-size: 64px;
-  line-height: 1.06; color: #f2f3e5; text-align: center; margin: 0;
+  position: absolute; top: 72px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  line-height: 1.06; letter-spacing: 1.5px; color: #f2f3e5;
+  text-align: center; margin: 0; white-space: nowrap;
 }
 .orgs-sub {
+  position: absolute; top: 182px; left: 50%; transform: translateX(-50%);
   font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: rgba(242,243,229,0.4); text-align: center; margin: -8px 0 0;
+  color: rgba(242,243,229,0.4); text-align: center; white-space: nowrap;
 }
-.orgs-row { display: flex; gap: 20px; justify-content: center; }
-
+.orgs-row {
+  position: absolute; top: 264px; left: 50%; transform: translateX(-50%);
+  width: 1076px; height: 510px;
+  display: flex; gap: 24px;
+}
 .org-card {
-  width: 320px; border-radius: 20px; overflow: hidden;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms;
+  flex: 1; height: 510px;
+  border-radius: 12px; border: 1px solid #36363f;
+  overflow: hidden; cursor: pointer;
+  position: relative; background: #1f1f25;
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
-.org-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+.org-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.org-card-label {
+  position: absolute; top: 15px; left: 15px; z-index: 2;
+  font-family: var(--font-display); font-weight: 400; font-size: 24px;
+  color: #f2f3e5; text-transform: uppercase; letter-spacing: -0.4px; line-height: 1.12;
 }
-.org-card-top {
-  height: 156px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 10px; padding: 24px;
-  position: relative; overflow: hidden;
+.org-card-ilu {
+  position: absolute; overflow: hidden;
 }
-.org-card-top::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 120%, rgba(255,255,255,0.08) 0%, transparent 70%);
+.org-card-ilu img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+.org-card-footer {
+  position: absolute; bottom: -1px; left: -1px;
+  width: 344px;
+  background: #2f2f37; border: 1px solid #36363f; border-radius: 16px;
+  padding: 16px; box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 12px;
 }
-.org-card-icon { width: 56px; height: 56px; flex-shrink: 0; }
-.org-card-name {
-  font-family: var(--font-body); font-size: 12px; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase; text-align: center;
+.org-card-stats { display: flex; justify-content: space-between; align-items: center; }
+.org-card-total {
+  font-family: var(--font-display); font-weight: 400; font-size: 24px;
+  letter-spacing: -0.4px; line-height: 1.12; color: #f2f3e5;
+  display: flex; align-items: center; gap: 8px;
 }
-.org-card-bottom {
-  background: #252528; padding: 20px 20px 18px;
-  display: flex; flex-direction: column; gap: 10px;
+.org-card-gave {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #a4a59f;
 }
-.org-card-title {
-  font-family: var(--font-display); font-weight: 400; font-size: 18px;
-  color: #f2f3e5; line-height: 1.2;
-}
-.org-card-bar-wrap {
-  height: 4px; border-radius: 99px; background: #3a3a44; position: relative;
-}
-.org-card-bar-fill {
-  position: absolute; left: 0; top: 0; height: 4px; border-radius: 99px;
-}
-.org-card-meta {
-  display: flex; justify-content: space-between; align-items: center;
-}
-.org-card-pct {
-  font-family: var(--font-body); font-size: 12px; font-weight: 500;
-  color: rgba(242,243,229,0.35);
-}
-.org-card-num {
-  font-family: var(--font-body); font-size: 12px; font-weight: 500;
-  color: rgba(242,243,229,0.35); display: flex; align-items: center; gap: 4px;
+.org-card-bar-wrap { height: 4px; border-radius: 99px; background: #444450; position: relative; }
+.org-card-bar-fill { position: absolute; left: 0; top: 0; height: 4px; border-radius: 99px; background: #f2f3e5; }
+.org-card-pct-label {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #a4a59f;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -118,93 +111,64 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 ════════════════════════════════════════════════════════════════ */
 #s-campaign { display: flex; flex-direction: row; }
 
-.camp-visual {
-  width: 420px; flex-shrink: 0; height: 100%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 24px; padding: 80px 32px 48px; box-sizing: border-box;
+.camp-left {
+  width: 374px; flex-shrink: 0; height: 100%;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+  padding: 32px 32px 40px; box-sizing: border-box;
   position: relative; overflow: hidden;
 }
-.camp-visual::before {
-  content: ''; position: absolute; top: -200px; left: -100px;
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, var(--org-color-a, rgba(73,174,225,0.15)) 0%, transparent 70%);
-  pointer-events: none;
+.camp-left-ilu {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 88px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
-.camp-drop { width: 120px; height: 148px; flex-shrink: 0; }
-.camp-org {
-  font-family: var(--font-body); font-size: 13px; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--org-color, #49aee1);
-}
-.camp-visual-count { text-align: center; }
-.camp-visual-num {
-  font-family: var(--font-display); font-weight: 400; font-size: 48px;
-  line-height: 1; letter-spacing: -1px; color: #f2f3e5;
-  display: flex; align-items: center; gap: 8px; justify-content: center;
-}
-.camp-visual-sub {
-  font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  color: rgba(242,243,229,0.4); margin-top: 6px; text-align: center;
-}
-.camp-visual-bar-wrap {
-  width: 100%; position: relative; height: 6px;
-  background: rgba(255,255,255,0.1); border-radius: 99px;
-}
-.camp-visual-bar-fill {
-  position: absolute; left: 0; top: 0; height: 6px;
-  background: var(--org-color, #49aee1); border-radius: 99px;
-}
-.camp-visual-pct {
-  font-family: var(--font-body); font-size: 12px; font-weight: 500;
-  color: var(--org-color, #49aee1); text-align: right;
+.camp-left-ilu img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.camp-left-name {
+  font-family: var(--font-display); font-weight: 700; font-size: 28px;
+  text-transform: uppercase; color: #f2f3e5; letter-spacing: 0.5px;
+  position: relative; z-index: 2; margin: 0; line-height: 1;
 }
 
-.camp-info {
+.camp-right {
   flex: 1; height: 100%;
-  padding: 80px 60px 60px; box-sizing: border-box;
+  padding: 65px 60px 56px; box-sizing: border-box;
   display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
 }
 .camp-title {
-  font-family: var(--font-display); font-weight: 400; font-size: 56px;
-  line-height: 1.06; color: #f2f3e5; margin: 0 0 16px;
+  font-family: var(--font-display); font-weight: 400; font-size: 48px;
+  line-height: 1.06; color: #f2f3e5; margin: 0 0 14px;
 }
-.camp-impact {
-  font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: rgba(242,243,229,0.5); line-height: 1.5; margin: 0; max-width: 400px;
+.camp-desc {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: rgba(242,243,229,0.5); line-height: 1.5; margin: 0;
 }
-.camp-progress-section { display: flex; flex-direction: column; gap: 12px; }
-.camp-progress-label {
+.camp-ring-section { display: flex; align-items: center; justify-content: center; }
+.camp-ring-wrap {
+  position: relative; width: 280px; height: 280px;
+  display: flex; align-items: center; justify-content: center;
+}
+.camp-ring-svg { position: absolute; top: 0; left: 0; }
+.camp-ring-track { fill: none; stroke: #2b2b32; stroke-width: 28; stroke-linecap: round; }
+.camp-ring-fill {
+  fill: none; stroke-width: 28; stroke-linecap: round;
+  stroke-dasharray: 0 691;
+  transition: stroke-dasharray 800ms cubic-bezier(0.4,0,0.2,1);
+}
+.camp-ring-center { position: relative; text-align: center; }
+.camp-ring-num {
+  font-family: var(--font-display); font-weight: 400; font-size: 36px;
+  letter-spacing: -1px; color: #f2f3e5;
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+.camp-ring-sub {
   font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  color: rgba(242,243,229,0.4); letter-spacing: 0.8px; text-transform: uppercase;
+  color: rgba(242,243,229,0.4); margin-top: 4px;
 }
-.camp-progress-bar-wrap {
-  position: relative; height: 8px; background: #2b2b32; border-radius: 99px;
-}
-.camp-progress-bar-fill {
-  position: absolute; left: 0; top: 0; height: 8px;
-  background: var(--org-color, #49aee1); border-radius: 99px;
-}
-.camp-progress-nums { display: flex; justify-content: space-between; align-items: center; }
-.camp-progress-current {
-  font-family: var(--font-display); font-weight: 400; font-size: 32px;
-  line-height: 1; letter-spacing: -0.8px; color: #f2f3e5;
-  display: flex; align-items: center; gap: 8px;
-}
-.camp-progress-goal {
-  font-family: var(--font-body); font-size: 14px; font-weight: 500;
-  color: rgba(242,243,229,0.4);
-}
-.camp-cta-wrap { display: flex; flex-direction: column; gap: 12px; }
-.camp-class-note {
-  font-family: var(--font-body); font-size: 14px; font-weight: 500;
-  color: rgba(242,243,229,0.4); line-height: 1.4;
-}
+
 .btn-donate {
   height: 56px; width: 100%;
-  background: var(--org-color, #49aee1); border: none; border-radius: 12px;
+  background: #f2f3e5; border: none; border-radius: 12px;
   font-family: var(--font-body); font-size: 16px; font-weight: 700;
-  color: var(--org-dark, #0d2234); cursor: pointer; letter-spacing: -0.1px;
+  color: #1f1f25; cursor: pointer; letter-spacing: -0.1px;
   transition: opacity 120ms; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn-donate:hover { opacity: 0.9; }
@@ -216,36 +180,41 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 #s-donate {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 80px 120px 60px; box-sizing: border-box; gap: 36px;
+  padding: 80px 120px 60px; box-sizing: border-box; gap: 20px;
 }
 .donate-heading {
   font-family: var(--font-display); font-weight: 400; font-size: 64px;
   line-height: 1.06; color: #f2f3e5; text-align: center; margin: 0;
 }
-.donate-balance {
-  font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: rgba(242,243,229,0.4); text-align: center;
-  display: flex; align-items: center; gap: 6px; justify-content: center;
+/* ─── Donate arc slider ────────────────────────────────────── */
+.donate-arc-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.donate-arc {
+  position: relative; width: 532px; height: 248px;
+  overflow: visible; outline: none; cursor: grab;
+  user-select: none; -webkit-user-select: none;
 }
-.donate-balance strong { color: #f2f3e5; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-.donate-chips { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-.donate-chip {
-  width: 168px; height: 80px;
-  background: #2b2b32; border: 2px solid #444450; border-radius: 16px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  cursor: pointer; transition: border-color 150ms, background 150ms;
+.donate-arc.is-dragging { cursor: grabbing; }
+.donate-arc svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
+.donate-arc__hit { position: absolute; inset: 0; }
+.donate-arc__thumb {
+  position: absolute; width: 100px; height: 100px; border-radius: 50%;
+  background: var(--org-color, #49aee1); border: 8px solid #1f1f25;
+  display: flex; align-items: center; justify-content: center;
+  transform: translate(-50%, -50%); pointer-events: none;
+  will-change: left, top; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.45));
+  transition: none;
 }
-.donate-chip:hover { border-color: var(--org-color, #49aee1); background: rgba(73,174,225,0.08); }
-.donate-chip.selected { border-color: var(--org-color, #49aee1); background: rgba(73,174,225,0.12); }
-.donate-chip-amount {
-  font-family: var(--font-display); font-weight: 400; font-size: 32px;
-  line-height: 1; letter-spacing: -0.8px; color: #f2f3e5;
-  display: flex; align-items: center; gap: 6px;
+.donate-arc.is-dragging .donate-arc__thumb {
+  transform: translate(-50%, -50%) scale(1.07);
+  transition: transform 0.12s ease;
+  filter: drop-shadow(0 8px 28px rgba(0,0,0,0.55));
 }
-.donate-chip-impact {
-  font-family: var(--font-body); font-size: 12px; font-weight: 500;
-  color: rgba(242,243,229,0.4); text-align: center; padding: 0 8px;
+.donate-arc-amount {
+  display: flex; align-items: center; gap: 10px; margin-top: -16px;
+  font-family: var(--font-display); font-weight: 400; font-size: 48px;
+  letter-spacing: -2px; line-height: 1; color: #f2f3e5;
 }
+
 .donate-impact-preview {
   border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 24px;
   font-family: var(--font-body); font-size: 16px; font-weight: 500;
@@ -317,6 +286,118 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .btn-done:hover { opacity: 0.85; }
 .btn-done:active { opacity: 0.7; }
 
+/* ════════════════════════════════════════════════════════════════
+   SCREEN — My Giving (landing when student has donation history)
+════════════════════════════════════════════════════════════════ */
+#s-my-giving { display: flex; flex-direction: row; }
+
+.myg-visual {
+  width: 420px; flex-shrink: 0; height: 100%;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 40px 60px; box-sizing: border-box;
+  position: relative; overflow: hidden;
+}
+.myg-visual::before {
+  content: ''; position: absolute; top: -200px; left: -100px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, var(--org-color-a, rgba(73,174,225,0.12)) 0%, transparent 70%);
+  pointer-events: none;
+}
+.myg-eyebrow {
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--org-color, #49aee1); margin: 0 0 16px;
+}
+.myg-total {
+  font-family: var(--font-display); font-weight: 400; font-size: 72px;
+  line-height: 1; letter-spacing: -2px; color: #f2f3e5;
+  display: flex; align-items: center; gap: 12px;
+}
+.myg-total-sub {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: rgba(242,243,229,0.4); margin: 10px 0 28px;
+}
+.myg-sep { height: 1px; background: rgba(255,255,255,0.08); margin: 0 0 24px; }
+.myg-last-label {
+  font-family: var(--font-body); font-size: 11px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: rgba(242,243,229,0.3); margin: 0 0 10px;
+}
+.myg-last-row { display: flex; align-items: center; gap: 12px; }
+.myg-last-info { display: flex; flex-direction: column; gap: 3px; }
+.myg-last-org {
+  font-family: var(--font-body); font-size: 15px; font-weight: 700; color: #f2f3e5;
+}
+.myg-last-amt {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: rgba(242,243,229,0.4); display: flex; align-items: center; gap: 4px;
+}
+.myg-count-text {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: rgba(242,243,229,0.2); margin: 20px 0 0;
+}
+
+.myg-info {
+  flex: 1; height: 100%;
+  padding: 80px 60px 60px; box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+}
+.myg-class-eyebrow {
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: rgba(242,243,229,0.3); margin: 0 0 6px;
+}
+.myg-class-name {
+  font-family: var(--font-display); font-weight: 400; font-size: 36px;
+  line-height: 1.1; color: #f2f3e5; margin: 0 0 24px;
+}
+.myg-bar-wrap {
+  position: relative; height: 8px; background: #2b2b32; border-radius: 99px; margin-bottom: 12px;
+}
+.myg-bar-fill {
+  position: absolute; left: 0; top: 0; height: 8px;
+  background: var(--org-color, #49aee1); border-radius: 99px;
+  width: 0%; transition: width 800ms cubic-bezier(0.4,0,0.2,1);
+}
+.myg-bar-nums { display: flex; justify-content: space-between; align-items: center; }
+.myg-bar-current {
+  font-family: var(--font-display); font-weight: 400; font-size: 28px;
+  line-height: 1; letter-spacing: -0.8px; color: #f2f3e5;
+  display: flex; align-items: center; gap: 8px;
+}
+.myg-bar-goal {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(242,243,229,0.4);
+}
+.myg-share-box {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.myg-share-label {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(242,243,229,0.45);
+}
+.myg-share-value {
+  font-family: var(--font-display); font-weight: 400; font-size: 28px;
+  letter-spacing: -0.5px; color: var(--org-color, #49aee1);
+}
+.myg-cta-wrap { display: flex; flex-direction: column; gap: 10px; }
+.btn-give-more {
+  height: 56px; width: 100%;
+  background: var(--org-color, #49aee1); border: none; border-radius: 12px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 700;
+  color: var(--org-dark, #0d2234); cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-give-more:hover { opacity: 0.9; }
+.btn-give-more:active { opacity: 0.75; }
+.btn-explore {
+  height: 44px; background: transparent; border: none;
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: rgba(242,243,229,0.35); cursor: pointer; transition: color 120ms;
+}
+.btn-explore:hover { color: rgba(242,243,229,0.6); }
+
 </style>
 </head>
 <body>
@@ -325,6 +406,60 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 <div class="bp-device" id="device">
 
   <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN — My Giving (shown when student has donation history)
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="s-my-giving" class="screen">
+
+    <button class="back-btn" onclick="window.location.href='today.html'">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Left: personal stats -->
+    <div class="myg-visual" id="mygVisual">
+      <p class="myg-eyebrow">Your giving</p>
+      <div class="myg-total" id="mygTotal">— <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
+      <p class="myg-total-sub">Sparks given to good causes</p>
+      <div class="myg-sep"></div>
+      <p class="myg-last-label">Last donation</p>
+      <div class="myg-last-row" id="mygLastRow"><!-- filled by JS --></div>
+      <p class="myg-count-text" id="mygCount"></p>
+    </div>
+
+    <!-- Right: class progress -->
+    <div class="myg-info">
+      <div>
+        <p class="myg-class-eyebrow">Your class</p>
+        <h2 class="myg-class-name" id="mygClassName"></h2>
+        <div class="myg-bar-wrap">
+          <div class="myg-bar-fill" id="mygBarFill"></div>
+        </div>
+        <div class="myg-bar-nums">
+          <div class="myg-bar-current" id="mygBarCurrent">— <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
+          <span class="myg-bar-goal" id="mygBarGoal"></span>
+        </div>
+      </div>
+
+      <div class="myg-share-box">
+        <span class="myg-share-label">Your share of the class total</span>
+        <span class="myg-share-value" id="mygShareValue">—%</span>
+      </div>
+
+      <div class="myg-cta-wrap">
+        <button class="btn-give-more" onclick="giveMoreSparks()">
+          Give more Sparks
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="btn-explore" onclick="goTo('s-orgs')">Explore other causes</button>
+      </div>
+    </div>
+
+  </div>
 
   <!-- ══════════════════════════════════════════════════════════
        SCREEN 0 — Choose organisation
@@ -351,60 +486,47 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   ══════════════════════════════════════════════════════════════ -->
   <div id="s-campaign" class="screen">
 
-    <button class="back-btn" onclick="goTo('s-orgs')">
+    <button class="back-btn" onclick="goBack()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
 
-    <!-- Left visual panel -->
-    <div class="camp-visual" id="campVisualPanel">
-      <span class="camp-org" id="campOrgName">charity: water</span>
-
-      <div id="campIconWrap"><!-- icon injected by JS --></div>
-
-      <div class="camp-visual-count">
-        <div class="camp-visual-num" id="campNum">12,450 <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>
-        <div class="camp-visual-sub">collected by your class</div>
-      </div>
-
-      <div style="width:100%;display:flex;flex-direction:column;gap:6px;">
-        <div class="camp-visual-bar-wrap">
-          <div class="camp-visual-bar-fill" id="campVisualFill"></div>
-        </div>
-        <div class="camp-visual-pct" id="campVisualPct"></div>
-      </div>
+    <!-- Left: illustration -->
+    <div class="camp-left" id="campLeft">
+      <div class="camp-left-ilu" id="campLeftIlu"><!-- SVG injected by JS --></div>
+      <p class="camp-left-name" id="campOrgName">CHARITY WATER</p>
     </div>
 
-    <!-- Right info panel -->
-    <div class="camp-info">
+    <!-- Right: info + ring -->
+    <div class="camp-right">
       <div>
         <h1 class="camp-title" id="campTitle"></h1>
-        <p class="camp-impact" id="campDesc"></p>
+        <p class="camp-desc" id="campDesc"></p>
       </div>
 
-      <div class="camp-progress-section">
-        <span class="camp-progress-label">Class progress</span>
-        <div class="camp-progress-bar-wrap">
-          <div class="camp-progress-bar-fill" id="campFill"></div>
-        </div>
-        <div class="camp-progress-nums">
-          <div class="camp-progress-current" id="campCurrent">
-            — <img class="spark-sm" src="./components/spark-color.svg" alt="">
-          </div>
-          <span class="camp-progress-goal" id="campGoal">goal: 20,000 ✦</span>
-        </div>
-      </div>
-
-      <div class="camp-cta-wrap">
-        <p class="camp-class-note" id="campNote"></p>
-        <button class="btn-donate" id="btnDonate" onclick="goTo('s-donate')">
-          Donate Sparks
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="camp-ring-section">
+        <div class="camp-ring-wrap">
+          <svg class="camp-ring-svg" width="280" height="280" viewBox="0 0 280 280">
+            <circle class="camp-ring-track" cx="140" cy="140" r="110"/>
+            <circle class="camp-ring-fill" id="campRingFill" cx="140" cy="140" r="110"
+              transform="rotate(-90 140 140)"/>
           </svg>
-        </button>
+          <div class="camp-ring-center">
+            <div class="camp-ring-num" id="campRingNum">
+              — <img class="spark-sm" src="./components/spark-color.svg" alt="">
+            </div>
+            <div class="camp-ring-sub">class Sparks</div>
+          </div>
+        </div>
       </div>
+
+      <button class="btn-donate" id="btnDonate" onclick="openDonateScreen()">
+        Donate Sparks
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -421,17 +543,24 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
     <h1 class="donate-heading">How many<br>Sparks?</h1>
 
-    <div class="donate-balance">
-      You have&nbsp;
-      <strong id="donateBalance">— <img class="spark-sm" src="./components/spark-color.svg" alt=""></strong>
-      &nbsp;available
+    <div class="donate-arc-wrap">
+      <div class="donate-arc" id="donateArc" tabindex="0">
+        <svg viewBox="0 0 532 248" width="532" height="248">
+          <path id="donateTrack" fill="none" stroke="#2b2b32" stroke-width="44" stroke-linecap="round"/>
+          <path id="donateFill"  fill="none" stroke="#49aee1" stroke-width="44" stroke-linecap="round"/>
+        </svg>
+        <div class="donate-arc__hit" id="donateArcHit"></div>
+        <div class="donate-arc__thumb" id="donateArcThumb">
+          <img src="./components/spark-color.svg" alt="" style="width:44px;height:44px;pointer-events:none;">
+        </div>
+      </div>
+      <div class="donate-arc-amount">
+        <span id="donateArcNum">—</span>
+        <img src="./components/spark-color.svg" alt="" style="width:48px;height:48px;">
+      </div>
     </div>
 
-    <div class="donate-chips" id="donateChips">
-      <!-- rendered by JS -->
-    </div>
-
-    <div class="donate-impact-preview empty" id="donateImpact">Select an amount</div>
+    <div class="donate-impact-preview empty" id="donateImpact"></div>
 
     <button class="btn-confirm" id="btnConfirm" onclick="confirmDonate()">Confirm donation</button>
 
@@ -473,7 +602,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 var ORGS = [
   {
     id: 'charity-water',
-    name: 'charity: water',
+    name: 'Water Charity',
     color: '#49aee1',
     darkBg: '#0d2234',
     classTotal: 12450,
@@ -486,7 +615,9 @@ var ORGS = [
       50:  'a week of clean water for one child',
       100: 'clean water for a whole family for a month'
     },
-    icon: 'drop'
+    icon: 'drop',
+    svg: './components/Component 6.svg',
+    iluSize: 374, iluX: 61, iluY: 156
   },
   {
     id: 'wwf',
@@ -503,13 +634,15 @@ var ORGS = [
       50:  'habitat for a family of animals',
       100: 'a patch of rainforest for a full year'
     },
-    icon: 'leaf'
+    icon: 'leaf',
+    svg: './components/Component 7.svg',
+    iluSize: 384, iluX: 53, iluY: 126
   },
   {
     id: 'foodbank',
     name: 'Local Food Bank',
-    color: '#f08b31',
-    darkBg: '#1f1408',
+    color: '#f5c842',
+    darkBg: '#1f1a08',
     classTotal: 9000,
     goal: 20000,
     campaign: 'Feed families this winter',
@@ -520,7 +653,9 @@ var ORGS = [
       50:  'a family dinner for four people',
       100: "a week's groceries for a family"
     },
-    icon: 'heart'
+    icon: 'heart',
+    svg: './components/Component 5.svg',
+    iluSize: 557, iluX: 54, iluY: 75
   }
 ];
 
@@ -560,6 +695,10 @@ var selectedOrg = null;
 var selectedAmt = 0;
 var userSparks = parseInt(localStorage.getItem('bp_sparks') || '45', 10);
 var cur = 's-orgs';
+var campBackDest = 's-orgs';
+var donations = [];
+try { donations = JSON.parse(localStorage.getItem('bp_sparkz_donations') || '[]'); } catch(e) {}
+var hasHistory = donations.length > 0;
 
 // ─── Screen nav ───────────────────────────────────────────────
 function goTo(id) {
@@ -567,6 +706,7 @@ function goTo(id) {
   document.getElementById(id).classList.add('active');
   cur = id;
 }
+function goBack() { goTo(campBackDest); }
 
 // ─── Set org CSS vars on device ───────────────────────────────
 function setOrgColors(org) {
@@ -585,111 +725,230 @@ function hexToRgba(hex, a) {
 
 // ─── Render org cards ─────────────────────────────────────────
 (function renderOrgs() {
+  var personalByOrg = {};
+  donations.forEach(function(d) {
+    personalByOrg[d.orgId] = (personalByOrg[d.orgId] || 0) + d.amount;
+  });
+
   var row = document.getElementById('orgsRow');
   ORGS.forEach(function(org) {
     var classTotal = parseInt(localStorage.getItem('bp_class_sparks_' + org.id) || org.classTotal, 10);
     var pct = Math.min(100, Math.round(classTotal / org.goal * 100));
+    var personalAmt = personalByOrg[org.id] || 0;
+
+    var gaveHtml = personalAmt > 0
+      ? '<span class="org-card-gave">You gave: ' + personalAmt + ' Sparkz</span>'
+      : '';
 
     var card = document.createElement('div');
     card.className = 'org-card';
     card.onclick = function() { selectOrg(org); };
     card.innerHTML =
-      '<div class="org-card-top" style="background:' + org.darkBg + ';">' +
-        orgIcon(org.icon, 48, org.color) +
-        '<span class="org-card-name" style="color:' + org.color + '">' + org.name + '</span>' +
+      '<span class="org-card-label">' + org.name + '</span>' +
+      '<div class="org-card-ilu" style="left:' + org.iluX + 'px;top:' + org.iluY + 'px;width:' + org.iluSize + 'px;height:' + org.iluSize + 'px;">' +
+        '<img src="' + org.svg + '" alt="">' +
       '</div>' +
-      '<div class="org-card-bottom">' +
-        '<div class="org-card-title">' + org.campaign + '</div>' +
+      '<div class="org-card-footer">' +
+        '<div class="org-card-stats">' +
+          '<span class="org-card-total">' + classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="width:20px;height:20px;"></span>' +
+          gaveHtml +
+        '</div>' +
         '<div class="org-card-bar-wrap">' +
-          '<div class="org-card-bar-fill" style="width:' + pct + '%;background:' + org.color + '"></div>' +
+          '<div class="org-card-bar-fill" style="width:' + pct + '%"></div>' +
         '</div>' +
-        '<div class="org-card-meta">' +
-          '<span class="org-card-pct">' + pct + '% to goal</span>' +
-          '<span class="org-card-num">' + classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="width:14px;height:14px;"></span>' +
-        '</div>' +
+        '<div class="org-card-pct-label">' + pct + '% of a goal reached</div>' +
       '</div>';
     row.appendChild(card);
   });
 })();
 
 // ─── Select org & populate campaign screen ────────────────────
+function populateMyGiving() {
+  if (!donations.length) return;
+  var personalTotal = donations.reduce(function(s, d) { return s + d.amount; }, 0);
+  document.getElementById('mygTotal').innerHTML = personalTotal + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
+  var totalCount = donations.length;
+  document.getElementById('mygCount').textContent = totalCount + ' donation' + (totalCount !== 1 ? 's' : '') + ' total';
+
+  var last = donations[donations.length - 1];
+  var lastOrg = null;
+  for (var i = 0; i < ORGS.length; i++) { if (ORGS[i].id === last.orgId) { lastOrg = ORGS[i]; break; } }
+
+  document.getElementById('mygLastRow').innerHTML =
+    '<div style="flex-shrink:0">' + orgIcon(lastOrg ? lastOrg.icon : 'drop', 36, lastOrg ? lastOrg.color : '#49aee1') + '</div>' +
+    '<div class="myg-last-info">' +
+      '<span class="myg-last-org">' + last.orgName + '</span>' +
+      '<span class="myg-last-amt">' + last.amount + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="width:14px;height:14px;"> Sparks</span>' +
+    '</div>';
+
+  if (lastOrg) {
+    setOrgColors(lastOrg);
+    document.getElementById('mygVisual').style.background = lastOrg.darkBg;
+
+    var classTotal = parseInt(localStorage.getItem('bp_class_sparks_' + lastOrg.id) || lastOrg.classTotal, 10);
+    var pct = Math.min(100, Math.round(classTotal / lastOrg.goal * 100));
+
+    document.getElementById('mygClassName').textContent = lastOrg.campaign;
+    document.getElementById('mygBarCurrent').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
+    document.getElementById('mygBarGoal').textContent = 'goal: ' + lastOrg.goal.toLocaleString() + ' ✦';
+
+    var personalForOrg = 0;
+    for (var j = 0; j < donations.length; j++) {
+      if (donations[j].orgId === lastOrg.id) personalForOrg += donations[j].amount;
+    }
+    var sharePct = classTotal > 0 ? Math.max(1, Math.round(personalForOrg / classTotal * 100)) : 0;
+    document.getElementById('mygShareValue').textContent = sharePct + '%';
+
+    window._mygLastOrg = lastOrg;
+    setTimeout(function() {
+      var fill = document.getElementById('mygBarFill');
+      if (fill) fill.style.width = pct + '%';
+    }, 100);
+  }
+}
+
+function giveMoreSparks() {
+  if (window._mygLastOrg) {
+    selectOrg(window._mygLastOrg);
+  } else {
+    goTo('s-orgs');
+  }
+}
+
 function selectOrg(org) {
+  campBackDest = cur;
   selectedOrg = org;
   selectedAmt = 0;
 
   var classTotal = parseInt(localStorage.getItem('bp_class_sparks_' + org.id) || org.classTotal, 10);
   var pct = Math.min(100, Math.round(classTotal / org.goal * 100));
-  var remaining = org.goal - classTotal;
 
   setOrgColors(org);
 
-  // Visual panel
-  document.getElementById('campVisualPanel').style.background = org.darkBg;
-  document.getElementById('campOrgName').textContent = org.name;
-  document.getElementById('campIconWrap').innerHTML = orgIcon(org.icon, 96, org.color);
-  document.getElementById('campNum').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
-  document.getElementById('campVisualFill').style.width = pct + '%';
-  document.getElementById('campVisualPct').textContent = pct + '% of goal reached';
+  // Left panel
+  document.getElementById('campLeft').style.background = org.darkBg;
+  document.getElementById('campLeftIlu').innerHTML = '<img src="' + org.svg + '" alt="" style="max-height:340px;max-width:100%;object-fit:contain;">';
+  document.getElementById('campOrgName').textContent = org.name.toUpperCase();
 
-  // Info panel
+  // Right panel
   document.getElementById('campTitle').textContent = org.campaign;
   document.getElementById('campDesc').textContent = org.desc;
-  document.getElementById('campFill').style.width = pct + '%';
-  document.getElementById('campCurrent').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
-  document.getElementById('campGoal').textContent = 'goal: ' + org.goal.toLocaleString() + ' ✦';
-  document.getElementById('campNote').innerHTML = 'Your class needs <strong>' + remaining.toLocaleString() + ' more Sparks</strong> to complete this goal.';
 
-  // Chips on donate screen
-  renderChips(org);
+  // Ring
+  var circumference = 2 * Math.PI * 110;
+  var fillLen = Math.max(0, pct / 100 * circumference);
+  var ringFill = document.getElementById('campRingFill');
+  ringFill.style.stroke = org.color;
+  ringFill.style.strokeDasharray = '0 ' + circumference;
+  document.getElementById('campRingNum').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
 
-  // Balance
-  document.getElementById('donateBalance').innerHTML = userSparks + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="vertical-align:middle">';
+  goTo('s-campaign');
 
-  // Reset chip selection
+  setTimeout(function() {
+    ringFill.style.strokeDasharray = fillLen + ' ' + circumference;
+  }, 50);
+}
+
+// ─── Donate arc slider ───────────────────────────────────────
+var DA_CX = 263, DA_CY = 247, DA_RM = 190.5;
+var DA_FILL_START = 175, DA_TRACK_END = 5;
+var DA_A_MAX = 170, DA_A_MIN = 10;
+var daAngle = DA_A_MAX;
+
+function daPt(r, deg) {
+  var rad = deg * Math.PI / 180;
+  return [DA_CX + r * Math.cos(rad), DA_CY - r * Math.sin(rad)];
+}
+function daArcPath(a1, a2) {
+  if (a1 - a2 < 0.4) a2 = a1 - 0.4;
+  var p1 = daPt(DA_RM, a1), p2 = daPt(DA_RM, a2);
+  var la = (a1 - a2) >= 180 ? 1 : 0;
+  var r = function(n) { return Math.round(n * 10) / 10; };
+  return 'M' + r(p1[0]) + ',' + r(p1[1]) + ' A' + DA_RM + ',' + DA_RM + ' 0 ' + la + ',1 ' + r(p2[0]) + ',' + r(p2[1]);
+}
+function daClientToAngle(e) {
+  var rect = document.getElementById('donateArc').getBoundingClientRect();
+  var t = e.touches ? e.touches[0] : e;
+  var sx = rect.width / 532, sy = rect.height / 248;
+  var x = (t.clientX - rect.left) / sx;
+  var y = (t.clientY - rect.top) / sy;
+  return Math.atan2(DA_CY - y, x - DA_CX) / (Math.PI / 180);
+}
+function daMoveToAngle(a) {
+  a = Math.max(DA_A_MIN, Math.min(DA_A_MAX, a));
+  daAngle = a;
+  document.getElementById('donateTrack').setAttribute('d', daArcPath(DA_FILL_START, DA_TRACK_END));
+  document.getElementById('donateFill').setAttribute('d', daArcPath(DA_FILL_START, a));
+  var pos = daPt(DA_RM, a);
+  var thumb = document.getElementById('donateArcThumb');
+  thumb.style.left = pos[0] + 'px';
+  thumb.style.top  = pos[1] + 'px';
+  var t = (DA_A_MAX - a) / (DA_A_MAX - DA_A_MIN);
+  var amount = Math.max(1, Math.round(t * Math.max(1, userSparks)));
+  selectedAmt = amount;
+  document.getElementById('donateArcNum').textContent = amount + '/' + userSparks;
+  var preview = document.getElementById('donateImpact');
+  if (selectedOrg && selectedOrg.impacts) {
+    var keys = Object.keys(selectedOrg.impacts).map(Number).sort(function(a, b) { return a - b; });
+    var key = keys[0];
+    for (var i = 0; i < keys.length; i++) { if (amount >= keys[i]) key = keys[i]; }
+    preview.classList.remove('empty');
+    preview.textContent = selectedOrg.impacts[key];
+  }
+  var btn = document.getElementById('btnConfirm');
+  if (amount >= 1 && amount <= userSparks) {
+    btn.classList.add('ready');
+    btn.textContent = 'Donate ' + amount + ' Sparks';
+  } else {
+    btn.classList.remove('ready');
+    btn.textContent = 'Not enough Sparks';
+  }
+}
+function initDonateArc() {
+  if (selectedOrg) {
+    document.getElementById('donateFill').style.stroke = selectedOrg.color;
+    document.getElementById('donateArcThumb').style.background = selectedOrg.color;
+  }
   document.getElementById('donateImpact').classList.add('empty');
   document.getElementById('btnConfirm').classList.remove('ready');
   document.getElementById('btnConfirm').textContent = 'Confirm donation';
-
-  goTo('s-campaign');
+  var startAmt = Math.max(1, Math.min(10, userSparks));
+  var startT = startAmt / Math.max(1, userSparks);
+  daMoveToAngle(DA_A_MAX - startT * (DA_A_MAX - DA_A_MIN));
 }
-
-function renderChips(org) {
-  var container = document.getElementById('donateChips');
-  container.innerHTML = '';
-  var amts = [10, 25, 50, 100];
-  amts.forEach(function(amt) {
-    var chip = document.createElement('div');
-    chip.className = 'donate-chip';
-    chip.onclick = function() { selectAmount(amt); };
-    chip.innerHTML =
-      '<div class="donate-chip-amount">' + amt + ' <img class="spark-sm" src="./components/spark-color.svg" alt=""></div>';
-    container.appendChild(chip);
-  });
+function openDonateScreen() {
+  initDonateArc();
+  goTo('s-donate');
 }
-
-// ─── Amount selection ─────────────────────────────────────────
-function selectAmount(amt) {
-  selectedAmt = amt;
-
-  document.querySelectorAll('.donate-chip').forEach(function(c) { c.classList.remove('selected'); });
-  var chips = document.querySelectorAll('.donate-chip');
-  var amounts = [10, 25, 50, 100];
-  chips.forEach(function(c, i) { if (amounts[i] === amt) c.classList.add('selected'); });
-
-  var preview = document.getElementById('donateImpact');
-  preview.classList.remove('empty');
-  var impact = selectedOrg && selectedOrg.impacts[amt] ? selectedOrg.impacts[amt] : amt + ' Sparks donated';
-  preview.textContent = '💧 ' + impact;
-
-  var btn = document.getElementById('btnConfirm');
-  if (amt <= userSparks) {
-    btn.classList.add('ready');
-    btn.textContent = 'Donate ' + amt + ' Sparks';
-  } else {
-    btn.classList.remove('ready');
-    btn.textContent = "Not enough Sparks";
+(function() {
+  var slider = document.getElementById('donateArc');
+  var thumb  = document.getElementById('donateArcThumb');
+  var hit    = document.getElementById('donateArcHit');
+  var dragging = false;
+  function onStart(e) {
+    dragging = true; slider.classList.add('is-dragging'); e.preventDefault();
+    daMoveToAngle(daClientToAngle(e));
   }
-}
+  function onMove(e) {
+    if (!dragging) return; e.preventDefault(); daMoveToAngle(daClientToAngle(e));
+  }
+  function onEnd() {
+    if (!dragging) return; dragging = false; slider.classList.remove('is-dragging');
+  }
+  hit.addEventListener('mousedown',  onStart);
+  thumb.addEventListener('mousedown', onStart);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup',   onEnd);
+  hit.addEventListener('touchstart',  onStart, { passive: false });
+  thumb.addEventListener('touchstart', onStart, { passive: false });
+  window.addEventListener('touchmove', onMove,  { passive: false });
+  window.addEventListener('touchend',  onEnd);
+  slider.addEventListener('keydown', function(e) {
+    var step = (DA_A_MAX - DA_A_MIN) / Math.max(10, userSparks);
+    if (e.key === 'ArrowRight') daMoveToAngle(daAngle - step);
+    if (e.key === 'ArrowLeft')  daMoveToAngle(daAngle + step);
+  });
+})();
 
 // ─── Confirm donation ─────────────────────────────────────────
 function confirmDonate() {
@@ -706,6 +965,9 @@ function confirmDonate() {
   localStorage.setItem('bp_sparks', userSparks);
   localStorage.setItem(orgKey, classTotal);
   localStorage.setItem('bp_class_sparks', classTotal); // also update generic key for today.html
+
+  donations.push({ orgId: selectedOrg.id, orgName: selectedOrg.name, amount: selectedAmt });
+  try { localStorage.setItem('bp_sparkz_donations', JSON.stringify(donations)); } catch(e) {}
 
   // Populate thanks screen
   document.getElementById('thanksIconWrap').innerHTML = orgIcon(selectedOrg.icon, 72, selectedOrg.color);
