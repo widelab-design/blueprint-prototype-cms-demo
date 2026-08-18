@@ -12,7 +12,8 @@ pre{background:#2b2b32;padding:12px;border-radius:8px;white-space:pre-wrap;word-
 <button onclick="resetVideo()" style="background:#555;">Reset "video watched"</button>
 <button onclick="resetTour()" style="background:#3f50b8;">Reset tutorial (spotlight)</button>
 <button onclick="resetBanner()" style="background:#219653;">Reset banera (today)</button>
-<button onclick="resetSparks()" style="background:#b38aff;">Reset sparks do 45</button>
+<button onclick="addSparks(200)" style="background:#b38aff;">+ 200 sparks</button>
+<button onclick="resetSparks()" style="background:#555;">Reset sparks do 0</button>
 <button onclick="toggleSparkzGiving()" style="background:#1a6a8a;" id="btnSparkzGiving">Sparkz Giving: ...</button>
 <button onclick="resetClassSparks()" style="background:#1a6a8a;">Reset class sparks do 12450</button>
 <pre id="out">Kliknij przycisk...</pre>
@@ -70,9 +71,16 @@ function resetBanner() {
   document.getElementById('out').textContent = 'bp_banner_closed usuniety — baner pojawi sie ponownie na today.html.';
   testRead();
 }
+function addSparks(n) {
+  var cur = parseInt(localStorage.getItem('bp_sparks') || '0', 10);
+  var next = cur + n;
+  localStorage.setItem('bp_sparks', next);
+  document.getElementById('out').textContent = 'Dodano ' + n + ' sparkow. Teraz masz: ' + next + '.';
+  testRead();
+}
 function resetSparks() {
-  localStorage.setItem('bp_sparks', '220');
-  document.getElementById('out').textContent = 'bp_sparks ustawione na 220.';
+  localStorage.setItem('bp_sparks', '0');
+  document.getElementById('out').textContent = 'bp_sparks ustawione na 0.';
   testRead();
 }
 function toggleSparkzGiving() {
