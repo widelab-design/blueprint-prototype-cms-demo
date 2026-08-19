@@ -113,8 +113,6 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 .camp-left {
   width: 374px; flex-shrink: 0; height: 100%;
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
-  padding: 32px 32px 40px; box-sizing: border-box;
   position: relative; overflow: hidden;
 }
 .camp-left-ilu {
@@ -125,48 +123,73 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .camp-left-name {
   font-family: var(--font-display); font-weight: 700; font-size: 28px;
   text-transform: uppercase; color: #f2f3e5; letter-spacing: 0.5px;
-  position: relative; z-index: 2; margin: 0; line-height: 1;
+  position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%); z-index: 2; margin: 0; line-height: 1; white-space: nowrap;
 }
 
 .camp-right {
   flex: 1; height: 100%;
-  padding: 65px 60px 56px; box-sizing: border-box;
-  display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.camp-right-inner {
+  width: 450px; height: 100%;
+  padding: 65px 0 56px; box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: space-between;
+  align-items: center; text-align: center;
 }
 .camp-title {
-  font-family: var(--font-display); font-weight: 400; font-size: 48px;
-  line-height: 1.06; color: #f2f3e5; margin: 0 0 14px;
+  font-family: var(--font-display); font-weight: 400; font-size: 64px;
+  line-height: 1.06; color: #f2f3e5; margin: 0 0 14px; text-align: center;
 }
 .camp-desc {
   font-family: var(--font-body); font-size: 15px; font-weight: 500;
-  color: rgba(242,243,229,0.5); line-height: 1.5; margin: 0;
+  color: rgba(242,243,229,0.5); line-height: 1.5; margin: 0; text-align: center;
 }
 .camp-ring-section { display: flex; align-items: center; justify-content: center; }
 .camp-ring-wrap {
-  position: relative; width: 280px; height: 280px;
+  position: relative; width: 292px; height: 292px;
   display: flex; align-items: center; justify-content: center;
 }
 .camp-ring-svg { position: absolute; top: 0; left: 0; }
-.camp-ring-track { fill: none; stroke: #2b2b32; stroke-width: 28; stroke-linecap: round; }
+.camp-ring-track { fill: none; stroke: #444450; stroke-width: 32; stroke-linecap: round; }
 .camp-ring-fill {
-  fill: none; stroke-width: 28; stroke-linecap: round;
-  stroke-dasharray: 0 691;
+  fill: none; stroke-width: 18; stroke-linecap: round;
+  stroke-dasharray: 0 798;
   transition: stroke-dasharray 800ms cubic-bezier(0.4,0,0.2,1);
 }
-.camp-ring-center { position: relative; text-align: center; }
+.camp-ring-personal {
+  fill: none; stroke: #6A7EFF; stroke-width: 18; stroke-linecap: round;
+  stroke-dasharray: 0 798;
+  transition: stroke-dasharray 800ms cubic-bezier(0.4,0,0.2,1);
+}
+.camp-ring-blob {
+  position: absolute; display: none;
+  align-items: center; justify-content: center;
+  z-index: 10; cursor: default;
+}
+.camp-ring-blob img { width: 28px; height: auto; pointer-events: none; transform: scale(0.7); transform-origin: center; }
+.camp-ring-blob-label {
+  position: absolute; pointer-events: none;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(242,243,229,0.55); white-space: nowrap;
+  opacity: 0; transition: opacity 180ms;
+}
+.camp-ring-center {
+  position: relative; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
 .camp-ring-num {
-  font-family: var(--font-display); font-weight: 400; font-size: 36px;
-  letter-spacing: -1px; color: #f2f3e5;
-  display: flex; align-items: center; gap: 8px; justify-content: center;
+  font-family: var(--font-display); font-weight: 400; font-size: 48px;
+  letter-spacing: 1.5px; color: #f2f3e5; line-height: 48px; margin-top: 20px;
 }
 .camp-ring-sub {
-  font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  color: rgba(242,243,229,0.4); margin-top: 4px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: rgba(242,243,229,0.4); margin-top: 12px; letter-spacing: -0.1px;
 }
 
 .btn-donate {
-  height: 56px; width: 100%;
-  background: #f2f3e5; border: none; border-radius: 12px;
+  height: 48px; width: 270px;
+  background: #f2f3e5; border: none; border-radius: 8px;
   font-family: var(--font-body); font-size: 16px; font-weight: 700;
   color: #1f1f25; cursor: pointer; letter-spacing: -0.1px;
   transition: opacity 120ms; display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -500,6 +523,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
     <!-- Right: info + ring -->
     <div class="camp-right">
+      <div class="camp-right-inner">
       <div>
         <h1 class="camp-title" id="campTitle"></h1>
         <p class="camp-desc" id="campDesc"></p>
@@ -507,16 +531,26 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
       <div class="camp-ring-section">
         <div class="camp-ring-wrap">
-          <svg class="camp-ring-svg" width="280" height="280" viewBox="0 0 280 280">
-            <circle class="camp-ring-track" cx="140" cy="140" r="110"/>
-            <circle class="camp-ring-fill" id="campRingFill" cx="140" cy="140" r="110"
-              transform="rotate(-90 140 140)"/>
+          <svg class="camp-ring-svg" width="292" height="292" viewBox="0 0 292 292">
+            <defs>
+              <linearGradient id="campRingGrad" x1="146" y1="0" x2="146" y2="292" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#6A7EFF"/>
+                <stop offset="100%" stop-color="#2A315D"/>
+              </linearGradient>
+            </defs>
+            <circle class="camp-ring-track" cx="146" cy="146" r="130"/>
+            <circle class="camp-ring-fill" id="campRingFill" cx="146" cy="146" r="130"
+              transform="rotate(-90 146 146)"/>
+            <circle class="camp-ring-personal" id="campRingPersonal" cx="146" cy="146" r="130" transform="rotate(-90 146 146)"/>
           </svg>
+          <div class="camp-ring-blob" id="campRingBlob">
+            <img src="./components/oczy.svg" alt="">
+          </div>
+          <div class="camp-ring-blob-label" id="campRingBlobLabel">Your <span id="campBlobAmt">0</span> Sparks!</div>
           <div class="camp-ring-center">
-            <div class="camp-ring-num" id="campRingNum">
-              — <img class="spark-sm" src="./components/spark-color.svg" alt="">
-            </div>
-            <div class="camp-ring-sub">class Sparks</div>
+            <img src="./components/spark-color.svg" alt="" style="width:32px;height:32px;display:block;">
+            <div class="camp-ring-num" id="campRingNum">—</div>
+            <div class="camp-ring-sub" id="campRingGoal">/—</div>
           </div>
         </div>
       </div>
@@ -527,6 +561,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
           <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
+      </div>
     </div>
   </div>
 
@@ -826,7 +861,7 @@ function selectOrg(org) {
   setOrgColors(org);
 
   // Left panel
-  document.getElementById('campLeft').style.background = org.darkBg;
+  document.getElementById('campLeft').style.background = '#2b2b32';
   document.getElementById('campLeftIlu').innerHTML = '<img src="' + org.svg + '" alt="" style="max-height:340px;max-width:100%;object-fit:contain;">';
   document.getElementById('campOrgName').textContent = org.name.toUpperCase();
 
@@ -835,14 +870,64 @@ function selectOrg(org) {
   document.getElementById('campDesc').textContent = org.desc;
 
   // Ring
-  var circumference = 2 * Math.PI * 110;
+  var circumference = 2 * Math.PI * 130;
   var fillLen = Math.max(0, pct / 100 * circumference);
   var ringFill = document.getElementById('campRingFill');
-  ringFill.style.stroke = org.color;
+  ringFill.style.stroke = 'url(#campRingGrad)';
   ringFill.style.strokeDasharray = '0 ' + circumference;
-  document.getElementById('campRingNum').innerHTML = classTotal.toLocaleString() + ' <img class="spark-sm" src="./components/spark-color.svg" alt="">';
+  document.getElementById('campRingNum').textContent = classTotal.toLocaleString();
+  document.getElementById('campRingGoal').textContent = '/' + org.goal.toLocaleString();
 
   goTo('s-campaign');
+
+  // Personal donation arc + blob
+  var personalByOrg2 = {};
+  donations.forEach(function(d) { personalByOrg2[d.orgId] = (personalByOrg2[d.orgId]||0) + d.amount; });
+  var personalAmt = personalByOrg2[org.id] || 0;
+  var personalArc = document.getElementById('campRingPersonal');
+  var blob = document.getElementById('campRingBlob');
+  var blobLabel = document.getElementById('campRingBlobLabel');
+
+  personalArc.style.strokeDasharray = '0 ' + circumference;
+  personalArc.setAttribute('transform', 'rotate(-90 146 146)');
+
+  if (personalAmt > 0) {
+    var minFill = circumference * 0.05;
+    var personalFillLen = Math.max(minFill, (personalAmt / org.goal) * circumference);
+
+    // Personal arc starts at zero (12 o'clock) same as fill
+    // Eyes sit at end of personal arc
+    var personalEndAngleDeg = -90 + (personalFillLen / circumference) * 360;
+    var personalEndAngleRad = personalEndAngleDeg * Math.PI / 180;
+    var blobCX = 146 + 130 * Math.cos(personalEndAngleRad);
+    var blobCY = 146 + 130 * Math.sin(personalEndAngleRad);
+
+    blob.style.display = 'flex';
+    blob.style.left = blobCX + 'px';
+    blob.style.top = blobCY + 'px';
+    blob.style.transform = 'translate(-50%,-50%)';
+
+    document.getElementById('campBlobAmt').textContent = personalAmt;
+
+    var labelOffX = blobCX > 146 ? 40 : -180;
+    blobLabel.style.left = (blobCX + labelOffX) + 'px';
+    blobLabel.style.top = (blobCY - 14) + 'px';
+
+    var hideTimer;
+    var showLabel = function() { clearTimeout(hideTimer); blobLabel.style.opacity = '1'; };
+    var hideLabel = function() { hideTimer = setTimeout(function() { blobLabel.style.opacity = '0'; }, 80); };
+    personalArc.onmouseenter = showLabel;
+    personalArc.onmouseleave = hideLabel;
+    blob.onmouseenter = showLabel;
+    blob.onmouseleave = hideLabel;
+
+    setTimeout(function() {
+      personalArc.style.strokeDasharray = personalFillLen + ' ' + circumference;
+    }, 50);
+  } else {
+    blob.style.display = 'none';
+    personalArc.style.strokeDasharray = '0 ' + circumference;
+  }
 
   setTimeout(function() {
     ringFill.style.strokeDasharray = fillLen + ' ' + circumference;
