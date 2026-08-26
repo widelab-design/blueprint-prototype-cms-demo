@@ -547,7 +547,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     <!-- Left: why + facts -->
     <div class="camp-left" id="campLeft">
       <div class="camp-left-info">
-        <p class="camp-left-why">Dlaczego <span id="campWhyName"></span>?</p>
+        <p class="camp-left-why">Why <span id="campWhyName"></span>?</p>
         <div class="camp-facts" id="campFacts"></div>
       </div>
       <p class="camp-left-name" id="campOrgName">CHARITY WATER</p>
@@ -688,9 +688,9 @@ var ORGS = [
       100: 'clean water for a whole family for a month'
     },
     facts: [
-      { icon: '💧', text: '1 studnia daje czystą wodę 200 rodzinom przez 10 lat' },
-      { icon: '🌍', text: 'Działają w 29 krajach Afryki i Azji' },
-      { icon: '✅', text: '92% środków trafia bezpośrednio do projektów' }
+      { icon: '💧', text: 'One well brings clean water to 200 families for over 10 years' },
+      { icon: '🌍', text: 'Working in 29 countries across Africa and Asia' },
+      { icon: '✅', text: '92% of every dollar goes directly to water projects' }
     ],
     supporters: 8,
     icon: 'drop',
@@ -713,9 +713,9 @@ var ORGS = [
       100: 'a patch of rainforest for a full year'
     },
     facts: [
-      { icon: '🌿', text: 'Chronią ponad 1 milion km² lasu deszczowego rocznie' },
-      { icon: '🐆', text: 'Uratowali ponad 80 gatunków przed wyginięciem' },
-      { icon: '♻️', text: 'Działają w ponad 100 krajach od 1961 roku' }
+      { icon: '🌿', text: 'Protecting over 1 million km² of rainforest every year' },
+      { icon: '🐆', text: 'Helped save more than 80 species from extinction' },
+      { icon: '♻️', text: 'Active in 100+ countries since 1961' }
     ],
     supporters: 3,
     icon: 'leaf',
@@ -738,9 +738,9 @@ var ORGS = [
       100: "a week's groceries for a family"
     },
     facts: [
-      { icon: '🍽️', text: 'Co miesiąc pomagają 3000 rodzin w Twojej okolicy' },
-      { icon: '🥗', text: 'Ratują 40 ton żywności przed zmarnowaniem każdego roku' },
-      { icon: '❤️', text: 'Wolontariusze z Twojego miasta pakują paczki każdą sobotę' }
+      { icon: '🍽️', text: 'Feeding 3,000 local families every single month' },
+      { icon: '🥗', text: 'Rescuing 40 tons of food from going to waste each year' },
+      { icon: '❤️', text: 'Local volunteers pack boxes in your community every Saturday' }
     ],
     supporters: 5,
     icon: 'heart',
@@ -949,8 +949,8 @@ function selectOrg(org) {
   if (supporters > 5) avatarsHtml += '<div class="camp-social-avatar">+' + (supporters - 5) + '</div>';
   document.getElementById('campSocialAvatars').innerHTML = avatarsHtml;
   document.getElementById('campSocialLabel').innerHTML = supporters > 0
-    ? '<strong>' + supporters + ' uczniów</strong> z Twojej klasy już wpłaciło!'
-    : 'Bądź pierwszą osobą z klasy!';
+    ? '<strong>' + supporters + ' classmates</strong> in your class already donated!'
+    : 'Be the first in your class to donate!';
 
   goTo('s-campaign');
 
