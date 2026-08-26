@@ -228,16 +228,27 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
    SCREEN 2 — Donate Amount
 ════════════════════════════════════════════════════════════════ */
 #s-donate {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 80px 120px 60px; box-sizing: border-box; gap: 20px;
+  position: relative; overflow: hidden;
+  background: #1f1f25; /* overridden per org */
+}
+.donate-bg-shape {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -34%);
+  width: 1292px; height: auto;
+  pointer-events: none; z-index: 0;
 }
 .donate-heading {
-  font-family: var(--font-display); font-weight: 400; font-size: 64px;
-  line-height: 1.06; color: #f2f3e5; text-align: center; margin: 0;
+  position: absolute; top: 75px; left: 50%; transform: translateX(-50%);
+  width: 700px; z-index: 1;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  letter-spacing: 1.5px; line-height: 1.06;
+  color: #f2f3e5; text-align: center; margin: 0;
 }
 /* ─── Donate arc slider ────────────────────────────────────── */
-.donate-arc-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.donate-arc-wrap {
+  position: absolute; top: 310px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; z-index: 1;
+}
 .donate-arc {
   position: relative; width: 532px; height: 248px;
   overflow: visible; outline: none; cursor: grab;
@@ -247,8 +258,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .donate-arc svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
 .donate-arc__hit { position: absolute; inset: 0; }
 .donate-arc__thumb {
-  position: absolute; width: 100px; height: 100px; border-radius: 50%;
-  background: var(--org-color, #49aee1); border: 8px solid #1f1f25;
+  position: absolute; width: 116px; height: 116px; border-radius: 50%;
+  background: #6A7EFF; border: 12px solid #2f2f37;
   display: flex; align-items: center; justify-content: center;
   transform: translate(-50%, -50%); pointer-events: none;
   will-change: left, top; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.45));
@@ -259,27 +270,21 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   transition: transform 0.12s ease;
   filter: drop-shadow(0 8px 28px rgba(0,0,0,0.55));
 }
-.donate-arc-amount {
-  display: flex; align-items: center; gap: 10px; margin-top: -16px;
-  font-family: var(--font-display); font-weight: 400; font-size: 48px;
-  letter-spacing: -2px; line-height: 1; color: #f2f3e5;
+.donate-arc-pill {
+  background: #2f2f37; border-radius: 99px;
+  padding: 10px 24px; margin-top: -4px;
+  font-family: var(--font-display); font-weight: 700; font-size: 16px;
+  letter-spacing: 0; line-height: normal; color: #f2f3e5;
 }
-
-.donate-impact-preview {
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 24px;
-  font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: var(--org-color, #49aee1); text-align: center; min-width: 400px;
-  min-height: 56px; display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.03);
-  transition: opacity 200ms;
-}
-.donate-impact-preview.empty { opacity: 0; }
+.donate-impact-preview { display: none; }
 .btn-confirm {
-  height: 56px; width: 360px;
-  background: #f2f3e5; border: none; border-radius: 12px;
-  font-family: var(--font-body); font-size: 16px; font-weight: 700;
+  position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%);
+  height: 48px; width: 270px; z-index: 1;
+  background: #f2f3e5; border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
   color: #1f1f25; cursor: pointer; letter-spacing: -0.1px;
   transition: opacity 120ms; opacity: 0.3; pointer-events: none;
+  box-shadow: 0 1px 1px rgba(20,21,26,0.03);
 }
 .btn-confirm.ready { opacity: 1; pointer-events: all; }
 .btn-confirm.ready:hover { opacity: 0.85; }
@@ -606,6 +611,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   ══════════════════════════════════════════════════════════════ -->
   <div id="s-donate" class="screen">
 
+    <img id="donateBgShape" class="donate-bg-shape" src="" alt="">
+
     <button class="back-btn" onclick="goTo('s-campaign')">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15 18L9 12L15 6" stroke="#f2f3e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -618,22 +625,19 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div class="donate-arc" id="donateArc" tabindex="0">
         <svg viewBox="0 0 532 248" width="532" height="248">
           <path id="donateTrack" fill="none" stroke="#2b2b32" stroke-width="44" stroke-linecap="round"/>
-          <path id="donateFill"  fill="none" stroke="#49aee1" stroke-width="44" stroke-linecap="round"/>
+          <path id="donateFill"  fill="none" stroke="#6A7EFF" stroke-width="44" stroke-linecap="round"/>
         </svg>
         <div class="donate-arc__hit" id="donateArcHit"></div>
         <div class="donate-arc__thumb" id="donateArcThumb">
           <img src="./components/spark-color.svg" alt="" style="width:44px;height:44px;pointer-events:none;">
         </div>
       </div>
-      <div class="donate-arc-amount">
-        <span id="donateArcNum">—</span>
-        <img src="./components/spark-color.svg" alt="" style="width:48px;height:48px;">
-      </div>
+      <div class="donate-arc-pill" id="donateArcNum">—</div>
     </div>
 
-    <div class="donate-impact-preview empty" id="donateImpact"></div>
+    <div class="donate-impact-preview" id="donateImpact"></div>
 
-    <button class="btn-confirm" id="btnConfirm" onclick="confirmDonate()">Confirm donation</button>
+    <button class="btn-confirm" id="btnConfirm" onclick="confirmDonate()">Donate Sparks</button>
 
   </div>
 
@@ -677,6 +681,7 @@ var ORGS = [
     color: '#49aee1',
     darkBg: '#0d2234',
     gradStops: [{offset:'0%',color:'#6A7EFF'},{offset:'100%',color:'#2A315D'}],
+    bigShape: './components/big-drop.svg',
     classTotal: 12450,
     goal: 20000,
     campaign: 'Clean water for your community',
@@ -703,6 +708,7 @@ var ORGS = [
     color: '#5cc47a',
     darkBg: '#0b2018',
     gradStops: [{offset:'0%',color:'#68DCC6'},{offset:'56%',color:'#284B44'}], personalColor: '#68DCC6',
+    bigShape: './components/big tree.svg',
     classTotal: 4600,
     goal: 20000,
     campaign: 'Protect the Amazon rainforest',
@@ -729,6 +735,7 @@ var ORGS = [
     color: '#f5c842',
     darkBg: '#1f1a08',
     gradStops: [{offset:'0%',color:'#FDDA3C'},{offset:'71%',color:'#5A4518'}], personalColor: '#FDDA3C',
+    bigShape: './components/big heart.svg',
     classTotal: 9000,
     goal: 20000,
     campaign: 'Feed families this winter',
@@ -1054,15 +1061,7 @@ function daMoveToAngle(a) {
   var t = (DA_A_MAX - a) / (DA_A_MAX - DA_A_MIN);
   var amount = Math.max(1, Math.round(t * Math.max(1, userSparks)));
   selectedAmt = amount;
-  document.getElementById('donateArcNum').textContent = amount + '/' + userSparks;
-  var preview = document.getElementById('donateImpact');
-  if (selectedOrg && selectedOrg.impacts) {
-    var keys = Object.keys(selectedOrg.impacts).map(Number).sort(function(a, b) { return a - b; });
-    var key = keys[0];
-    for (var i = 0; i < keys.length; i++) { if (amount >= keys[i]) key = keys[i]; }
-    preview.classList.remove('empty');
-    preview.textContent = selectedOrg.impacts[key];
-  }
+  document.getElementById('donateArcNum').textContent = amount + ' / ' + userSparks + ' Sparks';
   var btn = document.getElementById('btnConfirm');
   if (amount >= 1 && amount <= userSparks) {
     btn.classList.add('ready');
@@ -1073,19 +1072,24 @@ function daMoveToAngle(a) {
   }
 }
 function initDonateArc() {
-  if (selectedOrg) {
-    document.getElementById('donateFill').style.stroke = selectedOrg.color;
-    document.getElementById('donateArcThumb').style.background = selectedOrg.color;
-  }
-  document.getElementById('donateImpact').classList.add('empty');
+  var arcColor = selectedOrg && selectedOrg.gradStops ? selectedOrg.gradStops[0].color : '#6A7EFF';
+  document.getElementById('donateFill').style.stroke = arcColor;
+  document.getElementById('donateArcThumb').style.background = arcColor;
   document.getElementById('btnConfirm').classList.remove('ready');
-  document.getElementById('btnConfirm').textContent = 'Confirm donation';
+  document.getElementById('btnConfirm').textContent = 'Donate Sparks';
   var startAmt = Math.max(1, Math.min(10, userSparks));
   var startT = startAmt / Math.max(1, userSparks);
   daMoveToAngle(DA_A_MAX - startT * (DA_A_MAX - DA_A_MIN));
 }
 function openDonateScreen() {
   initDonateArc();
+  var screen = document.getElementById('s-donate');
+  if (selectedOrg) {
+    screen.style.background = selectedOrg.gradStops[0].color;
+    var shape = document.getElementById('donateBgShape');
+    shape.src = selectedOrg.bigShape || '';
+    shape.style.display = selectedOrg.bigShape ? 'block' : 'none';
+  }
   goTo('s-donate');
 }
 (function() {
