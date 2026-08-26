@@ -463,7 +463,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   margin: 0; letter-spacing: 0;
 }
 .dc-shape-wrap {
-  position: absolute; left: 50%; top: 50%;
+  position: absolute; left: 50%; top: calc(50% - 36px);
   transform: translate(-50%, -50%);
   width: 250px; height: 250px; overflow: hidden;
 }
@@ -480,8 +480,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   letter-spacing: -0.8px; color: #f2f3e5; margin: 0;
 }
 .dc-card-class-label {
-  font-family: var(--font-body); font-size: 12px; font-weight: 500;
-  color: rgba(242,243,229,0.3); margin: 0; line-height: 16px; letter-spacing: 0.4px;
+  font-family: var(--font-body); font-size: 9px; font-weight: 500;
+  color: rgba(242,243,229,0.3); margin: 0; line-height: 14px; letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 .dc-card-your {
@@ -491,7 +491,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* Single-charity split layout */
 .dc-card--single { display: flex; flex-direction: row; }
 .dc-card-left { flex: 1; position: relative; overflow: hidden; }
-.dc-card--single .dc-shape-wrap { top: calc(50% - 26px); }
+.dc-card--single .dc-shape-wrap { top: calc(50% - 36px); }
 .dc-card-photo {
   width: 350px; flex-shrink: 0;
   position: relative; overflow: hidden;
@@ -801,7 +801,7 @@ var GIVING_ORGS = [
     goalText: 'meals for 500 local families',
     impacts: { 10: 'a healthy snack for a child', 25: 'a full hot meal for someone in need', 50: 'a family dinner for four people', 100: "a week's groceries for a family" }
   },
-  { id: 'wwf', name: 'WWF', cardTitle: 'WWF',
+  { id: 'wwf', name: 'Amazon Forest', cardTitle: 'Amazon Forest',
     color: '#5cc47a', fillColor: '#68DCC6', accentColor: '#C3F1E8',
     shapePath: 'M125 0C91.8268 0 64.9351 26.892 64.9351 60.0649C64.9351 62.7546 62.7546 64.9351 60.0649 64.9351C26.892 64.9351 0 91.8268 0 125C0 158.173 26.892 185.065 60.0649 185.065C62.7546 185.065 64.9351 187.245 64.9351 189.935C64.9351 223.108 91.8268 250 125 250C158.173 250 185.065 223.108 185.065 189.935C185.065 187.245 187.245 185.065 189.935 185.065C223.108 185.065 250 158.173 250 125C250 91.8268 223.108 64.9351 189.935 64.9351C187.245 64.9351 185.065 62.7546 185.065 60.0649C185.065 26.892 158.173 0 125 0Z',
     classTotal: 4600, goal: 20000,
