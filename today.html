@@ -30,6 +30,7 @@ html[data-entry] .today-banner     { transform: translateY(120px) !important;  o
 html[data-entry] #cardRow          { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] .today-footer     { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120px) !important; opacity: 0 !important; }
+html[data-entry] #sparkzGoalBar    { transform: translateY(120px) !important; opacity: 0 !important; }
 .bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
 .bp-device {
   width: 1194px; height: 834px; position: relative; overflow: hidden;
@@ -836,6 +837,8 @@ scale(); addEventListener('resize', scale);
     document.getElementById('cardRow').style.transition       = T;
     document.querySelector('.today-footer').style.transition  = T;
     document.querySelector('.support-handle').style.transition = T;
+    var goalBar = document.getElementById('sparkzGoalBar');
+    if (goalBar) goalBar.style.transition = T;
     requestAnimationFrame(() => {
       document.documentElement.removeAttribute('data-entry');
     });
