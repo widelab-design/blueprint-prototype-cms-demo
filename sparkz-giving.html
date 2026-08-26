@@ -570,8 +570,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
           <svg class="camp-ring-svg" width="292" height="292" viewBox="0 0 292 292">
             <defs>
               <linearGradient id="campRingGrad" x1="146" y1="0" x2="146" y2="292" gradientUnits="userSpaceOnUse">
-                <stop id="campRingGradStop1" offset="0%" stop-color="#6A7EFF"/>
-                <stop id="campRingGradStop2" offset="100%" stop-color="#2A315D"/>
+                <stop offset="0%" stop-color="#6A7EFF"/>
+                <stop offset="100%" stop-color="#2A315D"/>
               </linearGradient>
             </defs>
             <circle class="camp-ring-track" cx="146" cy="146" r="130"/>
@@ -676,7 +676,7 @@ var ORGS = [
     name: 'Water Charity',
     color: '#49aee1',
     darkBg: '#0d2234',
-    gradLight: '#6A7EFF', gradDark: '#2A315D',
+    gradStops: [{offset:'0%',color:'#6A7EFF'},{offset:'100%',color:'#2A315D'}],
     classTotal: 12450,
     goal: 20000,
     campaign: 'Clean water for your community',
@@ -702,7 +702,7 @@ var ORGS = [
     name: 'WWF',
     color: '#5cc47a',
     darkBg: '#0b2018',
-    gradLight: '#68DCC6', gradDark: '#284B44', personalColor: '#68DCC6',
+    gradStops: [{offset:'0%',color:'#68DCC6'},{offset:'56%',color:'#284B44'}], personalColor: '#68DCC6',
     classTotal: 4600,
     goal: 20000,
     campaign: 'Protect the Amazon rainforest',
@@ -728,7 +728,7 @@ var ORGS = [
     name: 'Local Food Bank',
     color: '#f5c842',
     darkBg: '#1f1a08',
-    gradLight: '#FDDA3C', gradDark: '#5A4518', personalColor: '#FDDA3C',
+    gradStops: [{offset:'0%',color:'#FDDA3C'},{offset:'100%',color:'#5A4518'}], personalColor: '#FDDA3C',
     classTotal: 9000,
     goal: 20000,
     campaign: 'Feed families this winter',
@@ -947,9 +947,11 @@ function selectOrg(org) {
   document.getElementById('campTitle').textContent = org.campaign;
   document.getElementById('campDesc').textContent = org.desc;
 
-  // Ring — update gradient colors per org
-  document.getElementById('campRingGradStop1').setAttribute('stop-color', org.gradLight || '#6A7EFF');
-  document.getElementById('campRingGradStop2').setAttribute('stop-color', org.gradDark || '#2A315D');
+  // Ring — rebuild gradient stops per org
+  var stops = org.gradStops || [{offset:'0%',color:'#6A7EFF'},{offset:'100%',color:'#2A315D'}];
+  document.getElementById('campRingGrad').innerHTML = stops.map(function(s) {
+    return '<stop offset="' + s.offset + '" stop-color="' + s.color + '"/>';
+  }).join('');
   var circumference = 2 * Math.PI * 130;
   var fillLen = Math.max(0, pct / 100 * circumference);
   var ringFill = document.getElementById('campRingFill');
