@@ -115,10 +115,25 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   width: 374px; flex-shrink: 0; height: 100%;
   position: relative; overflow: hidden;
 }
+.camp-left-video {
+  position: absolute; top: 0; left: 0; right: 0; height: 220px;
+  background: #111117; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+}
+.camp-left-video-play {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(242,243,229,0.12); border: 1.5px solid rgba(242,243,229,0.2);
+  display: flex; align-items: center; justify-content: center;
+}
+.camp-left-video-play svg { margin-left: 3px; }
+.camp-left-video-label {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: rgba(242,243,229,0.3); letter-spacing: 0.5px;
+}
 .camp-left-info {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 120px;
+  position: absolute; top: 220px; left: 0; right: 0; bottom: 0;
   display: flex; flex-direction: column; justify-content: center;
-  padding: 48px 36px;
+  padding: 28px 36px;
 }
 .camp-left-why {
   font-family: var(--font-body); font-size: 12px; font-weight: 600;
@@ -132,11 +147,6 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .camp-fact-text {
   font-family: var(--font-body); font-size: 15px; font-weight: 500;
   color: rgba(242,243,229,0.72); line-height: 1.5;
-}
-.camp-left-name {
-  font-family: var(--font-display); font-weight: 700; font-size: 28px;
-  text-transform: uppercase; color: #f2f3e5; letter-spacing: 0.5px;
-  position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%); z-index: 2; margin: 0; line-height: 1; white-space: nowrap;
 }
 
 .camp-right {
@@ -544,13 +554,20 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </svg>
     </button>
 
-    <!-- Left: why + facts -->
+    <!-- Left: video + why + facts -->
     <div class="camp-left" id="campLeft">
+      <div class="camp-left-video">
+        <div class="camp-left-video-play">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M5 3.5L13 8L5 12.5V3.5Z" fill="rgba(242,243,229,0.6)"/>
+          </svg>
+        </div>
+        <span class="camp-left-video-label">Watch their story</span>
+      </div>
       <div class="camp-left-info">
         <p class="camp-left-why">Why <span id="campWhyName"></span>?</p>
         <div class="camp-facts" id="campFacts"></div>
       </div>
-      <p class="camp-left-name" id="campOrgName">CHARITY WATER</p>
     </div>
 
     <!-- Right: info + ring -->
@@ -924,7 +941,7 @@ function selectOrg(org) {
     return '<div class="camp-fact"><span class="camp-fact-icon">' + f.icon + '</span><span class="camp-fact-text">' + f.text + '</span></div>';
   }).join('');
 
-  document.getElementById('campOrgName').textContent = org.name.toUpperCase();
+
 
   // Right panel
   document.getElementById('campTitle').textContent = org.campaign;
