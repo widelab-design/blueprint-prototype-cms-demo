@@ -244,37 +244,43 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   letter-spacing: 1.5px; line-height: 1.06;
   color: #f2f3e5; text-align: center; margin: 0;
 }
-/* ─── Donate arc slider ────────────────────────────────────── */
+/* ─── Donate arc slider — identyczny komponent z emotion detail ── */
 .donate-arc-wrap {
-  position: absolute; top: 310px; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; z-index: 1;
+  position: absolute; top: 304px; left: 50%; transform: translateX(-50%);
+  z-index: 1;
 }
-.donate-arc {
-  position: relative; width: 532px; height: 248px;
-  overflow: visible; outline: none; cursor: grab;
-  user-select: none; -webkit-user-select: none;
+.arc-slider {
+  position: relative; width: 532px; height: 310px;
+  overflow: visible; outline: none;
+  cursor: grab; -webkit-user-select: none; user-select: none;
 }
-.donate-arc.is-dragging { cursor: grabbing; }
-.donate-arc svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
-.donate-arc__hit { position: absolute; inset: 0; }
-.donate-arc__thumb {
-  position: absolute; width: 116px; height: 116px; border-radius: 50%;
-  background: #6A7EFF; border: 12px solid #2f2f37;
+.arc-slider.is-dragging { cursor: grabbing; }
+.arc-slider svg { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; }
+.arc-slider__hit { position: absolute; inset: 0; }
+.arc-slider__thumb {
+  position: absolute; width: 104px; height: 104px; border-radius: 50%;
+  background: #2f2f37; border: 10px solid #2f2f37;
   display: flex; align-items: center; justify-content: center;
-  transform: translate(-50%, -50%); pointer-events: none;
-  will-change: left, top; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.45));
+  font-size: 48px; line-height: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none; will-change: left, top, transform;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,.5));
   transition: none;
 }
-.donate-arc.is-dragging .donate-arc__thumb {
-  transform: translate(-50%, -50%) scale(1.07);
-  transition: transform 0.12s ease;
-  filter: drop-shadow(0 8px 28px rgba(0,0,0,0.55));
+.arc-slider.is-dragging .arc-slider__thumb {
+  transform: translate(-50%, -50%) scale(1.06);
+  transition: transform .12s ease;
 }
-.donate-arc-pill {
-  background: #2f2f37; border-radius: 99px;
-  padding: 10px 24px; margin-top: -4px;
-  font-family: var(--font-display); font-weight: 700; font-size: 16px;
-  letter-spacing: 0; line-height: normal; color: #f2f3e5;
+.arc-slider__pill {
+  position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%);
+  background: #2f2f37; border-radius: 99px; padding: 0 24px;
+  min-width: 160px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.arc-slider__pill span {
+  color: #f2f3e5; font-family: var(--font-body);
+  font-size: 16px; font-weight: 700; line-height: normal; text-align: center;
 }
 .donate-impact-preview { display: none; }
 .btn-confirm {
@@ -622,17 +628,24 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
     <h1 class="donate-heading">How many<br>Sparks?</h1>
 
     <div class="donate-arc-wrap">
-      <div class="donate-arc" id="donateArc" tabindex="0">
-        <svg viewBox="0 0 532 248" width="532" height="248">
-          <path id="donateTrack" fill="none" stroke="#2b2b32" stroke-width="44" stroke-linecap="round"/>
-          <path id="donateFill"  fill="none" stroke="#6A7EFF" stroke-width="44" stroke-linecap="round"/>
+      <div class="arc-slider" id="donateArc" tabindex="0">
+        <svg viewBox="0 0 532 310" width="532" height="310" overflow="visible">
+          <defs>
+            <linearGradient id="gradDonate" gradientUnits="userSpaceOnUse" x1="48" y1="247" x2="480" y2="247">
+              <stop id="donateGradStop1" offset="0%" stop-color="#2A315D"/>
+              <stop id="donateGradStop2" offset="100%" stop-color="#6A7EFF"/>
+            </linearGradient>
+          </defs>
+          <path id="donateTrack" fill="none" stroke="#2f2f37" stroke-width="68" stroke-linecap="round"/>
+          <path id="donateFill"  fill="none" stroke="url(#gradDonate)" stroke-width="48" stroke-linecap="round"/>
+          <g id="donateDots"></g>
         </svg>
-        <div class="donate-arc__hit" id="donateArcHit"></div>
-        <div class="donate-arc__thumb" id="donateArcThumb">
+        <div class="arc-slider__hit" id="donateArcHit"></div>
+        <div class="arc-slider__thumb" id="donateArcThumb">
           <img src="./components/spark-color.svg" alt="" style="width:44px;height:44px;pointer-events:none;">
         </div>
+        <div class="arc-slider__pill"><span id="donateArcNum">—</span></div>
       </div>
-      <div class="donate-arc-pill" id="donateArcNum">—</div>
     </div>
 
     <div class="donate-impact-preview" id="donateImpact"></div>
@@ -1072,9 +1085,30 @@ function daMoveToAngle(a) {
   }
 }
 function initDonateArc() {
-  var arcColor = selectedOrg && selectedOrg.gradStops ? selectedOrg.gradStops[0].color : '#6A7EFF';
-  document.getElementById('donateFill').style.stroke = arcColor;
-  document.getElementById('donateArcThumb').style.background = arcColor;
+  var gradLight = selectedOrg && selectedOrg.gradStops ? selectedOrg.gradStops[0].color : '#6A7EFF';
+  var gradDark  = selectedOrg && selectedOrg.gradStops ? selectedOrg.gradStops[selectedOrg.gradStops.length - 1].color : '#2A315D';
+  var thumbColor = selectedOrg ? (selectedOrg.personalColor || gradLight) : '#6A7EFF';
+
+  document.getElementById('donateGradStop1').setAttribute('stop-color', gradDark);
+  document.getElementById('donateGradStop2').setAttribute('stop-color', gradLight);
+  document.getElementById('donateArcThumb').style.background = thumbColor;
+  document.getElementById('donateArcThumb').style.borderColor = '#2f2f37';
+
+  // Dots identical to emotion screen
+  var NS = 'http://www.w3.org/2000/svg';
+  var stops3 = [DA_A_MAX, (DA_A_MAX + DA_A_MIN) / 2, DA_A_MIN];
+  var dotsG = document.getElementById('donateDots');
+  dotsG.innerHTML = '';
+  stops3.forEach(function(a) {
+    var p = daPt(DA_RM, a);
+    var c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', Math.round(p[0] * 10) / 10);
+    c.setAttribute('cy', Math.round(p[1] * 10) / 10);
+    c.setAttribute('r', '7');
+    c.setAttribute('fill', '#18181f');
+    dotsG.appendChild(c);
+  });
+
   document.getElementById('btnConfirm').classList.remove('ready');
   document.getElementById('btnConfirm').textContent = 'Donate Sparks';
   var startAmt = Math.max(1, Math.min(10, userSparks));
