@@ -644,7 +644,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
         <div class="arc-slider__thumb" id="donateArcThumb">
           <img src="./components/spark-color.svg" alt="" style="width:44px;height:44px;pointer-events:none;">
         </div>
-        <div class="arc-slider__pill"><span id="donateArcNum">—</span></div>
+        <div class="arc-slider__pill"><span id="donateArcNum">—</span><span id="donateArcBalance" style="color:rgba(242,243,229,0.4)"></span></div>
       </div>
     </div>
 
@@ -1074,7 +1074,8 @@ function daMoveToAngle(a) {
   var t = (DA_A_MAX - a) / (DA_A_MAX - DA_A_MIN);
   var amount = Math.max(1, Math.round(t * Math.max(1, userSparks)));
   selectedAmt = amount;
-  document.getElementById('donateArcNum').textContent = amount + ' / ' + userSparks + ' Sparks';
+  document.getElementById('donateArcNum').textContent = amount;
+  document.getElementById('donateArcBalance').textContent = ' / ' + userSparks + ' Sparks';
   var btn = document.getElementById('btnConfirm');
   if (amount >= 1 && amount <= userSparks) {
     btn.classList.add('ready');
