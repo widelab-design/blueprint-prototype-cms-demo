@@ -28,7 +28,6 @@ html[data-entry] .today-sidebar    { transform: translateY(-50%) translateX(-140
 html[data-entry] .today-header     { transform: translateY(-80px) !important;  opacity: 0 !important; }
 html[data-entry] .today-banner     { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] #cardRow          { transform: translateY(120px) !important;  opacity: 0 !important; }
-html[data-entry] .today-footer     { transform: translateY(120px) !important;  opacity: 0 !important; }
 html[data-entry] .support-handle   { transform: translateY(-50%) translateX(120px) !important; opacity: 0 !important; }
 html[data-entry] #sparkzGoalBar    { transform: translateY(120px) !important; opacity: 0 !important; }
 .bp-stage { position: fixed; inset: 0; display: grid; place-items: center; }
@@ -830,15 +829,16 @@ scale(); addEventListener('resize', scale);
 
   setTimeout(() => {
     // Set transitions first, then remove data-entry — CSS goes from off-screen to default
-    document.querySelector('.today-sidebar').style.transition = T;
-    document.querySelector('.today-header').style.transition  = T;
-    var banner = document.getElementById('todayBanner');
-    if (banner) banner.style.transition = T;
-    document.getElementById('cardRow').style.transition       = T;
-    document.querySelector('.today-footer').style.transition  = T;
-    document.querySelector('.support-handle').style.transition = T;
-    var goalBar = document.getElementById('sparkzGoalBar');
-    if (goalBar) goalBar.style.transition = T;
+    var els = [
+      document.querySelector('.today-sidebar'),
+      document.querySelector('.today-header'),
+      document.getElementById('todayBanner'),
+      document.getElementById('cardRow'),
+      document.querySelector('.today-footer'),
+      document.querySelector('.support-handle'),
+      document.getElementById('sparkzGoalBar'),
+    ];
+    els.forEach(function(el) { if (el) el.style.transition = T; });
     requestAnimationFrame(() => {
       document.documentElement.removeAttribute('data-entry');
     });
