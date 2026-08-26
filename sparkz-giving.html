@@ -570,8 +570,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
           <svg class="camp-ring-svg" width="292" height="292" viewBox="0 0 292 292">
             <defs>
               <linearGradient id="campRingGrad" x1="146" y1="0" x2="146" y2="292" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#6A7EFF"/>
-                <stop offset="100%" stop-color="#2A315D"/>
+                <stop id="campRingGradStop1" offset="0%" stop-color="#6A7EFF"/>
+                <stop id="campRingGradStop2" offset="100%" stop-color="#2A315D"/>
               </linearGradient>
             </defs>
             <circle class="camp-ring-track" cx="146" cy="146" r="130"/>
@@ -676,6 +676,7 @@ var ORGS = [
     name: 'Water Charity',
     color: '#49aee1',
     darkBg: '#0d2234',
+    gradLight: '#6A7EFF', gradDark: '#2A315D',
     classTotal: 12450,
     goal: 20000,
     campaign: 'Clean water for your community',
@@ -701,6 +702,7 @@ var ORGS = [
     name: 'WWF',
     color: '#5cc47a',
     darkBg: '#0b2018',
+    gradLight: '#5cc47a', gradDark: '#0b2018',
     classTotal: 4600,
     goal: 20000,
     campaign: 'Protect the Amazon rainforest',
@@ -711,7 +713,7 @@ var ORGS = [
       50:  'habitat for a family of animals',
       100: 'a patch of rainforest for a full year'
     },
-    photo: null,
+    photo: './components/rainforest.jpg',
     facts: [
       { icon: 'leaf', text: 'Protecting over 1 million km² of rainforest every year' },
       { icon: 'check', text: 'Helped save more than 80 species from extinction' },
@@ -726,6 +728,7 @@ var ORGS = [
     name: 'Local Food Bank',
     color: '#f5c842',
     darkBg: '#1f1a08',
+    gradLight: '#f5c842', gradDark: '#1f1a08',
     classTotal: 9000,
     goal: 20000,
     campaign: 'Feed families this winter',
@@ -736,7 +739,7 @@ var ORGS = [
       50:  'a family dinner for four people',
       100: "a week's groceries for a family"
     },
-    photo: null,
+    photo: './components/foodbank.jpg',
     facts: [
       { icon: 'fork', text: 'Feeding 3,000 local families every single month' },
       { icon: 'leaf', text: 'Rescuing 40 tons of food from going to waste each year' },
@@ -944,7 +947,9 @@ function selectOrg(org) {
   document.getElementById('campTitle').textContent = org.campaign;
   document.getElementById('campDesc').textContent = org.desc;
 
-  // Ring
+  // Ring — update gradient colors per org
+  document.getElementById('campRingGradStop1').setAttribute('stop-color', org.gradLight || '#6A7EFF');
+  document.getElementById('campRingGradStop2').setAttribute('stop-color', org.gradDark || '#2A315D');
   var circumference = 2 * Math.PI * 130;
   var fillLen = Math.max(0, pct / 100 * circumference);
   var ringFill = document.getElementById('campRingFill');
