@@ -184,7 +184,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   transition: stroke-dasharray 800ms cubic-bezier(0.4,0,0.2,1);
 }
 .camp-ring-personal {
-  fill: none; stroke: #6A7EFF; stroke-width: 18; stroke-linecap: round;
+  fill: none; stroke-width: 18; stroke-linecap: round;
   stroke-dasharray: 0 798;
   transition: stroke-dasharray 800ms cubic-bezier(0.4,0,0.2,1);
 }
@@ -702,7 +702,7 @@ var ORGS = [
     name: 'WWF',
     color: '#5cc47a',
     darkBg: '#0b2018',
-    gradLight: '#5cc47a', gradDark: '#0b2018',
+    gradLight: '#68DCC6', gradDark: '#284B44', personalColor: '#68DCC6',
     classTotal: 4600,
     goal: 20000,
     campaign: 'Protect the Amazon rainforest',
@@ -968,6 +968,7 @@ function selectOrg(org) {
   var blob = document.getElementById('campRingBlob');
   var blobLabel = document.getElementById('campRingBlobLabel');
 
+  personalArc.style.stroke = org.personalColor || '#6A7EFF';
   personalArc.style.strokeDasharray = '0 ' + circumference;
   personalArc.setAttribute('transform', 'rotate(-90 146 146)');
 
