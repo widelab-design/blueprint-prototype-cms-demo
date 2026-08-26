@@ -1075,7 +1075,7 @@ function daMoveToAngle(a) {
   var amount = Math.max(1, Math.round(t * Math.max(1, userSparks)));
   selectedAmt = amount;
   document.getElementById('donateArcNum').textContent = amount;
-  document.getElementById('donateArcBalance').textContent = ' / ' + userSparks + ' Sparks';
+  document.getElementById('donateArcBalance').textContent = ' / ' + userSparks;
   var btn = document.getElementById('btnConfirm');
   if (amount >= 1 && amount <= userSparks) {
     btn.classList.add('ready');
