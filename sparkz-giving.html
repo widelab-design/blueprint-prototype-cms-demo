@@ -115,11 +115,24 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   width: 374px; flex-shrink: 0; height: 100%;
   position: relative; overflow: hidden;
 }
-.camp-left-ilu {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 88px;
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
+.camp-left-info {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 120px;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 48px 36px;
 }
-.camp-left-ilu img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.camp-left-why {
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  color: rgba(242,243,229,0.3); text-transform: uppercase; letter-spacing: 1.4px;
+  margin: 0 0 28px;
+}
+.camp-left-why span { color: rgba(242,243,229,0.6); }
+.camp-facts { display: flex; flex-direction: column; gap: 22px; }
+.camp-fact { display: flex; gap: 16px; align-items: flex-start; }
+.camp-fact-icon { font-size: 22px; flex-shrink: 0; line-height: 1.35; }
+.camp-fact-text {
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  color: rgba(242,243,229,0.72); line-height: 1.5;
+}
 .camp-left-name {
   font-family: var(--font-display); font-weight: 700; font-size: 28px;
   text-transform: uppercase; color: #f2f3e5; letter-spacing: 0.5px;
@@ -186,6 +199,22 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   font-family: var(--font-body); font-size: 14px; font-weight: 500;
   color: rgba(242,243,229,0.4); margin-top: 12px; letter-spacing: -0.1px;
 }
+
+.camp-social { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.camp-social-avatars { display: flex; align-items: center; }
+.camp-social-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid #2b2b32; background: #444450;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-body); font-size: 11px; font-weight: 700;
+  color: rgba(242,243,229,0.7); margin-left: -7px; flex-shrink: 0;
+}
+.camp-social-avatar:first-child { margin-left: 0; }
+.camp-social-label {
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: rgba(242,243,229,0.35); text-align: center; line-height: 1.4;
+}
+.camp-social-label strong { color: rgba(242,243,229,0.7); font-weight: 600; }
 
 .btn-donate {
   height: 48px; width: 270px;
@@ -515,9 +544,12 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </svg>
     </button>
 
-    <!-- Left: illustration -->
+    <!-- Left: why + facts -->
     <div class="camp-left" id="campLeft">
-      <div class="camp-left-ilu" id="campLeftIlu"><!-- SVG injected by JS --></div>
+      <div class="camp-left-info">
+        <p class="camp-left-why">Dlaczego <span id="campWhyName"></span>?</p>
+        <div class="camp-facts" id="campFacts"></div>
+      </div>
       <p class="camp-left-name" id="campOrgName">CHARITY WATER</p>
     </div>
 
@@ -553,6 +585,11 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
             <div class="camp-ring-sub" id="campRingGoal">/—</div>
           </div>
         </div>
+      </div>
+
+      <div class="camp-social" id="campSocial">
+        <div class="camp-social-avatars" id="campSocialAvatars"></div>
+        <p class="camp-social-label" id="campSocialLabel"></p>
       </div>
 
       <button class="btn-donate" id="btnDonate" onclick="openDonateScreen()">
@@ -650,6 +687,12 @@ var ORGS = [
       50:  'a week of clean water for one child',
       100: 'clean water for a whole family for a month'
     },
+    facts: [
+      { icon: '💧', text: '1 studnia daje czystą wodę 200 rodzinom przez 10 lat' },
+      { icon: '🌍', text: 'Działają w 29 krajach Afryki i Azji' },
+      { icon: '✅', text: '92% środków trafia bezpośrednio do projektów' }
+    ],
+    supporters: 8,
     icon: 'drop',
     svg: './components/Component 6.svg',
     iluSize: 374, iluX: 61, iluY: 156
@@ -669,6 +712,12 @@ var ORGS = [
       50:  'habitat for a family of animals',
       100: 'a patch of rainforest for a full year'
     },
+    facts: [
+      { icon: '🌿', text: 'Chronią ponad 1 milion km² lasu deszczowego rocznie' },
+      { icon: '🐆', text: 'Uratowali ponad 80 gatunków przed wyginięciem' },
+      { icon: '♻️', text: 'Działają w ponad 100 krajach od 1961 roku' }
+    ],
+    supporters: 3,
     icon: 'leaf',
     svg: './components/Component 7.svg',
     iluSize: 384, iluX: 53, iluY: 126
@@ -688,6 +737,12 @@ var ORGS = [
       50:  'a family dinner for four people',
       100: "a week's groceries for a family"
     },
+    facts: [
+      { icon: '🍽️', text: 'Co miesiąc pomagają 3000 rodzin w Twojej okolicy' },
+      { icon: '🥗', text: 'Ratują 40 ton żywności przed zmarnowaniem każdego roku' },
+      { icon: '❤️', text: 'Wolontariusze z Twojego miasta pakują paczki każdą sobotę' }
+    ],
+    supporters: 5,
     icon: 'heart',
     svg: './components/Component 5.svg',
     iluSize: 557, iluX: 54, iluY: 75
@@ -862,7 +917,13 @@ function selectOrg(org) {
 
   // Left panel
   document.getElementById('campLeft').style.background = '#2b2b32';
-  document.getElementById('campLeftIlu').innerHTML = '<img src="' + org.svg + '" alt="" style="max-height:340px;max-width:100%;object-fit:contain;">';
+
+  // Left panel: why + facts
+  document.getElementById('campWhyName').textContent = org.name;
+  document.getElementById('campFacts').innerHTML = (org.facts || []).map(function(f) {
+    return '<div class="camp-fact"><span class="camp-fact-icon">' + f.icon + '</span><span class="camp-fact-text">' + f.text + '</span></div>';
+  }).join('');
+
   document.getElementById('campOrgName').textContent = org.name.toUpperCase();
 
   // Right panel
@@ -877,6 +938,19 @@ function selectOrg(org) {
   ringFill.style.strokeDasharray = '0 ' + circumference;
   document.getElementById('campRingNum').textContent = classTotal.toLocaleString();
   document.getElementById('campRingGoal').textContent = '/' + org.goal.toLocaleString();
+
+  // Social proof
+  var supporters = org.supporters || 0;
+  var initials = ['M','A','K','J','P','T','E','S'];
+  var avatarsHtml = '';
+  for (var si = 0; si < Math.min(supporters, 5); si++) {
+    avatarsHtml += '<div class="camp-social-avatar">' + initials[si] + '</div>';
+  }
+  if (supporters > 5) avatarsHtml += '<div class="camp-social-avatar">+' + (supporters - 5) + '</div>';
+  document.getElementById('campSocialAvatars').innerHTML = avatarsHtml;
+  document.getElementById('campSocialLabel').innerHTML = supporters > 0
+    ? '<strong>' + supporters + ' uczniów</strong> z Twojej klasy już wpłaciło!'
+    : 'Bądź pierwszą osobą z klasy!';
 
   goTo('s-campaign');
 
