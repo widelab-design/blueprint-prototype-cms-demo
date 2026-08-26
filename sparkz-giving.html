@@ -1124,6 +1124,13 @@ function openDonateScreen() {
     var shape = document.getElementById('donateBgShape');
     shape.src = selectedOrg.bigShape || '';
     shape.style.display = selectedOrg.bigShape ? 'block' : 'none';
+    if (selectedOrg.id === 'foodbank') {
+      shape.style.transform = 'translate(-50%, -50%) scale(0.85)';
+    } else if (selectedOrg.id === 'wwf') {
+      shape.style.transform = 'translate(-50%, -50%)';
+    } else {
+      shape.style.transform = 'translate(-50%, -34%) scale(1.35)';
+    }
   }
   goTo('s-donate');
 }
