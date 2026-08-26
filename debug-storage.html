@@ -128,6 +128,15 @@
     </button>
   </div>
 
+  <!-- Today -->
+  <div class="group">
+    <div class="group-title">Today</div>
+    <button class="btn btn-neutral" onclick="resetCards()">
+      Reset completed cards
+      <small>Cards go back to sleepy/undone state</small>
+    </button>
+  </div>
+
   <!-- Sparks -->
   <div class="group">
     <div class="group-title">Sparks — Personal</div>
@@ -154,6 +163,13 @@
         <div class="toggle-sub">Shows/hides bar on today.html</div>
       </div>
       <button class="toggle-switch" id="toggleGiving" onclick="toggleSparkzGiving()"></button>
+    </div>
+    <div class="toggle-row" style="padding:4px 0;">
+      <div>
+        <div class="toggle-label">Single charity</div>
+        <div class="toggle-sub">1 card full-width, skip choose screen</div>
+      </div>
+      <button class="toggle-switch" id="toggleSingleCharity" onclick="toggleSingleCharity()"></button>
     </div>
     <button class="btn btn-teal" onclick="resetClassSparks()">
       Reset class sparks
@@ -206,6 +222,7 @@ function testRead() {
     document.getElementById('out').textContent = all || '(empty)';
     updateSparksLabel();
     updateGivingToggle();
+    updateSingleCharityToggle();
   } catch(e) {
     out('Error:\n' + e.message);
   }
@@ -221,6 +238,19 @@ function updateGivingToggle() {
   var enabled = localStorage.getItem('bp_sparkz_giving') === '1';
   var btn = document.getElementById('toggleGiving');
   if (btn) btn.className = 'toggle-switch' + (enabled ? ' on' : '');
+}
+
+function updateSingleCharityToggle() {
+  var enabled = localStorage.getItem('bp_single_charity') === '1';
+  var btn = document.getElementById('toggleSingleCharity');
+  if (btn) btn.className = 'toggle-switch' + (enabled ? ' on' : '');
+}
+
+function resetCards() {
+  localStorage.setItem('bp_today_sections', JSON.stringify(['mood']));
+  localStorage.setItem('bp_fresh_start', '1');
+  out('✓ Cards reset. Go to today.html — cards will appear as undone.');
+  testRead();
 }
 
 function resetVideo() {
@@ -262,6 +292,17 @@ function toggleSparkzGiving() {
   localStorage.setItem('bp_sparkz_giving', next);
   updateGivingToggle();
   out('✓ bp_sparkz_giving = ' + next + '\nRefresh today.html to see the change.');
+  testRead();
+}
+
+function toggleSingleCharity() {
+  var cur = localStorage.getItem('bp_single_charity');
+  var next = (cur === '1') ? '0' : '1';
+  localStorage.setItem('bp_single_charity', next);
+  updateSingleCharityToggle();
+  out('✓ bp_single_charity = ' + next + (next === '1'
+    ? '\nDonations tab shows 1 card (Charity Water). sparkz-giving.html skips "Choose a cause".'
+    : '\nDonations tab shows all 3 charities.'));
   testRead();
 }
 

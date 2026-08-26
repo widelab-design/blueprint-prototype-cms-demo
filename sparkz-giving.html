@@ -74,16 +74,23 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .org-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
 .org-card-label {
-  position: absolute; top: 15px; left: 15px; z-index: 2;
+  position: absolute; top: 15px; left: 15px; z-index: 3;
   font-family: var(--font-display); font-weight: 400; font-size: 24px;
   color: #f2f3e5; text-transform: uppercase; letter-spacing: -0.4px; line-height: 1.12;
 }
+.org-card-photo {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center; pointer-events: none; z-index: 0;
+}
+.org-card-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.4); pointer-events: none; z-index: 1;
+}
 .org-card-ilu {
-  position: absolute; overflow: hidden;
+  position: absolute; overflow: hidden; z-index: 2;
 }
 .org-card-ilu img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .org-card-footer {
-  position: absolute; bottom: -1px; left: -1px;
+  position: absolute; bottom: -1px; left: -1px; z-index: 3;
   width: 344px;
   background: #2f2f37; border: 1px solid #36363f; border-radius: 16px;
   padding: 16px; box-sizing: border-box;
@@ -300,49 +307,51 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
    SCREEN 3 — Confirmation
 ════════════════════════════════════════════════════════════════ */
 #s-thanks {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 80px 120px; box-sizing: border-box; gap: 28px; text-align: center;
+  background: var(--org-color, #49aee1);
+  overflow: hidden;
+  transition: none; /* ellipse animation is the entrance — no opacity fade */
 }
-.thanks-icon { width: 72px; height: 72px; flex-shrink: 0; }
+.thanks-ellipse {
+  position: absolute;
+  left: -351px; top: 150px;
+  width: 1910px; height: 1910px;
+  border-radius: 50%; background: #1f1f25;
+  pointer-events: none; z-index: 0;
+}
+.thanks-content {
+  position: absolute; z-index: 1;
+  left: 50%; top: 253px; transform: translateX(-50%);
+  width: 448px;
+  display: flex; flex-direction: column; gap: 24px; align-items: center;
+  text-align: center; opacity: 0;
+}
 .thanks-headline {
-  font-family: var(--font-display); font-weight: 400; font-size: 64px;
-  line-height: 1.06; color: #f2f3e5; margin: 0;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px;
+  line-height: 1.06; letter-spacing: 1.5px;
+  color: #f2f3e5; margin: 0;
 }
-.thanks-donated {
-  font-family: var(--font-display); font-weight: 400; font-size: 40px;
-  line-height: 1; letter-spacing: -1px;
-  color: var(--org-color, #49aee1);
-  display: flex; align-items: center; gap: 8px; justify-content: center;
+.thanks-message-box {
+  background: #f08b31;
+  display: flex; align-items: flex-start;
+  gap: 12px; padding: 10px; width: 395px; box-sizing: border-box;
 }
-.thanks-progress-wrap { display: flex; flex-direction: column; gap: 12px; width: 520px; }
-.thanks-progress-label {
-  font-family: var(--font-body); font-size: 14px; font-weight: 500;
-  color: rgba(242,243,229,0.5); text-align: center;
+.thanks-monster-wrap {
+  width: 48px; height: 48px; flex-shrink: 0;
+  background: #f2f3e5; padding: 3px; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
 }
-.thanks-bar-wrap { position: relative; height: 8px; background: #2b2b32; border-radius: 99px; }
-.thanks-bar-fill {
-  position: absolute; left: 0; top: 0; height: 8px;
-  background: var(--org-color, #49aee1); border-radius: 99px;
-  transition: width 1000ms cubic-bezier(0.4,0,0.2,1);
-}
-.thanks-pct {
-  font-family: var(--font-display); font-weight: 400; font-size: 24px;
-  letter-spacing: -0.5px; color: #f2f3e5;
-}
-.thanks-msg {
-  font-family: var(--font-body); font-size: 16px; font-weight: 500;
-  color: rgba(242,243,229,0.5); line-height: 1.5; max-width: 440px;
-}
-.thanks-balance {
-  font-family: var(--font-body); font-size: 14px; font-weight: 500;
-  color: rgba(242,243,229,0.35); display: flex; align-items: center; gap: 4px; justify-content: center;
+.thanks-message-text {
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.1; text-align: left; margin: 0;
 }
 .btn-done {
-  height: 56px; width: 280px; margin-top: 8px;
-  background: #f2f3e5; border: none; border-radius: 12px;
-  font-family: var(--font-body); font-size: 16px; font-weight: 700;
-  color: #1f1f25; cursor: pointer; letter-spacing: -0.1px; transition: opacity 120ms;
+  position: absolute; z-index: 1;
+  bottom: 64px; left: 50%; transform: translateX(-50%);
+  height: 48px; width: 270px;
+  background: #f2f3e5; border: none; border-radius: 8px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: #1f1f25; cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms; opacity: 0;
 }
 .btn-done:hover { opacity: 0.85; }
 .btn-done:active { opacity: 0.7; }
@@ -659,25 +668,19 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   ══════════════════════════════════════════════════════════════ -->
   <div id="s-thanks" class="screen">
 
-    <div id="thanksIconWrap"><!-- icon injected --></div>
+    <div class="thanks-ellipse"></div>
 
-    <h1 class="thanks-headline">You donated<br><span id="thanksAmount" style="color:var(--org-color,#49aee1)">50 Sparks!</span></h1>
-
-    <div class="thanks-progress-wrap">
-      <div class="thanks-bar-wrap">
-        <div class="thanks-bar-fill" id="thanksBarFill"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span class="thanks-progress-label" id="thanksProgressMsg"></span>
-        <span class="thanks-pct" id="thanksPct"></span>
+    <div class="thanks-content">
+      <h1 class="thanks-headline">You donated<br><span id="thanksAmount">50 Sparks!</span></h1>
+      <div class="thanks-message-box">
+        <div class="thanks-monster-wrap">
+          <img src="./components/monster-01.svg" width="42" height="42" alt="" style="display:block;">
+        </div>
+        <p class="thanks-message-text" id="thanksOrgMsg">Charity Water was supported by you. Your help matters!</p>
       </div>
     </div>
 
-    <p class="thanks-msg" id="thanksMsg"></p>
-
-    <div class="thanks-balance" id="thanksBalance"></div>
-
-    <button class="btn-done" onclick="doneDonate()">Back to Today</button>
+    <button class="btn-done" onclick="doneDonate()">Done</button>
 
   </div>
 
@@ -711,36 +714,10 @@ var ORGS = [
       { icon: 'globe', text: 'Working in 29 countries across Africa and Asia' },
       { icon: 'arrow', text: '92% of every dollar goes directly to water projects' }
     ],
+    donateMsg: 'Clean water is getting closer to more families — because of you.',
     icon: 'drop',
     svg: './components/Component 6.svg',
     iluSize: 374, iluX: 61, iluY: 156
-  },
-  {
-    id: 'wwf',
-    name: 'WWF',
-    color: '#5cc47a',
-    darkBg: '#0b2018',
-    gradStops: [{offset:'0%',color:'#68DCC6'},{offset:'56%',color:'#284B44'}], personalColor: '#68DCC6',
-    bigShape: './components/big tree.svg',
-    classTotal: 4600,
-    goal: 20000,
-    campaign: 'Protect the Amazon rainforest',
-    desc: 'Help WWF preserve critical rainforest habitat and protect endangered species from deforestation.',
-    impacts: {
-      10:  '10 sq m of rainforest protected',
-      25:  "enough to shelter a bird's habitat",
-      50:  'habitat for a family of animals',
-      100: 'a patch of rainforest for a full year'
-    },
-    photo: './components/rainforest.jpg',
-    facts: [
-      { icon: 'leaf', text: 'Protecting over 1 million km² of rainforest every year' },
-      { icon: 'check', text: 'Helped save more than 80 species from extinction' },
-      { icon: 'globe', text: 'Active in 100+ countries since 1961' }
-    ],
-    icon: 'leaf',
-    svg: './components/Component 7.svg',
-    iluSize: 384, iluX: 53, iluY: 126
   },
   {
     id: 'foodbank',
@@ -765,9 +742,38 @@ var ORGS = [
       { icon: 'leaf', text: 'Rescuing 40 tons of food from going to waste each year' },
       { icon: 'heart', text: 'Local volunteers pack boxes in your community every Saturday' }
     ],
+    donateMsg: 'Local families will eat a little better this week — because of you.',
     icon: 'heart',
     svg: './components/Component 5.svg',
     iluSize: 557, iluX: 54, iluY: 75
+  },
+  {
+    id: 'wwf',
+    name: 'WWF',
+    color: '#5cc47a',
+    darkBg: '#0b2018',
+    gradStops: [{offset:'0%',color:'#68DCC6'},{offset:'56%',color:'#284B44'}], personalColor: '#68DCC6',
+    bigShape: './components/big tree.svg',
+    classTotal: 4600,
+    goal: 20000,
+    campaign: 'Protect the Amazon rainforest',
+    desc: 'Help WWF preserve critical rainforest habitat and protect endangered species from deforestation.',
+    impacts: {
+      10:  '10 sq m of rainforest protected',
+      25:  "enough to shelter a bird's habitat",
+      50:  'habitat for a family of animals',
+      100: 'a patch of rainforest for a full year'
+    },
+    photo: './components/rainforest.jpg',
+    facts: [
+      { icon: 'leaf', text: 'Protecting over 1 million km² of rainforest every year' },
+      { icon: 'check', text: 'Helped save more than 80 species from extinction' },
+      { icon: 'globe', text: 'Active in 100+ countries since 1961' }
+    ],
+    donateMsg: 'A little more rainforest stays standing today — because of you.',
+    icon: 'leaf',
+    svg: './components/Component 7.svg',
+    iluSize: 384, iluX: 53, iluY: 126
   }
 ];
 
@@ -833,7 +839,10 @@ function goTo(id) {
   document.getElementById(id).classList.add('active');
   cur = id;
 }
-function goBack() { goTo(campBackDest); }
+function goBack() {
+  if (campBackDest === null) { window.location.href = 'sparks.html'; }
+  else { goTo(campBackDest); }
+}
 
 // ─── Set org CSS vars on device ───────────────────────────────
 function setOrgColors(org) {
@@ -871,6 +880,7 @@ function hexToRgba(hex, a) {
     card.className = 'org-card';
     card.onclick = function() { selectOrg(org); };
     card.innerHTML =
+      (org.photo ? '<img class="org-card-photo" src="' + org.photo + '" alt=""><div class="org-card-overlay"></div>' : '') +
       '<span class="org-card-label">' + org.name + '</span>' +
       '<div class="org-card-ilu" style="left:' + org.iluX + 'px;top:' + org.iluY + 'px;width:' + org.iluSize + 'px;height:' + org.iluSize + 'px;">' +
         '<img src="' + org.svg + '" alt="">' +
@@ -942,8 +952,8 @@ function giveMoreSparks() {
   }
 }
 
-function selectOrg(org) {
-  campBackDest = cur;
+function selectOrg(org, backDest) {
+  campBackDest = (backDest !== undefined) ? backDest : cur;
   selectedOrg = org;
   selectedAmt = 0;
 
@@ -1125,9 +1135,9 @@ function openDonateScreen() {
     shape.src = selectedOrg.bigShape || '';
     shape.style.display = selectedOrg.bigShape ? 'block' : 'none';
     if (selectedOrg.id === 'foodbank') {
-      shape.style.transform = 'translate(-50%, -50%) scale(0.85)';
+      shape.style.transform = 'translate(-50%, -50%) scale(1.169)';
     } else if (selectedOrg.id === 'wwf') {
-      shape.style.transform = 'translate(-50%, -50%)';
+      shape.style.transform = 'translate(-50%, -50%) scale(1.238)';
     } else {
       shape.style.transform = 'translate(-50%, -34%) scale(1.35)';
     }
@@ -1184,26 +1194,52 @@ function confirmDonate() {
   try { localStorage.setItem('bp_sparkz_donations', JSON.stringify(donations)); } catch(e) {}
 
   // Populate thanks screen
-  document.getElementById('thanksIconWrap').innerHTML = orgIcon(selectedOrg.icon, 72, selectedOrg.color);
   document.getElementById('thanksAmount').textContent = selectedAmt + ' Sparks!';
-  document.getElementById('thanksAmount').style.color = selectedOrg.color;
-  document.getElementById('thanksPct').textContent = newPct + '%';
-  document.getElementById('thanksProgressMsg').textContent = 'Your class is ' + newPct + '% there';
-  document.getElementById('thanksMsg').textContent = remaining > 0
-    ? 'Just ' + remaining.toLocaleString() + ' more Sparks to go. Every contribution brings your class closer.'
-    : 'Your class reached the goal! 🎉 Amazing work.';
-  document.getElementById('thanksBalance').innerHTML =
-    'You have ' + userSparks + ' <img class="spark-sm" src="./components/spark-color.svg" alt="" style="vertical-align:middle"> remaining';
+  document.getElementById('thanksOrgMsg').textContent = selectedOrg.donateMsg || (selectedOrg.name + ' was supported by you. Your help matters!');
+  document.getElementById('s-thanks').style.background = selectedOrg.color;
 
-  goTo('s-thanks');
+  showThanksScreen();
+}
 
+// ─── Thanks screen entrance animation (mirrors today.html showSuccessScreen) ──
+function showThanksScreen() {
+  var sThanks = document.getElementById('s-thanks');
+  var ellipse = sThanks.querySelector('.thanks-ellipse');
+  var ease    = 'transform 800ms cubic-bezier(0.81,0,0.26,0.98)';
+
+  // Reset fade-in elements to hidden
+  sThanks.querySelector('.thanks-content').style.opacity = '0';
+  sThanks.querySelector('.btn-done').style.opacity = '0';
+
+  // Ellipse starts shifted up — covers entire screen in dark
+  ellipse.style.transition = 'none';
+  ellipse.style.transform  = 'translate(-7px,-688px)';
+
+  // Switch to active (opacity:1 immediately because transition:none on #s-thanks)
+  document.getElementById(cur).classList.remove('active');
+  sThanks.classList.add('active');
+  cur = 's-thanks';
+
+  void ellipse.offsetWidth; // force layout commit before transition
+
+  // Dome slides down to resting position
+  ellipse.style.transition = ease;
+  ellipse.style.transform  = 'translate(0,0)';
+
+  // Fade in content and button after dome settles
   setTimeout(function() {
-    document.getElementById('thanksBarFill').style.width = newPct + '%';
-  }, 50);
+    ['.thanks-content', '.btn-done'].forEach(function(sel) {
+      var el = sThanks.querySelector(sel);
+      if (!el) return;
+      el.style.transition = 'opacity 400ms ease';
+      el.style.opacity    = '1';
+    });
+  }, 700);
 }
 
 // ─── Done ─────────────────────────────────────────────────────
 function doneDonate() {
+  sessionStorage.setItem('bp_just_donated', '1');
   window.location.href = 'today.html';
 }
 
@@ -1212,6 +1248,23 @@ function scale() {
   document.getElementById('device').style.setProperty('--s', s);
 }
 scale(); addEventListener('resize', scale);
+
+// Deep-link or single-charity mode: skip "Choose a cause" screen
+(function() {
+  var params = new URLSearchParams(location.search);
+  var orgId = params.get('org');
+
+  // No explicit org param — check single-charity mode
+  if (!orgId && localStorage.getItem('bp_single_charity') === '1') {
+    orgId = ORGS[0].id;
+  }
+
+  if (!orgId) return;
+  var org = null;
+  for (var i = 0; i < ORGS.length; i++) { if (ORGS[i].id === orgId) { org = ORGS[i]; break; } }
+  if (!org) return;
+  selectOrg(org, null);
+})();
 
 </script>
 </body>

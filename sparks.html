@@ -113,7 +113,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
 }
 .sparks-collection-btn.exit {
-  transform: translateX(-50%) translateY(200px);
+  transform: translateY(200px);
   opacity: 0;
   transition: transform 800ms cubic-bezier(0.75,0,0.3,0.99), opacity 600ms ease;
 }
@@ -125,7 +125,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* ─── Main ──────────────────────────────────────────────────── */
 .sparks-main {
   position: absolute;
-  left: 152px; top: 72px; bottom: 100px;
+  left: 152px; top: 72px; bottom: 0;
   width: 998px;
   z-index: 1;
   display: flex; flex-direction: column;
@@ -134,11 +134,18 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* ─── Header ────────────────────────────────────────────────── */
 .sparks-header {
   display: flex; align-items: flex-start; justify-content: space-between;
-  flex-shrink: 0;
+  flex-shrink: 0; position: relative; padding-bottom: 24px;
 }
 
+
 .sparks-grid-wrapper {
-  flex: 1; display: flex; align-items: center; width: 100%;
+  flex-shrink: 0; width: 100%; position: relative;
+}
+.sparks-grid-wrapper::after {
+  content: ''; pointer-events: none;
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 160px;
+  background: linear-gradient(to bottom, transparent, #1f1f25 90%);
 }
 .sparks-header-left { width: 532px; display: flex; flex-direction: column; gap: 16px; }
 .sparks-title {
@@ -150,7 +157,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #737472; letter-spacing: -0.1px; margin: 0;
 }
 .sparks-total-box {
-  width: calc((100% - 48px) / 4);
+  position: absolute; top: 0; right: 0;
+  width: calc((998px - 48px) / 4);
   background: #1f1f25; border: 1px solid #444450; border-radius: 20px;
   padding: 36px; box-sizing: border-box;
   display: flex; flex-direction: column; align-items: center; gap: 16px;
@@ -306,8 +314,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 /* ── View cards collection button ────────────────────────────── */
 .sparks-collection-btn {
-  position: absolute; bottom: 36px; left: 651px; transform: translateX(-50%);
-  height: 48px; padding: 0 28px; white-space: nowrap; z-index: 5;
+  flex-shrink: 0; align-self: center; margin-top: 16px; margin-bottom: 32px;
+  height: 48px; padding: 0 28px; white-space: nowrap;
   background: transparent; color: #f5f5f5;
   font-family: var(--font-body); font-size: 16px; font-weight: 500;
   border-radius: 8px; border: 1px solid rgba(255,255,255,0.16);
@@ -352,7 +360,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 /* ── Support handle + panel ──────────────────────────────────── */
 .support-handle {
-  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  position: absolute; left: -64px; top: calc(90% - 65px); transform: translateY(-50%);
   width: 64px; height: 72px;
   background: #1f1f25; border: 1px solid #36363f; border-right: none;
   border-radius: 14px 0 0 14px;
@@ -420,6 +428,74 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .sp-divider { height: 1px; background: #36363f; margin: 4px 0; }
 
+/* ─── Tabs ──────────────────────────────────────────────────── */
+.sparks-tab-pills {
+  display: flex; gap: 8px;
+  margin-top: 20px; margin-bottom: 0;
+}
+.sparks-tab-pill {
+  height: 40px; padding: 0 20px; border-radius: 12px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  cursor: pointer; border: none; transition: background 150ms, color 150ms;
+}
+.sparks-tab-pill-active   { background: #f2f3e5; color: #1f1f25; }
+.sparks-tab-pill-inactive { background: #2b2b35; color: rgba(242,243,229,0.5); }
+
+.sparks-tab-content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.sparks-tab-panel { display: none; flex: 1; min-height: 0; flex-direction: column; overflow-y: auto; scrollbar-width: none; }
+.sparks-tab-panel::-webkit-scrollbar { display: none; }
+.sparks-tab-panel.active { display: flex; }
+
+/* ─── Donations panel ───────────────────────────────────────── */
+.donations-list { display: flex; gap: 24px; height: 498px; flex-shrink: 0; }
+.dc-card {
+  flex: 1; min-height: 0;
+  position: relative; overflow: hidden;
+  border-radius: 12px; background: #1f1f25;
+  border: 1px solid #36363f; cursor: pointer;
+  transition: border-color 150ms;
+}
+.dc-card:hover { border-color: #5a5a6a; }
+.dc-card-title {
+  position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-display); font-size: 20px; line-height: 1.05;
+  color: #f2f3e5; text-transform: uppercase; white-space: nowrap;
+  margin: 0; letter-spacing: 0;
+}
+.dc-shape-wrap {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px; height: 250px; overflow: hidden;
+}
+.dc-card-numbers {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  width: 200px; text-align: center;
+  display: flex; flex-direction: column; gap: 8px; align-items: center;
+}
+.dc-card-total {
+  font-family: var(--font-display); font-size: 32px; line-height: 40px;
+  letter-spacing: -0.8px; color: #f2f3e5; margin: 0;
+}
+.dc-card-your {
+  font-family: var(--font-body); font-size: 16px; font-weight: 500;
+  color: rgba(242,243,229,0.4); margin: 0; line-height: 20px;
+}
+/* Single-charity split layout */
+.dc-card--single { display: flex; flex-direction: row; }
+.dc-card-left { flex: 1; position: relative; overflow: hidden; }
+.dc-card--single .dc-shape-wrap { top: calc(50% - 26px); }
+.dc-card-photo {
+  width: 350px; flex-shrink: 0;
+  position: relative; overflow: hidden;
+}
+.dc-card-photo img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+}
+.dc-card-photo-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.4);
+}
 
 </style>
 </head>
@@ -483,6 +559,10 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div class="sparks-header-left">
         <h1 class="sparks-title" data-content="sparks_title">Sparkz</h1>
         <p class="sparks-subtitle" data-content="sparks_subtitle">Collect Sparkz. Collect art you love.</p>
+        <div class="sparks-tab-pills">
+          <button class="sparks-tab-pill sparks-tab-pill-active"   id="pill-donations"    onclick="switchSparksTab('donations')">Donations</button>
+          <button class="sparks-tab-pill sparks-tab-pill-inactive" id="pill-collectibles" onclick="switchSparksTab('collectibles')">Collectibles</button>
+        </div>
       </div>
       <div class="sparks-total-box">
         <span class="sparks-total-label" data-content="sparks_total_label">Total</span>
@@ -493,9 +573,13 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </div>
     </div>
 
-    <!-- Artwork grid -->
+    <!-- Tab content -->
+    <div class="sparks-tab-content">
+
+    <!-- Collectibles panel -->
+    <div class="sparks-tab-panel" id="panel-collectibles">
     <div class="sparks-grid-wrapper">
-    <div class="sparks-grid">
+    <div class="sparks-grid" id="sparksGrid">
 
       <!-- Row 1 -->
       <div class="sparks-row">
@@ -592,9 +676,17 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </div>
     </div>
     </div>
+    <button class="sparks-collection-btn" id="collectionBtn" data-content="btn_view_cards_collection" onclick="window.location.href='collection.html'">View cards collection</button>
+    </div><!-- /panel-collectibles -->
+
+    <!-- Donations panel -->
+    <div class="sparks-tab-panel active" id="panel-donations">
+      <div class="donations-list" id="donationsList"></div>
+    </div>
+
+    </div><!-- /sparks-tab-content -->
   </div>
 
-  <button class="sparks-collection-btn" data-content="btn_view_cards_collection" onclick="window.location.href='collection.html'">View cards collection</button>
 
   <!-- ── Unlock overlay ──────────────────────────────────────── -->
   <div id="unlock-overlay" class="unlock-overlay">
@@ -682,6 +774,126 @@ if (new URLSearchParams(location.search).get('back') === '1') {
   var name = localStorage.getItem('bp_username') || 'Sophie';
   var el = document.querySelector('.user-name');
   if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
+})();
+
+// ─── Giving orgs (mirrors sparkz-giving.html order) ──────────
+var GIVING_ORGS = [
+  { id: 'charity-water', name: 'Water Charity', cardTitle: 'Charity Water',
+    color: '#49aee1', fillColor: '#6A7EFF', accentColor: '#BDC6FF',
+    photo: './components/Water.jpg',
+    shapePath: 'M124.999 249.845C104.68 249.845 85.1925 241.78 70.8251 227.423C56.4574 213.068 48.3857 193.597 48.3857 173.295C48.3857 141.852 62.9418 118.285 80.6765 89.5701C94.471 67.2365 110.188 41.7886 122.477 7.09952C123.172 5.137 124.873 -0.57924 124.982 -0.943317C124.983 -0.948972 124.988 -0.957989 124.99 -0.952349C124.992 -0.946624 125.006 -0.946624 125.007 -0.952349C125.009 -0.957989 125.014 -0.948972 125.016 -0.943317C125.124 -0.579241 126.826 5.137 127.521 7.09952C139.809 41.7886 155.526 67.2365 169.321 89.5701C187.055 118.285 201.612 141.852 201.612 173.295C201.612 193.597 193.54 213.068 179.172 227.423C164.906 241.678 145.175 249.845 124.999 249.845Z',
+    classTotal: 12450, goal: 20000,
+    goalText: 'clean water for 200 families',
+    impacts: { 10: 'a glass of clean water for someone in need', 25: "a full day's water supply for one person", 50: 'a week of clean water for one child', 100: 'clean water for a whole family for a month' }
+  },
+  { id: 'foodbank', name: 'Local Food Bank', cardTitle: 'Local Food Bank',
+    color: '#f5c842', fillColor: '#FDDA3C', accentColor: '#FEF0B1',
+    shapePath: 'M153.851 212.307C181.088 191.913 220.395 159.985 236.775 134.45C249.031 115.373 253.018 91.7381 247.688 69.7629C236.298 19.7055 173.227 -0.749182 133.94 32.7963C131.73 34.6705 129.694 36.7482 127.603 38.8816C126.169 40.3453 123.831 40.3452 122.397 38.8815C120.306 36.7482 118.27 34.6705 116.06 32.7963C76.7733 -0.749182 13.7023 19.7055 2.31247 69.7629C-3.01841 91.7381 0.968966 115.373 13.2256 134.45C29.6053 159.985 68.9118 191.913 96.1495 212.307C101.615 216.4 114.17 225.223 120.77 229.842C123.311 231.62 126.689 231.62 129.23 229.842C135.83 225.223 148.385 216.4 153.851 212.307Z',
+    classTotal: 9000, goal: 20000,
+    goalText: 'meals for 500 local families',
+    impacts: { 10: 'a healthy snack for a child', 25: 'a full hot meal for someone in need', 50: 'a family dinner for four people', 100: "a week's groceries for a family" }
+  },
+  { id: 'wwf', name: 'WWF', cardTitle: 'WWF',
+    color: '#5cc47a', fillColor: '#68DCC6', accentColor: '#C3F1E8',
+    shapePath: 'M125 0C91.8268 0 64.9351 26.892 64.9351 60.0649C64.9351 62.7546 62.7546 64.9351 60.0649 64.9351C26.892 64.9351 0 91.8268 0 125C0 158.173 26.892 185.065 60.0649 185.065C62.7546 185.065 64.9351 187.245 64.9351 189.935C64.9351 223.108 91.8268 250 125 250C158.173 250 185.065 223.108 185.065 189.935C185.065 187.245 187.245 185.065 189.935 185.065C223.108 185.065 250 158.173 250 125C250 91.8268 223.108 64.9351 189.935 64.9351C187.245 64.9351 185.065 62.7546 185.065 60.0649C185.065 26.892 158.173 0 125 0Z',
+    classTotal: 4600, goal: 20000,
+    goalText: 'rainforest habitat protected for a year',
+    impacts: { 10: '10 sq m of rainforest protected', 25: "enough to shelter a bird's habitat", 50: 'habitat for a family of animals', 100: 'a patch of rainforest for a full year' }
+  }
+];
+
+// ─── Tab switching ────────────────────────────────────────────
+function switchSparksTab(tab) {
+  var isCollectibles = tab === 'collectibles';
+  document.getElementById('pill-collectibles').className = 'sparks-tab-pill ' + (isCollectibles ? 'sparks-tab-pill-active' : 'sparks-tab-pill-inactive');
+  document.getElementById('pill-donations').className    = 'sparks-tab-pill ' + (isCollectibles ? 'sparks-tab-pill-inactive' : 'sparks-tab-pill-active');
+  document.getElementById('panel-collectibles').className = 'sparks-tab-panel' + (isCollectibles ? ' active' : '');
+  document.getElementById('panel-donations').className    = 'sparks-tab-panel' + (isCollectibles ? '' : ' active');
+}
+
+// ─── Render donations panel ───────────────────────────────────
+(function renderDonations() {
+  var donations = [];
+  try { donations = JSON.parse(localStorage.getItem('bp_sparkz_donations') || '[]'); } catch(e) {}
+  var personalByOrg = {};
+  donations.forEach(function(d) { personalByOrg[d.orgId] = (personalByOrg[d.orgId] || 0) + d.amount; });
+
+  var list = document.getElementById('donationsList');
+  list.innerHTML = '';
+
+  var singleMode = localStorage.getItem('bp_single_charity') === '1';
+  var orgsToShow = singleMode ? [GIVING_ORGS[0]] : GIVING_ORGS;
+
+  orgsToShow.forEach(function(org, idx) {
+    var classTotal = parseInt(localStorage.getItem('bp_class_sparks_' + org.id) || org.classTotal, 10);
+    var personal = personalByOrg[org.id] || 0;
+    var pct = Math.min(1, classTotal / org.goal);
+    var fillY = +(250 * (1 - pct)).toFixed(2);
+    var fillH = +(300 - fillY).toFixed(2);
+    var revealH = +(250 - fillY).toFixed(2); // height the curtain needs to reach
+
+    var svg =
+      '<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs>' +
+        '<clipPath id="dclip-' + org.id + '"><rect width="250" height="250"/></clipPath>' +
+        '<clipPath id="dreveal-' + org.id + '">' +
+          '<rect x="-50" y="250" width="350" height="0">' +
+            '<animate id="drev-y-' + org.id + '" attributeName="y" from="250" to="' + fillY + '" dur="900ms" begin="indefinite" fill="freeze" calcMode="spline" keySplines="0.75 0 0.3 0.99" keyTimes="0;1"/>' +
+            '<animate id="drev-h-' + org.id + '" attributeName="height" from="0" to="' + revealH + '" dur="900ms" begin="indefinite" fill="freeze" calcMode="spline" keySplines="0.75 0 0.3 0.99" keyTimes="0;1"/>' +
+          '</rect>' +
+        '</clipPath>' +
+      '</defs>' +
+      '<g clip-path="url(#dclip-' + org.id + ')">' +
+        '<path d="' + org.shapePath + '" fill="#36363F"/>' +
+        '<mask id="dmask-' + org.id + '" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="250" height="250">' +
+          '<path d="' + org.shapePath + '" fill="#36363F"/>' +
+        '</mask>' +
+        '<g mask="url(#dmask-' + org.id + ')" clip-path="url(#dreveal-' + org.id + ')">' +
+          '<rect x="-50" y="' + fillY + '" width="350" height="' + fillH + '" fill="' + org.fillColor + '"/>' +
+        '</g>' +
+      '</g>' +
+      '</svg>';
+
+    var card = document.createElement('div');
+    card.onclick = (function(id) {
+      return function() { window.location.href = 'sparkz-giving.html?org=' + id; };
+    })(org.id);
+
+    var innerContent =
+      '<p class="dc-card-title">' + org.cardTitle + '</p>' +
+      '<div class="dc-shape-wrap">' + svg + '</div>' +
+      '<div class="dc-card-numbers">' +
+        '<p class="dc-card-total">' + classTotal.toLocaleString() + '</p>' +
+        '<p class="dc-card-your">' + (personal > 0 ? 'You donated: ' + personal + ' Sparkz' : org.goalText) + '</p>' +
+      '</div>';
+
+    if (singleMode && org.photo) {
+      card.className = 'dc-card dc-card--single';
+      card.innerHTML =
+        '<div class="dc-card-left">' + innerContent + '</div>' +
+        '<div class="dc-card-photo">' +
+          '<img src="' + org.photo + '" alt="">' +
+          '<div class="dc-card-photo-overlay"></div>' +
+        '</div>';
+    } else {
+      card.className = 'dc-card';
+      card.innerHTML = innerContent;
+    }
+
+    list.appendChild(card);
+  });
+
+  // Curtain-reveal: beginElement() on each SMIL animate, staggered
+  setTimeout(function() {
+    orgsToShow.forEach(function(org, idx) {
+      setTimeout(function() {
+        var animY = document.getElementById('drev-y-' + org.id);
+        var animH = document.getElementById('drev-h-' + org.id);
+        if (animY) animY.beginElement();
+        if (animH) animH.beginElement();
+      }, idx * 120);
+    });
+  }, 50);
 })();
 
 var KEY_SVG = '<svg viewBox="0 0 25 47" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M25 12.2435C25 5.48091 19.4383 0 12.5789 0C5.71978 0 0.158021 5.48149 0.158021 12.2435C0.158021 16.8797 2.77369 20.9141 6.63152 22.9927L0 47H24.9663L18.3583 23.0759C22.3061 21.0238 25 16.9455 25 12.2435Z" fill="#36363f"/></svg>';
@@ -959,7 +1171,7 @@ function enterFromCollectible() {
   headerL.style.transform  = 'translateY(-200px)'; headerL.style.opacity = '0';
   totalBox.style.transform = 'translateY(-200px)'; totalBox.style.opacity = '0';
   grid.style.transform     = 'translateY(400px)';  grid.style.opacity = '0';
-  btn.style.transform      = 'translateX(-50%) translateY(200px)'; btn.style.opacity = '0';
+  btn.style.transform      = 'translateY(200px)'; btn.style.opacity = '0';
   cloud.style.transform    = 'scale(3)';
   lightning.style.opacity  = '0';
 
@@ -970,7 +1182,7 @@ function enterFromCollectible() {
       headerL.style.transition  = trans; headerL.style.transform  = ''; headerL.style.opacity = '1';
       totalBox.style.transition = trans; totalBox.style.transform = ''; totalBox.style.opacity = '1';
       grid.style.transition     = trans; grid.style.transform     = ''; grid.style.opacity = '1';
-      btn.style.transition      = trans; btn.style.transform      = 'translateX(-50%)'; btn.style.opacity = '1';
+      btn.style.transition      = trans; btn.style.transform      = ''; btn.style.opacity = '1';
       cloud.style.transition    = 'transform ' + T; cloud.style.transform = '';
       lightning.style.transition = 'opacity ' + T; lightning.style.opacity = '1';
     });

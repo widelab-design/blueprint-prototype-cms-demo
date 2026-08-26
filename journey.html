@@ -303,16 +303,19 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   color: #737472; margin: 0; line-height: 1.4;
 }
 
-/* ─── Open recap button ─────────────────────────────────────── */
-.open-recap-btn {
+/* ─── Bottom button row ──────────────────────────────────────── */
+.journey-btn-row {
   position: absolute; bottom: 63px; left: 50%; transform: translateX(-50%);
-  height: 48px; width: 200px; padding: 0; border-radius: 8px;
+  display: flex; gap: 16px; align-items: center;
+}
+.open-recap-btn, .btn-view-summary {
+  height: 48px; width: 210px; padding: 0; border-radius: 8px;
   background: transparent; border: 1px solid rgba(255,255,255,0.16);
   cursor: pointer; font-family: var(--font-body); font-size: 16px;
   font-weight: 500; color: #f5f5f5; letter-spacing: -0.1px;
-  transition: background 150ms;
+  transition: background 150ms; white-space: nowrap;
 }
-.open-recap-btn:hover { background: rgba(255,255,255,0.06); }
+.open-recap-btn:hover, .btn-view-summary:hover { background: rgba(255,255,255,0.06); }
 
 /* ─── All times horizontal cards ───────────────────────────── */
 .alltime-clip {
@@ -470,7 +473,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
 /* ── Support handle + panel ──────────────────────────────────── */
 .support-handle {
-  position: absolute; left: -64px; top: 90%; transform: translateY(-50%);
+  position: absolute; left: -64px; top: calc(90% - 65px); transform: translateY(-50%);
   width: 64px; height: 72px;
   background: #1f1f25; border: 1px solid #36363f; border-right: none;
   border-radius: 14px 0 0 14px;
@@ -642,7 +645,10 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
         </div>
       </div>
 
-      <button class="open-recap-btn" data-content="btn_open_monthly_recap" onclick="openWrap()">Open monthly recap</button>
+      <div class="journey-btn-row">
+        <button class="btn-view-summary" onclick="window.location.href='summary.html'">View daily summary</button>
+        <button class="open-recap-btn" data-content="btn_open_monthly_recap" onclick="openWrap()">Open monthly recap</button>
+      </div>
 
     </div>
 
