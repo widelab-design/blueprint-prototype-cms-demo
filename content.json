@@ -320,11 +320,11 @@
     "toolkit_support_item2_sub": "We'll make sure someone sees it.",
     "toolkit_support_cta": "Need to talk to someone right away? <strong>Call 988.</strong>",
     "toolkit_video_close_btn": "✕ Zamknij",
-    "toolkit_video_sparks_doitagain_2": "",
-    "toolkit_video_sparks_doitagain_1": "",
-    "toolkit_video_sparks_resilience": "100 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_sparks_calming": "100 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_doitagain_1": "",
+    "toolkit_video_sparks_doitagain_2": "",
     "toolkit_video_sparks_hero": "100 <img src=\"./components/spark.svg\" alt=\"spark\">",
+    "toolkit_video_sparks_resilience": "100 <img src=\"./components/spark.svg\" alt=\"spark\">",
     "toolkit_video_sparks_simple": "100 <img src=\"./components/spark.svg\" alt=\"spark\">"
   },
   "notice-wins": {
@@ -350,7 +350,7 @@
     "onboarding_s0_body": "For good days. For weird days.\nFeel. Reflect. Get support.",
     "onboarding_btn_get_started": "Get started",
     "onboarding_s1_title": "You choose\nwhat to share",
-    "onboarding_s1_body": "If someone may be unsafe, we may contact a trusted adult.",
+    "onboarding_s1_body": "If someone may be unsafe, we will contact a trusted adult.",
     "onboarding_btn_next_s1": "Next",
     "onboarding_s2_subtitle": "Select privacy settings",
     "onboarding_pcard_mood_label": "Mood",
