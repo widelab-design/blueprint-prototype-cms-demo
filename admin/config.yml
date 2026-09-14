@@ -1297,6 +1297,10 @@ collections:
                 label: "Onboarding welcome title"
                 widget: string
                 required: false
+              - name: "onboarding_welcome_sub"
+                label: "Onboarding welcome sub"
+                widget: text
+                required: false
               - name: "onboarding_name_label"
                 label: "Onboarding name label"
                 widget: string
