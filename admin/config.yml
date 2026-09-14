@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: widelab-design/blueprint-prototype-cms
+  repo: widelab-design/blueprint-prototype-cms-demo
   branch: main
 
 # Sveltia CMS — edits /content.json only. Design/layout is untouched.
