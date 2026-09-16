@@ -1371,11 +1371,11 @@ function openStatDetail(key) {
     sdoR.style.cssText = 'flex:initial;width:100%;position:relative;overflow:hidden;';
     // each bubble: x/y = top-left in overlay, d = diameter, bx/by = badge center offset
     var BUBBLE_SHAPES = [
-      { name:'Breathing',    count:8, color:'#68DCC6', x:430, y:125, d:293, bx:146, by:146, anim:'float-c', dur:'6.5s', delay:'0s' },
-      { name:'Grounding',    count:3, color:'#E65800', x:242, y:233, d:181, bx:90,  by:90,  anim:'float-b', dur:'5.5s', delay:'1.3s' },
-      { name:'Mindful walk', count:2, color:'#56CCF2', x:557, y:433, d:147, bx:73,  by:73,  anim:'float-d', dur:'5.2s', delay:'0.7s' },
-      { name:'Journaling',   count:4, color:'#FDDA3C', x:306, y:405, d:239, bx:119, by:119, anim:'float-a', dur:'7s',   delay:'1.8s' },
-      { name:'Body scan',    count:5, color:'#6A7EFF', x:696, y:286, d:257, bx:128, by:128, anim:'float-e', dur:'6.8s', delay:'0.4s' },
+      { name:'Calm down',    count:8, color:'#68DCC6', x:430, y:125, d:293, bx:146, by:146, anim:'float-c', dur:'6.5s', delay:'0s' },
+      { name:'Focus',        count:3, color:'#E65800', x:242, y:233, d:181, bx:90,  by:90,  anim:'float-b', dur:'5.5s', delay:'1.3s' },
+      { name:'Wind down',    count:2, color:'#56CCF2', x:557, y:433, d:147, bx:73,  by:73,  anim:'float-d', dur:'5.2s', delay:'0.7s' },
+      { name:'Feel good',    count:4, color:'#FDDA3C', x:306, y:405, d:239, bx:119, by:119, anim:'float-a', dur:'7s',   delay:'1.8s' },
+      { name:'Boost energy', count:5, color:'#6A7EFF', x:696, y:286, d:257, bx:128, by:128, anim:'float-e', dur:'6.8s', delay:'0.4s' },
     ];
     var bubblesHtml = BUBBLE_SHAPES.map(function(b) {
       return '<div style="position:absolute;left:'+b.x+'px;top:'+b.y+'px;width:'+b.d+'px;height:'+b.d+'px;border-radius:50%;background:'+b.color+';animation:'+b.anim+' '+b.dur+' ease-in-out infinite '+b.delay+';">' +
