@@ -1249,7 +1249,7 @@ function openStatDetail(key) {
         var lft = 261 + cx - 57, tp = 149 + cy - 57;
         if (CK_DONE.has(ck)) {
           var an = CK_ANIMS[doneIdx], dl = CK_DELAYS[doneIdx], dr = CK_DURS[doneIdx]; doneIdx++;
-          var todaySt = ck === lastDone ? 'box-shadow:0 0 0 4px #1f1f25,0 0 0 7px rgba(242,243,229,0.6);display:flex;align-items:center;justify-content:center;' : '';
+          var todaySt = ck === lastDone ? 'display:flex;align-items:center;justify-content:center;' : '';
           var todayLbl = ck === lastDone ? '<span style="font-family:var(--font-display);font-size:16px;color:#1f1f25;letter-spacing:0.5px;pointer-events:none;">TODAY</span>' : '';
           ckHtml += '<div style="position:absolute;left:'+lft+'px;top:'+tp+'px;width:114px;height:114px;border-radius:50%;background:#E65800;animation:'+an+' '+dr+' ease-in-out infinite '+dl+';'+todaySt+'">'+todayLbl+'</div>';
         } else {
