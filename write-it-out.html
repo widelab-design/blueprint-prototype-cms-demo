@@ -84,15 +84,25 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   width: 100%; display: flex; flex-direction: column; gap: 24px;
 }
 
-/* prompt picker */
-.prompt-picker {
-  position: relative; width: 100%;
+/* prompt carousel */
+.prompt-carousel {
+  position: relative; width: 100%; flex-shrink: 0;
 }
-.prompt-header {
-  background: #b38aff;
-  padding: 10px; display: flex; align-items: flex-start; gap: 12px;
-  cursor: pointer; user-select: none;
+.carousel-card {
+  width: 100%; display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px; background: #b38aff;
 }
+.carousel-arrow {
+  position: absolute; top: 0; bottom: 0; width: 48px;
+  background: rgba(255,255,255,0.16); border: none; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: opacity 150ms, background 150ms;
+}
+.carousel-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.24); }
+.carousel-arrow:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+#carouselPrev { right: calc(100% + 12px); }
+#carouselNext { left: calc(100% + 12px); }
 .msg-avatar {
   width: 48px; height: 48px; background: #f2f3e5;
   flex-shrink: 0; display: grid; place-items: center;
@@ -108,33 +118,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   font-family: var(--font-body); font-size: 20px; font-weight: 500;
   color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px; flex: 1; margin: 0;
   padding-top: 2px;
+  will-change: transform, opacity;
 }
-.prompt-chevron {
-  margin-left: auto; flex-shrink: 0;
-  display: flex; align-items: center; padding-top: 10px;
-}
-.prompt-chevron svg { transition: transform 260ms cubic-bezier(0.4,0,0.2,1); }
-.prompt-picker.open .prompt-chevron svg { transform: rotate(180deg); }
-.prompt-list {
-  position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
-  background: #b38aff; border-radius: 0 0 12px 12px;
-  clip-path: inset(0 0 100% 0 round 0 0 12px 12px);
-  pointer-events: none;
-  transition: clip-path 300ms cubic-bezier(0.4,0,0.2,1);
-}
-.prompt-picker.open .prompt-list {
-  clip-path: inset(0 0 0% 0 round 0 0 12px 12px);
-  pointer-events: all;
-}
-.prompt-list .prompt-option {
-  padding: 14px 10px 14px 70px;
-  border-top: 1px solid rgba(47,47,55,0.15);
-  cursor: pointer;
-  font-family: var(--font-body); font-size: 20px; font-weight: 500;
-  color: #2f2f37; line-height: 1.2; letter-spacing: -0.4px;
-  transition: background 100ms;
-}
-.prompt-list .prompt-option:hover { background: rgba(255,255,255,0.12); }
 
 /* textarea */
 .write-area {
@@ -235,25 +220,27 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </div>
 
       <div class="write-content">
-        <div class="prompt-picker" id="promptPicker">
-          <div class="prompt-header" onclick="togglePrompts()">
-            <div class="msg-avatar">
-              <div class="msg-monster">
-                <img class="msg-butterfly" src="./components/monster-butterfly.svg" alt="">
-                <div class="msg-eyes">
-                  <img class="msg-eye" src="./components/monster-eye.svg" alt="">
-                  <img class="msg-eye" src="./components/monster-eye.svg" alt="">
-                </div>
+        <div class="prompt-carousel">
+          <button class="carousel-arrow" id="carouselPrev" onclick="selectCard(selectedIdx-1)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8L10 13" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="carousel-card">
+            <div class="msg-avatar"><div class="msg-monster">
+              <img class="msg-butterfly" src="./components/monster-butterfly.svg" alt="">
+              <div class="msg-eyes">
+                <img class="msg-eye" src="./components/monster-eye.svg" alt="">
+                <img class="msg-eye" src="./components/monster-eye.svg" alt="">
               </div>
-            </div>
-            <p class="msg-text" id="promptSelected"></p>
-            <div class="prompt-chevron">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9L12 15L18 9" stroke="#2f2f37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
+            </div></div>
+            <p class="msg-text" id="promptText"></p>
           </div>
-          <div class="prompt-list" id="promptList"></div>
+          <button class="carousel-arrow" id="carouselNext" onclick="selectCard(selectedIdx+1)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3L11 8L6 13" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
 
         <div class="write-area">
@@ -314,31 +301,35 @@ var selectedIdx = 0;
 function initPrompts() {
   var mood = localStorage.getItem('bp_mood_key') || 'okay';
   activePrompts = PROMPTS[mood] || PROMPTS.okay;
-  renderPrompts();
+  selectedIdx = 0;
+  renderCarousel();
 }
 
-function renderPrompts() {
-  document.getElementById('promptSelected').textContent = activePrompts[selectedIdx];
-  var list = document.getElementById('promptList');
-  list.innerHTML = '';
-  activePrompts.forEach(function(p, i) {
-    if (i === selectedIdx) return;
-    var div = document.createElement('div');
-    div.className = 'prompt-option';
-    div.textContent = p;
-    div.onclick = function() { selectPrompt(i); };
-    list.appendChild(div);
-  });
+function renderCarousel() {
+  document.getElementById('promptText').textContent = activePrompts[selectedIdx] || '';
+  document.getElementById('carouselPrev').disabled = selectedIdx === 0;
+  document.getElementById('carouselNext').disabled = selectedIdx >= activePrompts.length - 1;
 }
 
-function togglePrompts() {
-  document.getElementById('promptPicker').classList.toggle('open');
-}
-
-function selectPrompt(idx) {
-  selectedIdx = idx;
-  document.getElementById('promptPicker').classList.remove('open');
-  renderPrompts();
+function selectCard(idx) {
+  if (idx < 0 || idx >= activePrompts.length || idx === selectedIdx) return;
+  var dir = idx > selectedIdx ? 1 : -1;
+  var txt = document.getElementById('promptText');
+  txt.style.transition = 'transform 160ms ease-in, opacity 160ms ease-in';
+  txt.style.transform = 'translateX(' + (-40 * dir) + 'px)';
+  txt.style.opacity = '0';
+  setTimeout(function() {
+    selectedIdx = idx;
+    renderCarousel();
+    txt.style.transition = 'none';
+    txt.style.transform = 'translateX(' + (40 * dir) + 'px)';
+    txt.style.opacity = '0';
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      txt.style.transition = 'transform 240ms cubic-bezier(0.2,0,0,1), opacity 200ms ease-out';
+      txt.style.transform = 'translateX(0)';
+      txt.style.opacity = '1';
+    }); });
+  }, 170);
 }
 
 function scale() {
