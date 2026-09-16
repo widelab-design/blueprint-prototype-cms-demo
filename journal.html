@@ -374,6 +374,43 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .wov-save:active { transform: scale(0.97); }
 .wov-save:disabled { opacity: 0.4; cursor: default; }
 
+/* ── Prompt picker inside write overlay ─────────────────────── */
+.wov-prompt-picker {
+  position: relative; width: 100%; margin-bottom: 24px;
+}
+.wov-prompt-header {
+  background: #b38aff;
+  padding: 10px; display: flex; align-items: flex-start; gap: 12px;
+  cursor: pointer; user-select: none;
+}
+.wov-prompt-header .wov-bubble-text { flex: 1; margin: 0; }
+.wov-prompt-chevron {
+  margin-left: auto; flex-shrink: 0;
+  display: flex; align-items: center; padding-top: 10px;
+}
+.wov-prompt-chevron svg { transition: transform 260ms cubic-bezier(0.4,0,0.2,1); }
+.wov-prompt-picker.open .wov-prompt-chevron svg { transform: rotate(180deg); }
+.wov-prompt-list {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+  background: #b38aff; border-radius: 0 0 12px 12px;
+  clip-path: inset(0 0 100% 0 round 0 0 12px 12px);
+  pointer-events: none;
+  transition: clip-path 300ms cubic-bezier(0.4,0,0.2,1);
+}
+.wov-prompt-picker.open .wov-prompt-list {
+  clip-path: inset(0 0 0% 0 round 0 0 12px 12px);
+  pointer-events: all;
+}
+.wov-prompt-list .wov-prompt-option {
+  padding: 14px 10px 14px 70px;
+  border-top: 1px solid rgba(47,47,55,0.15);
+  cursor: pointer;
+  font-family: var(--font-body); font-size: 20px; font-weight: 500;
+  color: #2f2f37; line-height: 1.2; letter-spacing: -0.4px;
+  transition: background 100ms;
+}
+.wov-prompt-list .wov-prompt-option:hover { background: rgba(255,255,255,0.12); }
+
 /* completion screen inside overlay — write-it-out (dark bg) */
 .wov-done {
   position: absolute; inset: 0; z-index: 20; background: #1f1f25;
@@ -535,7 +572,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div id="qAnswerCards"></div>
 
       <!-- Purple CTA card — shown when no write-it-out entry -->
-      <div class="write-cta-card" id="writeCta" style="display:none" onclick="var o=document.getElementById('writeOverlay');o.style.display='block';document.getElementById('wovInput').value='';document.getElementById('wovSaveBtn').disabled=true;document.getElementById('wovDone').style.display='none';document.getElementById('wovInput').focus();">
+      <div class="write-cta-card" id="writeCta" style="display:none" onclick="openWovOverlay('write')">
         <div class="write-cta-monster">
           <img src="./components/Property 1=M02, Type=Default.svg" alt="">
         </div>
@@ -551,7 +588,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div class="note-card-today" id="noteCard" style="display:none">
         <div class="note-card-header">
           <span class="note-card-date" data-content="journal_note_card_date">Today</span>
-          <button class="note-card-edit" data-content="btn_edit_note" onclick="var o=document.getElementById('writeOverlay');o.style.display='block';document.getElementById('wovInput').value=document.getElementById('noteText').textContent;document.getElementById('wovSaveBtn').disabled=false;document.getElementById('wovDone').style.display='none';document.getElementById('wovInput').focus();">Edit note</button>
+          <button class="note-card-edit" data-content="btn_edit_note" onclick="openWovOverlay('edit')">Edit note</button>
         </div>
         <p class="note-card-text" id="noteText"></p>
       </div>
@@ -617,17 +654,25 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </div>
       <h1 class="wov-title" data-content="journal_wov_title">Write It Out.</h1>
 
-      <div class="wov-bubble">
-        <div class="wov-avatar">
-          <div style="position:relative;width:40px;height:40px;">
-            <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
-            <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
-              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
-              <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+      <div class="wov-prompt-picker" id="wovPromptPicker">
+        <div class="wov-prompt-header" onclick="toggleWovPrompts()">
+          <div class="wov-avatar">
+            <div style="position:relative;width:40px;height:40px;">
+              <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
+              <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:1px;">
+                <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+                <img src="./components/monster-eye.svg" style="width:5.78px;height:7.58px;display:block;" alt="">
+              </div>
             </div>
           </div>
+          <p class="wov-bubble-text" id="wovBubbleText"></p>
+          <div class="wov-prompt-chevron">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9L12 15L18 9" stroke="#2f2f37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         </div>
-        <p class="wov-bubble-text" id="wovBubbleText">Journaling can help you understand your feelings.</p>
+        <div class="wov-prompt-list" id="wovPromptList"></div>
       </div>
 
       <div class="wov-textarea-wrap">
@@ -994,24 +1039,65 @@ function animateToOverlay(qnum) {
   if (el) el.textContent = name.length > 9 ? name.slice(0, 8) + '…' : name;
 })();
 
+// ── Prompt picker in write overlay ─────────────────────────────
+var WOV_PROMPTS = {
+  excited:   ["What's making you feel this excited?", "What are you looking forward to most?", "What are you grateful for right now?"],
+  okay:      ["What's been good about your day so far?", "What kinds of moments tend to lift your mood — even a little?", "What's one thing you appreciate today?"],
+  curious:   ["What's been on your mind lately?", "What question keeps coming back to you?", "What are you hoping to figure out?"],
+  meh:       ["What's been weighing on you lately?", "What would make today a tiny bit better?", "What's one small thing you can let go of?"],
+  neutral:   ["What happened today that stood out?", "What are you carrying into tomorrow?", "What's one small thing that went well?"],
+  idontknow: ["What's hard to put into words right now?", "What do you wish others understood about how you feel?", "What would help you feel a bit more settled?"],
+  _add:      ["What else is on your mind?", "What happened today that stood out?", "What would you like to let go of?"]
+};
+var _wovSelIdx = 0;
+var _wovCurPrompts = [];
+
+function initWovPrompts(mode) {
+  _wovCurPrompts = mode === 'add' ? WOV_PROMPTS._add
+    : (WOV_PROMPTS[localStorage.getItem('bp_mood_key')] || WOV_PROMPTS.okay);
+  _wovSelIdx = 0;
+  document.getElementById('wovPromptPicker').classList.remove('open');
+  renderWovPrompts();
+}
+function renderWovPrompts() {
+  document.getElementById('wovBubbleText').textContent = _wovCurPrompts[_wovSelIdx];
+  var list = document.getElementById('wovPromptList');
+  list.innerHTML = '';
+  _wovCurPrompts.forEach(function(p, i) {
+    if (i === _wovSelIdx) return;
+    var div = document.createElement('div');
+    div.className = 'wov-prompt-option';
+    div.textContent = p;
+    div.onclick = function() { selectWovPrompt(i); };
+    list.appendChild(div);
+  });
+}
+function toggleWovPrompts() {
+  document.getElementById('wovPromptPicker').classList.toggle('open');
+}
+function selectWovPrompt(idx) {
+  _wovSelIdx = idx;
+  document.getElementById('wovPromptPicker').classList.remove('open');
+  renderWovPrompts();
+}
+
 // ── Write-it-out overlay ────────────────────────────────────────
 var _wovCurrentNote = '';
 
-function openWriteOverlay() {
-  var overlay = document.getElementById('writeOverlay');
-  var input   = document.getElementById('wovInput');
-  var btn     = document.getElementById('wovSaveBtn');
-  var done    = document.getElementById('wovDone');
-  // pre-fill with existing note if editing
-  input.value = _wovCurrentNote;
-  btn.disabled = input.value.trim().length === 0;
-  done.classList.remove('show');
-  overlay.classList.add('open');
+function openWovOverlay(mode) {
+  var input = document.getElementById('wovInput');
+  var btn   = document.getElementById('wovSaveBtn');
+  if (mode === 'edit') {
+    input.value = document.getElementById('noteText').textContent;
+    btn.disabled = false;
+  } else {
+    input.value = '';
+    btn.disabled = true;
+  }
+  document.getElementById('wovDone').style.display = 'none';
+  document.getElementById('writeOverlay').style.display = 'block';
+  initWovPrompts(mode === 'add' ? 'add' : 'write');
   input.focus();
-}
-
-function closeWriteOverlay() {
-  document.getElementById('writeOverlay').classList.remove('open');
 }
 
 function onWovInput() {
@@ -1115,17 +1201,8 @@ var ADD_QS = [
 ];
 
 function openAddNotePrompt() {
-  var notes = [];
-  try { notes = JSON.parse(localStorage.getItem('bp_journal_notes') || '[]'); } catch(e) {}
-  var q = ADD_QS[notes.length % ADD_QS.length];
   _addNoteMode = true;
-  document.getElementById('wovBubbleText').innerHTML =
-    '<strong>Every thought matters.</strong><br>' + q;
-  document.getElementById('writeOverlay').style.display = 'block';
-  document.getElementById('wovInput').value = '';
-  document.getElementById('wovSaveBtn').disabled = true;
-  document.getElementById('wovDone').style.display = 'none';
-  document.getElementById('wovInput').focus();
+  openWovOverlay('add');
 }
 
 var _editNoteDate = null;
@@ -1138,11 +1215,11 @@ function openEditNoteOverlay(noteDate) {
   if (!note) return;
   _editNoteDate = noteDate;
   _addNoteMode = false;
-  document.getElementById('wovBubbleText').textContent = 'Journaling can help you understand your feelings.';
   document.getElementById('writeOverlay').style.display = 'block';
   document.getElementById('wovInput').value = note.text;
   document.getElementById('wovSaveBtn').disabled = false;
   document.getElementById('wovDone').style.display = 'none';
+  initWovPrompts('write');
   document.getElementById('wovInput').focus();
 }
 
@@ -1173,7 +1250,6 @@ function doWovSave() {
     try { localStorage.setItem('bp_journal_notes', JSON.stringify(notes)); } catch(e) {}
     setTimeout(function() {
       document.getElementById('writeOverlay').style.display = 'none';
-      document.getElementById('wovBubbleText').textContent = 'Journaling can help you understand your feelings.';
       var container = document.getElementById('qAnswerCards');
       var card = document.createElement('div');
       card.className = 'note-card-today';
