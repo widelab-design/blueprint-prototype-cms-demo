@@ -225,10 +225,15 @@ html[data-entry] #sparkzGoalBar    { transform: translateY(120px) !important; op
 }
 
 /* States */
-.t-card.sleepy           { cursor: pointer; opacity: 0.45; }
+.t-card.sleepy           { cursor: pointer; opacity: 0.45; background: #36363F; }
 .t-card.sleepy:hover     { transform: scale(1.025); opacity: 1; }
 .t-card.sleepy.hero      { opacity: 1; }
 .t-card.sleepy.hero:hover{ transform: scale(1.025); opacity: 1; }
+#card-mood               { background: #36363F; }
+
+/* Clip baked-in bottom-panel SVG text — card-label fills that space */
+.t-card.sleepy .card-img,
+#card-mood .card-img     { clip-path: inset(0 0 103px 0); }
 .t-card.recommended { cursor: pointer; }
 .t-card.recommended:hover { transform: scale(1.025); }
 .t-card.done        { cursor: pointer; }
