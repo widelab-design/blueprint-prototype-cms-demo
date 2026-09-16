@@ -350,6 +350,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .wov-bubble-text {
   font-family: var(--font-body); font-size: 20px; font-weight: 500;
   color: #2f2f37; line-height: 1.1; letter-spacing: -0.4px;
+  will-change: transform, opacity;
 }
 .wov-textarea-wrap {
   width: 100%; background: rgba(255,255,255,0.12);
@@ -374,42 +375,26 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .wov-save:active { transform: scale(0.97); }
 .wov-save:disabled { opacity: 0.4; cursor: default; }
 
-/* ── Prompt picker inside write overlay ─────────────────────── */
-.wov-prompt-picker {
+/* ── Prompt carousel inside write overlay ───────────────────── */
+.wov-carousel {
   position: relative; width: 100%; margin-bottom: 24px;
 }
-.wov-prompt-header {
-  background: #b38aff;
-  padding: 10px; display: flex; align-items: flex-start; gap: 12px;
-  cursor: pointer; user-select: none;
+.wov-carousel-card {
+  background: #b38aff; padding: 10px;
+  display: flex; align-items: flex-start; gap: 12px;
 }
-.wov-prompt-header .wov-bubble-text { flex: 1; margin: 0; }
-.wov-prompt-chevron {
-  margin-left: auto; flex-shrink: 0;
-  display: flex; align-items: center; padding-top: 10px;
-}
-.wov-prompt-chevron svg { transition: transform 260ms cubic-bezier(0.4,0,0.2,1); }
-.wov-prompt-picker.open .wov-prompt-chevron svg { transform: rotate(180deg); }
-.wov-prompt-list {
-  position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
-  background: #b38aff; border-radius: 0 0 12px 12px;
-  clip-path: inset(0 0 100% 0 round 0 0 12px 12px);
-  pointer-events: none;
-  transition: clip-path 300ms cubic-bezier(0.4,0,0.2,1);
-}
-.wov-prompt-picker.open .wov-prompt-list {
-  clip-path: inset(0 0 0% 0 round 0 0 12px 12px);
-  pointer-events: all;
-}
-.wov-prompt-list .wov-prompt-option {
-  padding: 14px 10px 14px 70px;
-  border-top: 1px solid rgba(47,47,55,0.15);
+.wov-carousel-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.16); border: none; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  font-family: var(--font-body); font-size: 20px; font-weight: 500;
-  color: #2f2f37; line-height: 1.2; letter-spacing: -0.4px;
-  transition: background 100ms;
+  transition: opacity 150ms, background 150ms;
 }
-.wov-prompt-list .wov-prompt-option:hover { background: rgba(255,255,255,0.12); }
+.wov-carousel-arrow:hover:not(:disabled) { background: rgba(255,255,255,0.24); }
+.wov-carousel-arrow:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+#wovCarouselPrev { right: calc(100% + 12px); }
+#wovCarouselNext { left: calc(100% + 12px); }
 
 /* completion screen inside overlay — write-it-out (dark bg) */
 .wov-done {
@@ -654,8 +639,13 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       </div>
       <h1 class="wov-title" data-content="journal_wov_title">Write It Out.</h1>
 
-      <div class="wov-prompt-picker" id="wovPromptPicker">
-        <div class="wov-prompt-header" onclick="toggleWovPrompts()">
+      <div class="wov-carousel" id="wovCarousel">
+        <button class="wov-carousel-arrow" id="wovCarouselPrev" onclick="selectWovCard(_wovSelIdx-1)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8L10 13" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="wov-carousel-card">
           <div class="wov-avatar">
             <div style="position:relative;width:40px;height:40px;">
               <img src="./components/monster-butterfly.svg" style="position:absolute;width:36px;height:36px;top:2px;left:2px;" alt="">
@@ -666,13 +656,12 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
             </div>
           </div>
           <p class="wov-bubble-text" id="wovBubbleText"></p>
-          <div class="wov-prompt-chevron">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M6 9L12 15L18 9" stroke="#2f2f37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
         </div>
-        <div class="wov-prompt-list" id="wovPromptList"></div>
+        <button class="wov-carousel-arrow" id="wovCarouselNext" onclick="selectWovCard(_wovSelIdx+1)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 3L11 8L6 13" stroke="#f2f3e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
 
       <div class="wov-textarea-wrap">
@@ -1056,29 +1045,36 @@ function initWovPrompts(mode) {
   _wovCurPrompts = mode === 'add' ? WOV_PROMPTS._add
     : (WOV_PROMPTS[localStorage.getItem('bp_mood_key')] || WOV_PROMPTS.okay);
   _wovSelIdx = 0;
-  document.getElementById('wovPromptPicker').classList.remove('open');
-  renderWovPrompts();
+  var txt = document.getElementById('wovBubbleText');
+  txt.style.transition = 'none';
+  txt.style.transform = '';
+  txt.style.opacity = '';
+  renderWovCarousel();
 }
-function renderWovPrompts() {
+function renderWovCarousel() {
   document.getElementById('wovBubbleText').textContent = _wovCurPrompts[_wovSelIdx];
-  var list = document.getElementById('wovPromptList');
-  list.innerHTML = '';
-  _wovCurPrompts.forEach(function(p, i) {
-    if (i === _wovSelIdx) return;
-    var div = document.createElement('div');
-    div.className = 'wov-prompt-option';
-    div.textContent = p;
-    div.onclick = function() { selectWovPrompt(i); };
-    list.appendChild(div);
-  });
+  document.getElementById('wovCarouselPrev').disabled = _wovSelIdx === 0;
+  document.getElementById('wovCarouselNext').disabled = _wovSelIdx >= _wovCurPrompts.length - 1;
 }
-function toggleWovPrompts() {
-  document.getElementById('wovPromptPicker').classList.toggle('open');
-}
-function selectWovPrompt(idx) {
-  _wovSelIdx = idx;
-  document.getElementById('wovPromptPicker').classList.remove('open');
-  renderWovPrompts();
+function selectWovCard(idx) {
+  if (idx < 0 || idx >= _wovCurPrompts.length || idx === _wovSelIdx) return;
+  var dir = idx > _wovSelIdx ? 1 : -1;
+  var txt = document.getElementById('wovBubbleText');
+  txt.style.transition = 'transform 160ms ease-in, opacity 160ms ease-in';
+  txt.style.transform = 'translateX(' + (-40 * dir) + 'px)';
+  txt.style.opacity = '0';
+  setTimeout(function() {
+    _wovSelIdx = idx;
+    renderWovCarousel();
+    txt.style.transition = 'none';
+    txt.style.transform = 'translateX(' + (40 * dir) + 'px)';
+    txt.style.opacity = '0';
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      txt.style.transition = 'transform 240ms cubic-bezier(0.2,0,0,1), opacity 200ms ease-out';
+      txt.style.transform = 'translateX(0)';
+      txt.style.opacity = '1';
+    }); });
+  }, 170);
 }
 
 // ── Write-it-out overlay ────────────────────────────────────────
