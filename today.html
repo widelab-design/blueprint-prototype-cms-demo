@@ -251,7 +251,7 @@ html[data-entry] #sparkzGoalBar    { transform: translateY(120px) !important; op
   position: absolute; left: 37px; top: 250px; width: 163px; height: 103px;
   background: #36363F; border-radius: 12px;
   flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-  pointer-events: none; z-index: 3;
+  pointer-events: none; z-index: 10;
 }
 .t-card.sleepy .card-label { display: flex; }
 .card-label-sparks {
@@ -664,13 +664,9 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
 
     <div class="today-cards" id="cardRow">
 
-      <!-- Journal it — hero (recommended) -->
+      <!-- Start journaling — hero (recommended) -->
       <div class="t-card sleepy hero" id="card-write">
-        <img class="card-img" src="./components/sleepy-2.svg" alt="Journal it">
-        <div class="card-label">
-          <div class="card-label-sparks">50 <img src="./components/spark-color.svg" alt=""></div>
-          <div class="card-label-title">Journal it</div>
-        </div>
+        <img class="card-img" src="./components/sleepy-2.svg" alt="Start journaling">
         <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="cp-write-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
@@ -681,15 +677,15 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
           <ellipse id="ew-write-R" cx="137" cy="112.801" rx="13.4" ry="17.866" fill="#F2F3E5"/>
           <circle  id="p-write-R"  cx="137" cy="119.8"   r="9.38" fill="#2B2B32" clip-path="url(#cp-write-R)"/>
         </svg>
+        <div class="card-label">
+          <div class="card-label-sparks">50 <img src="./components/spark-color.svg" alt=""></div>
+          <div class="card-label-title">Start<br>journaling</div>
+        </div>
       </div>
 
       <!-- Notice your wins — sleepy -->
       <div class="t-card sleepy" id="card-wins">
         <img class="card-img" src="./components/sleepy-1.svg" alt="Notice your wins">
-        <div class="card-label">
-          <div class="card-label-sparks">50 <img src="./components/spark-color.svg" alt=""></div>
-          <div class="card-label-title">Notice your wins</div>
-        </div>
         <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="cp-wins-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
@@ -700,15 +696,15 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
           <ellipse id="ew-wins-R" cx="137" cy="112.801" rx="13.4" ry="0" fill="#F2F3E5"/>
           <circle  id="p-wins-R"  cx="137" cy="119.8"   r="0" fill="#2B2B32" clip-path="url(#cp-wins-R)"/>
         </svg>
+        <div class="card-label">
+          <div class="card-label-sparks">50 <img src="./components/spark-color.svg" alt=""></div>
+          <div class="card-label-title">Notice<br>your wins</div>
+        </div>
       </div>
 
       <!-- All about you — sleepy -->
       <div class="t-card sleepy" id="card-about">
         <img class="card-img" src="./components/sleepy-3.svg" alt="All about you">
-        <div class="card-label">
-          <div class="card-label-sparks">50 <img src="./components/spark-color.svg" alt=""></div>
-          <div class="card-label-title">All about you</div>
-        </div>
         <svg class="eye-overlay" viewBox="0 0 237 353" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="cp-about-L"><ellipse cx="101" cy="112.801" rx="13.4" ry="17.866"/></clipPath>
@@ -719,6 +715,10 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
           <ellipse id="ew-about-R" cx="137" cy="112.801" rx="13.4" ry="0" fill="#F2F3E5"/>
           <circle  id="p-about-R"  cx="137" cy="119.8"   r="0" fill="#2B2B32" clip-path="url(#cp-about-R)"/>
         </svg>
+        <div class="card-label">
+          <div class="card-label-sparks">50 <img src="./components/spark-color.svg" alt=""></div>
+          <div class="card-label-title">All about<br>you</div>
+        </div>
       </div>
 
       <!-- Mood check-in — done (completed in mood flow) -->
