@@ -254,6 +254,7 @@ html[data-entry] #sparkzGoalBar    { transform: translateY(120px) !important; op
   pointer-events: none; z-index: 10;
 }
 .t-card.sleepy .card-label { display: flex; }
+#card-mood .card-label { display: flex; }
 .card-label-sparks {
   display: flex; align-items: center; gap: 4px;
   font-family: var(--font-body); font-size: 12px; font-weight: 500;
@@ -723,7 +724,10 @@ html[data-success-incoming] #allDoneOv .ado-ellipse { transform: translate(-7px,
 
       <!-- Mood check-in — done (completed in mood flow) -->
       <div class="t-card done" id="card-mood" onclick="openMoodOverlay()">
-        <img class="card-img" src="./components/Mood-checkin-04.svg" alt="Mood check-in">
+        <img class="card-img" src="./components/Mood-checkin-04.svg" alt="Mood check">
+        <div class="card-label">
+          <div class="card-label-title">Mood<br>check</div>
+        </div>
       </div>
 
     </div>
