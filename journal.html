@@ -588,7 +588,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div class="note-card-today" id="noteCard" style="display:none">
         <div class="note-card-header">
           <span class="note-card-date" data-content="journal_note_card_date">Today</span>
-          <button class="note-card-edit" data-content="btn_edit_note" onclick="openWovOverlay('edit')">Edit note</button>
+          <button class="note-card-edit" data-content="btn_edit_note" onclick="openWovOverlay('edit')">Edit journal</button>
         </div>
         <p class="note-card-text" id="noteText"></p>
       </div>
@@ -883,7 +883,7 @@ function renderJournal() {
     card.innerHTML =
       '<div class="note-card-header">' +
         '<span class="note-card-date">Today</span>' +
-        '<button class="note-card-edit" onclick="openQOverlay(' + q.qnum + ')">Edit note</button>' +
+        '<button class="note-card-edit" onclick="openQOverlay(' + q.qnum + ')">Edit journal</button>' +
       '</div>' +
       '<div class="note-card-body">' +
         '<p class="note-question">' + q.text + '</p>' +
@@ -1257,7 +1257,7 @@ function doWovSave() {
       card.innerHTML =
         '<div class="note-card-header">' +
           '<span class="note-card-date">Today</span>' +
-          '<button class="note-card-edit" onclick="openEditNoteOverlay(\'' + noteDate + '\')">Edit note</button>' +
+          '<button class="note-card-edit" onclick="openEditNoteOverlay(\'' + noteDate + '\')">Edit journal</button>' +
         '</div>' +
         '<div class="note-card-body"><p class="note-answer">' + val + '</p></div>';
       container.appendChild(card);
@@ -1446,7 +1446,7 @@ function saveQAnswer() {
   card.innerHTML =
     '<div class="note-card-header">' +
       '<span class="note-card-date">Today</span>' +
-      '<button class="note-card-edit" onclick="openQOverlay(' + qnum + ')">Edit note</button>' +
+      '<button class="note-card-edit" onclick="openQOverlay(' + qnum + ')">Edit journal</button>' +
     '</div>' +
     '<div class="note-card-body">' +
       '<p class="note-question">' + q.text + '</p>' +
