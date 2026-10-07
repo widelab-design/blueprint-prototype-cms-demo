@@ -123,13 +123,107 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .video-tile:hover { transform: scale(1.025); }
 
-/* ─── Recommended layout: hero + 2-tile pair ────────────────── */
-.rec-hero {
-  width: 100%; flex: none;
+/* ─── Recommended shelves ─────────────────────────────────────── */
+.rec-grid { display: flex; flex-direction: column; gap: 0; width: 100%; }
+
+.shelf-row {
+  display: flex; flex-direction: column; width: 100%;
+  opacity: 0; transform: translateX(120px);
+  transition: transform 700ms cubic-bezier(0.25,0.46,0.45,0.94), opacity 500ms ease;
 }
-.rec-pair {
-  display: flex; gap: 24px; margin-top: 24px;
+.shelf-row.visible { opacity: 1; transform: translateX(0); }
+.shelf-row:first-child { opacity: 1; transform: translateX(0); transition: none; }
+
+.shelf-tiles {
+  display: flex; gap: 24px; width: 100%;
+  padding: 24px 0 0; box-sizing: border-box;
 }
+
+.shelf-plank {
+  width: 100%; height: 20px;
+  background: linear-gradient(to bottom, #b8753a 0%, #8f5420 55%, #7a4418 100%);
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45), 0 2px 4px rgba(0,0,0,0.3);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.rec-tile {
+  flex: 1; height: 420px; border-radius: 20px;
+  overflow: hidden; position: relative; cursor: pointer;
+  transition: transform 200ms ease-out;
+}
+.rec-tile:hover { transform: scale(1.02) translateY(-4px); }
+.rec-tile-hero { height: 360px; }
+.rec-tile.is-journal { border-radius: 50%; flex: 0 0 420px; }
+.rec-tile.is-hex {
+  height: 364px; border-radius: 0; overflow: visible;
+  background: transparent !important; flex: 0 0 420px; margin-bottom: 30px;
+}
+.rec-tile.is-house {
+  border-radius: 0; overflow: visible;
+  background: transparent !important; flex: 0 0 420px; margin-bottom: 30px;
+}
+
+/* shape tile shared styles */
+.hex-shape {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  clip-path: polygon(105px 0px, 315px 0px, 420px 182px, 315px 364px, 105px 364px, 0px 182px);
+}
+.house-shape {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  clip-path: polygon(0% 43%, 50% 0%, 100% 43%, 100% 100%, 0% 100%);
+}
+.shape-photo-frame {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -58%);
+  width: 200px; height: 200px; border-radius: 50%; overflow: hidden;
+}
+.house-photo-frame {
+  position: absolute; top: calc(46% + 28px); left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; height: 200px; border-radius: 50%; overflow: hidden;
+}
+.shape-photo {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 5%;
+  transform: scale(1.5); transform-origin: 50% 5%; display: block;
+}
+.house-photo { object-position: left center !important; }
+.cat-info-centered {
+  position: absolute; bottom: 0;
+  left: 50%; transform: translate(-50%, 50%);
+  width: 190px; background: #36363f; border-radius: 12px;
+  padding: 8px 12px; box-sizing: border-box; text-align: center; z-index: 2;
+}
+.cat-info-centered-spark {
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500; color: #f2f3e5;
+  margin-bottom: 4px;
+}
+.cat-info-centered-spark img { width: 14px; height: 14px; display: block; }
+.cat-info-audio {
+  background: #36363f; border-radius: 12px; padding: 8px;
+  display: flex; flex-direction: column; gap: 8px; z-index: 2;
+}
+.cat-info-audio-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-body); font-size: 16px; font-weight: 500; color: #f2f3e5;
+}
+.cat-info-audio-bottom {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 8px;
+}
+.cat-info-audio-play {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(255,255,255,0.15); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.cat-info-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.12;
+  color: #f2f3e5; letter-spacing: -0.4px; margin: 0; text-transform: none;
+}
+.sparks { display: flex; align-items: center; gap: 4px; }
+
 
 .video-tile-bg {
   position: absolute; inset: 0; overflow: hidden; border-radius: 20px;
@@ -218,6 +312,91 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   font-family: var(--font-body); font-size: 20px; font-weight: 500;
   color: #f2f3e5; text-align: center; letter-spacing: -0.4px; line-height: 1.1;
 }
+
+/* ─── Spotify-style sections ────────────────────────────────── */
+.content-sections { display: flex; flex-direction: column; gap: 28px; width: 100%; padding-bottom: 40px; }
+.content-section {}
+.section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-display); font-weight: 400; font-size: 22px;
+  color: #f2f3e5; letter-spacing: -0.3px; margin: 0;
+}
+.section-row {
+  display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px;
+}
+.section-row::-webkit-scrollbar { height: 0; }
+
+/* ─── Content cards ─────────────────────────────────────────── */
+.content-grid { display: none; }
+.content-card {
+  border-radius: 16px; overflow: hidden; position: relative; cursor: pointer;
+  transition: transform 180ms ease-out;
+}
+.content-card:hover { transform: scale(1.02); }
+
+.type-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 3;
+  height: 24px; padding: 0 9px; border-radius: 7px;
+  font-family: var(--font-body); font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px; letter-spacing: 0.2px;
+}
+
+/* Card caption (used by image + video cards) */
+.card-caption {
+  position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 12px 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+}
+.card-title {
+  font-family: var(--font-display); font-size: 17px; color: #f2f3e5;
+  margin: 0 0 2px; line-height: 1.2; letter-spacing: -0.2px;
+}
+.card-meta {
+  font-family: var(--font-body); font-size: 12px;
+  color: rgba(242,243,229,0.55); margin: 0;
+}
+
+/* Video card */
+.card-video { background: #0d0d14; width: 280px; flex-shrink: 0; height: 190px; }
+.card-video-badge { background: rgba(220, 85, 20, 0.88); color: #fff; }
+.card-play-icon {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+}
+.card-play-icon svg { margin-left: 3px; }
+
+/* Audio card */
+.card-audio {
+  background: #130e1f; width: 260px; flex-shrink: 0; height: 160px; padding: 12px;
+  box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;
+}
+.card-audio-badge { background: rgba(110, 60, 210, 0.88); color: #fff; }
+.card-audio .card-title { color: #f2f3e5; font-size: 15px; margin-top: 24px; }
+.card-audio .card-meta { color: rgba(242,243,229,0.5); margin-bottom: 4px; }
+.audio-player { width: 100%; height: 26px; accent-color: #9b6ef5; }
+
+/* Image card (Quote + Mindful) */
+.card-image { width: 200px; flex-shrink: 0; height: 200px; background: #1a1a22; }
+.card-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-quote-badge { background: rgba(20, 170, 150, 0.88); color: #fff; }
+.card-mindful-badge { background: rgba(40, 160, 90, 0.88); color: #fff; }
+
+/* Journal card */
+.card-journal {
+  background: #16120a; width: 260px; flex-shrink: 0;
+  padding: 12px 14px 14px; box-sizing: border-box;
+  min-height: 150px; display: flex; flex-direction: column; justify-content: space-between;
+}
+.card-journal-badge { background: rgba(190, 145, 20, 0.88); color: #fff; }
+.journal-prompt {
+  font-family: var(--font-body); font-size: 13px; color: #f2f3e5;
+  line-height: 1.5; margin: 26px 0 6px;
+}
+.journal-source { font-family: var(--font-body); font-size: 11px; color: rgba(242,243,229,0.35); }
 
 /* ─── Empty state ───────────────────────────────────────────── */
 .saved-empty {
@@ -419,7 +598,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   </section>
 
   <!-- Explore button — outside toolkit-simple so it positions relative to device -->
-  <button class="btn-explore" id="btnExplore" onclick="goExplore()" style="display:none" data-content="btn_explore">More</button>
+  <a class="btn-explore" id="btnExplore" href="my-toolkit.html?explore=1&tab=browse" style="display:none; text-decoration:none; line-height:48px; text-align:center;" data-content="btn_explore">More</a>
 
   <!-- Full toolkit view -->
   <main class="toolkit-main" id="mainFull" style="display:none">
@@ -436,56 +615,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 
     <!-- ─── RECOMMENDED ─────────────────────────────────────── -->
     <div class="tab-panel active" id="tab-recommended">
-
-      <!-- Hero tile (full width) -->
-      <div class="video-tile rec-hero" style="background:#0d0d0d;" onclick="window.location.href='toolkit-video.html?video=youve-done-hard-things&skipthumb=1'">
-        <div class="video-tile-bg"><img src="./components/01-thumbnail+long.png" alt=""></div>
-        <div class="heart-btn" data-vid="v1" onclick="event.stopPropagation();toggleHeart(this)">
-          <img src="./components/heart-default.svg" alt="save">
-        </div>
-        <div class="video-info">
-          <div class="video-meta">
-            <span class="video-duration" data-content="toolkit_video_duration_hero">1:16</span>
-            <span class="video-sparks" data-content="toolkit_video_sparks_hero">1 <img src="./components/spark-color.svg" alt="spark"></span>
-          </div>
-          <p class="video-title" data-content="toolkit_video_title_hard_things">You've Done Hard Things</p>
-        </div>
-      </div>
-
-      <!-- Two-tile row -->
-      <div class="rec-pair">
-
-        <div class="video-tile" style="background:#030d1f;" onclick="window.location.href='toolkit-video.html?video=calming-breath&skipthumb=1'">
-          <div class="video-tile-bg"><img src="./components/02-thumbnail.png" alt=""></div>
-          <div class="tile-gradient"></div>
-          <div class="heart-btn" data-vid="v2" onclick="event.stopPropagation();toggleHeart(this)">
-            <img src="./components/heart-default.svg" alt="save">
-          </div>
-          <div class="video-info">
-            <div class="video-meta">
-              <span class="video-duration" data-content="toolkit_video_duration_calming">1:04</span>
-              <span class="video-sparks" data-content="toolkit_video_sparks_calming">1 <img src="./components/spark-color.svg" alt="spark"></span>
-            </div>
-            <p class="video-title" data-content="toolkit_video_title_calming_breath">Calming Breath</p>
-          </div>
-        </div>
-
-        <div class="video-tile" style="background:#1a1a22;" onclick="window.location.href='toolkit-video.html?video=calming-breath&skipthumb=1'">
-          <div class="video-tile-bg"><img src="./components/03-thumbnail.png" alt=""></div>
-          <div class="tile-gradient"></div>
-          <div class="heart-btn" data-vid="v3" onclick="event.stopPropagation();toggleHeart(this)">
-            <img src="./components/heart-default.svg" alt="save">
-          </div>
-          <div class="video-info">
-            <div class="video-meta">
-              <span class="video-duration" data-content="toolkit_video_duration_resilience">1:07</span>
-              <span class="video-sparks" data-content="toolkit_video_sparks_resilience">1 <img src="./components/spark-color.svg" alt="spark"></span>
-            </div>
-            <p class="video-title" data-content="toolkit_video_title_resilience">Building Resilience Every Day</p>
-          </div>
-        </div>
-
-      </div>
+      <div class="rec-grid" id="recGrid"></div>
     </div>
 
     <!-- ─── DO IT AGAIN ─────────────────────────────────────── -->
@@ -686,6 +816,18 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       mainFull.querySelector('.toolkit-title').style.textAlign = 'center';
       mainFull.querySelector('.toolkit-desc').style.textAlign  = 'center';
     }
+
+    // Auto-select tab from URL param
+    var tabParam = params.get('tab');
+    if (tabParam && document.getElementById('tab-' + tabParam)) {
+      document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById('tab-' + tabParam).classList.add('active');
+      var matchingPill = Array.from(document.querySelectorAll('.filter-pill')).find(function(p) {
+        return p.getAttribute('onclick') && p.getAttribute('onclick').includes("'" + tabParam + "'");
+      });
+      if (matchingPill) matchingPill.classList.add('active');
+    }
   } else {
     document.getElementById('mainSimple').style.display = '';
     document.getElementById('btnExplore').style.display = '';
@@ -693,7 +835,224 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 })();
 
 function goExplore() {
-  window.location.href = 'my-toolkit.html?explore=1';
+  window.location.href = 'my-toolkit.html?explore=1&tab=browse';
+}
+
+// ─── Content library (toolkit-sample.json) ────────────────────
+var _toolkitItems = [];
+
+fetch('/toolkit-sample.json', { cache: 'no-cache' })
+  .then(function(r) { return r.json(); })
+  .then(function(data) { _toolkitItems = data; renderRecGrid(); renderContentSections(); })
+  .catch(function() {});
+
+var SECTION_LABELS = {
+  'Video':          'Videos',
+  'Guided Audio':   'Guided Audio',
+  'Talent Quote':   'Talent Quotes',
+  'Mindful Moment': 'Mindful Moments',
+  'Journal Prompt': 'Journal Prompts',
+};
+var SECTION_ORDER = ['Video', 'Guided Audio', 'Talent Quote', 'Mindful Moment', 'Journal Prompt'];
+
+function renderRecGrid() {
+  var wrap = document.getElementById('recGrid');
+  if (!wrap || !_toolkitItems.length) return;
+
+  var esc = function(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); };
+  var sc  = function(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s; };
+
+  var byType = {};
+  ['Video','Guided Audio','Talent Quote','Mindful Moment','Journal Prompt'].forEach(function(t) {
+    byType[t] = _toolkitItems.filter(function(i) { return i.type === t; });
+  });
+
+  // shelf rows: [hero], [pair], [pair], [pair] ...
+  var rows = [
+    [ byType['Video'][0] ],
+    [ byType['Guided Audio'][0],   byType['Journal Prompt'][0]  ],
+    [ byType['Talent Quote'][0],   byType['Mindful Moment'][0]  ],
+    [ byType['Guided Audio'][1],   byType['Journal Prompt'][1]  ],
+  ].filter(function(r) { return r.some(Boolean); });
+
+  var audioPalettes = [
+    { bg: '#fff9dd', c1: '#f5c200', c2: '#ffdf70' },
+    { bg: '#c4a3ff', c1: '#7040c8', c2: '#9f70e8' },
+  ];
+  var audioLayouts = [
+    '<circle cx="30" cy="430" r="290" fill="C1" opacity="0.9"/><circle cx="370" cy="80" r="140" fill="C2" opacity="0.75"/><circle cx="430" cy="260" r="70" fill="C2" opacity="0.4"/>',
+    '<circle cx="160" cy="160" r="250" fill="C1" opacity="0.88"/><circle cx="430" cy="430" r="160" fill="C2" opacity="0.7"/><circle cx="30" cy="30" r="60" fill="C2" opacity="0.45"/>',
+  ];
+  var hexColors     = ['#E65800','#3F50B8','#E768B0','#219653','#FDDA3C','#7040C8','#56CCF2'];
+  var houseColors   = ['#E65800','#3F50B8','#E768B0','#219653','#FDDA3C','#7040C8','#56CCF2'];
+  var journalColors = ['#E65800','#3F50B8','#E768B0','#219653','#7040C8','#56CCF2'];
+  var audioCount = 0, hexCount = 0, houseCount = 0, journalCount = 0;
+
+  function buildRecTile(item, isHero) {
+    var base = 'rec-tile' + (isHero ? ' rec-tile-hero' : '');
+
+    if (item.type === 'Video') {
+      var thumbSrc = item.thumbnail || './components/01-thumbnail+long.png';
+      return '<div class="' + base + '" style="background:#0d0d14;" onclick="window.location.href=\'toolkit-video.html?video=youve-done-hard-things&skipthumb=1\'">'
+        + '<div style="position:absolute;inset:0;background:url(' + esc(thumbSrc) + ') center/cover no-repeat;opacity:0.8;"></div>'
+        + '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 40%,rgba(0,0,0,0.5) 100%);pointer-events:none;"></div>'
+        + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">'
+          + '<div style="width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;">'
+          + '<svg width="24" height="24" viewBox="0 0 28 28" fill="none"><path d="M8 5l16 9-16 9V5z" fill="#fff"/></svg>'
+          + '</div></div>'
+        + '<div class="heart-btn" data-vid="v1" onclick="event.stopPropagation();toggleHeart(this)"><img src="./components/heart-default.svg" alt="save"></div>'
+        + '<div class="video-info">'
+          + '<div class="video-meta"><span class="video-duration">' + (item.duration ? item.duration + ' min' : '1 min') + '</span><span class="video-sparks">1 <img src="./components/spark-color.svg" alt=""></span></div>'
+          + '<p class="video-title">' + esc(sc(item.title)) + '</p>'
+        + '</div>'
+        + '</div>';
+    }
+
+    if (item.type === 'Guided Audio') {
+      var pi = audioCount % audioPalettes.length;
+      var p  = audioPalettes[pi];
+      var shapes = audioLayouts[pi].replace(/C1/g, p.c1).replace(/C2/g, p.c2);
+      audioCount++;
+      return '<div class="' + base + '" style="background:' + p.bg + ';">'
+        + '<svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 450 450" preserveAspectRatio="xMidYMid slice" fill="none">' + shapes + '</svg>'
+        + '<div class="cat-info-audio" style="position:absolute;bottom:12px;left:12px;right:12px;">'
+          + '<div class="cat-info-audio-meta">'
+            + '<span>' + (item.duration ? item.duration + ' min' : '1 min') + '</span>'
+            + '<span class="sparks">1 <img src="./components/spark-color.svg" style="width:14px;height:14px;vertical-align:middle;" alt="spark"></span>'
+          + '</div>'
+          + '<div class="cat-info-audio-bottom">'
+            + '<p class="cat-info-title" style="margin:0;flex:1;min-width:0;">' + esc(sc(item.title)) + '</p>'
+            + '<button class="cat-info-audio-play"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1.5l8 5.5-8 5.5V1.5z" fill="#f2f3e5"/></svg></button>'
+          + '</div>'
+        + '</div>'
+        + '</div>';
+    }
+
+    if (item.type === 'Talent Quote') {
+      var hc = hexColors[(hexCount * 3) % hexColors.length]; hexCount++;
+      return '<div class="' + base + ' is-hex">'
+        + '<div class="hex-shape" style="background:' + hc + ';">'
+          + '<div class="shape-photo-frame"><img class="shape-photo" src="' + esc(item.url) + '" alt=""></div>'
+        + '</div>'
+        + '<div class="cat-info-centered">'
+          + '<div class="cat-info-centered-spark">1 <img src="./components/spark-color.svg" alt=""></div>'
+          + '<p class="cat-info-title" style="margin:0;text-align:center;">' + esc(sc(item.title)) + '</p>'
+        + '</div>'
+        + '</div>';
+    }
+
+    if (item.type === 'Mindful Moment') {
+      var mhc = houseColors[houseCount % houseColors.length]; houseCount++;
+      return '<div class="' + base + ' is-house">'
+        + '<div class="house-shape" style="background:' + mhc + ';">'
+          + '<div class="house-photo-frame"><img class="shape-photo house-photo" src="' + esc(item.url) + '" alt=""></div>'
+        + '</div>'
+        + '<div class="cat-info-centered">'
+          + '<div class="cat-info-centered-spark">1 <img src="./components/spark-color.svg" alt=""></div>'
+          + '<p class="cat-info-title" style="margin:0;text-align:center;">' + esc(sc(item.title)) + '</p>'
+        + '</div>'
+        + '</div>';
+    }
+
+    if (item.type === 'Journal Prompt') {
+      var jc = journalColors[(journalCount * 5) % journalColors.length]; journalCount++;
+      return '<div class="' + base + ' is-journal" style="background:' + jc + ';display:flex;align-items:center;justify-content:center;padding:40px;box-sizing:border-box;">'
+        + '<p style="font-family:var(--font-body);font-size:28px;font-weight:500;color:#f2f3e5;text-align:center;line-height:1.2;margin:0;letter-spacing:-0.4px;">' + esc(item.title) + '</p>'
+        + '</div>';
+    }
+
+    return '';
+  }
+
+  wrap.innerHTML = rows.map(function(row, ri) {
+    var isHero = ri === 0 && row.length === 1;
+    var tiles = row.filter(Boolean).map(function(item) {
+      return buildRecTile(item, isHero);
+    }).join('');
+    return '<div class="shelf-row">'
+      + '<div class="shelf-tiles">' + tiles + '</div>'
+      + '<div class="shelf-plank"></div>'
+      + '</div>';
+  }).join('');
+
+  // Scroll-driven reveal for rows 2+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  wrap.querySelectorAll('.shelf-row:not(:first-child)').forEach(function(row) {
+    observer.observe(row);
+  });
+}
+
+function renderContentSections() {
+  var wrap = document.getElementById('contentSections');
+  if (!wrap) return;
+  wrap.innerHTML = SECTION_ORDER.map(function(type) {
+    var items = _toolkitItems.filter(function(it) { return it.type === type; });
+    if (!items.length) return '';
+    return '<div class="content-section">'
+      + '<div class="section-header"><h3 class="section-title">' + SECTION_LABELS[type] + '</h3></div>'
+      + '<div class="section-row">' + items.map(renderCard).join('') + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderCard(item) {
+  var t = item.type;
+  var esc = function(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); };
+  var dur = item.duration ? item.duration + ' min' : '';
+  var meta = [item.source, dur].filter(Boolean).join(' · ');
+
+  if (t === 'Video') {
+    return '<div class="content-card card-video" onclick="window.open(\'' + esc(item.url) + '\',\'_blank\')">'
+      + '<span class="type-badge card-video-badge">▶ Video</span>'
+      + '<div class="card-play-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M5 3l10 6-10 6V3z" fill="#fff"/></svg></div>'
+      + '<div class="card-caption"><p class="card-title">' + esc(item.title) + '</p>'
+      + (meta ? '<p class="card-meta">' + esc(meta) + '</p>' : '')
+      + '</div></div>';
+  }
+
+  if (t === 'Guided Audio') {
+    return '<div class="content-card card-audio">'
+      + '<span class="type-badge card-audio-badge">♫ Audio</span>'
+      + '<div><p class="card-title">' + esc(item.title) + '</p>'
+      + (meta ? '<p class="card-meta">' + esc(meta) + '</p>' : '') + '</div>'
+      + '<audio class="audio-player" controls preload="none" src="' + esc(item.url) + '"></audio>'
+      + '</div>';
+  }
+
+  if (t === 'Talent Quote') {
+    return '<div class="content-card card-image">'
+      + '<span class="type-badge card-quote-badge">❝ Quote</span>'
+      + '<img src="' + esc(item.url) + '" alt="' + esc(item.title) + '" loading="lazy">'
+      + '<div class="card-caption"><p class="card-title">' + esc(item.title) + '</p>'
+      + (item.source ? '<p class="card-meta">' + esc(item.source) + '</p>' : '')
+      + '</div></div>';
+  }
+
+  if (t === 'Mindful Moment') {
+    return '<div class="content-card card-image">'
+      + '<span class="type-badge card-mindful-badge">✦ Mindful</span>'
+      + '<img src="' + esc(item.url) + '" alt="' + esc(item.title) + '" loading="lazy">'
+      + '<div class="card-caption"><p class="card-title">' + esc(item.title) + '</p></div>'
+      + '</div>';
+  }
+
+  if (t === 'Journal Prompt') {
+    return '<div class="content-card card-journal">'
+      + '<span class="type-badge card-journal-badge">✏ Journal</span>'
+      + '<p class="journal-prompt">' + esc(item.title) + '</p>'
+      + (item.source ? '<span class="journal-source">Prompt by ' + esc(item.source) + '</span>' : '')
+      + '</div>';
+  }
+
+  return '';
 }
 
 function scale() {
