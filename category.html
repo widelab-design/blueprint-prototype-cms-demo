@@ -300,8 +300,8 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 36px; z-index: 5;
-  padding: 100px 80px 0; box-sizing: border-box;
+  z-index: 5;
+  padding: 80px; box-sizing: border-box;
 }
 .coll-overlay-content.from-cat { opacity: 0; transform: translateY(400px); }
 .coll-overlay-content.entered {
@@ -320,19 +320,9 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   backdrop-filter: blur(8px);
 }
 .coll-overlay-card {
-  width: 240px; height: 240px; border-radius: 16px;
-  overflow: hidden; border: 1px solid #444450; flex-shrink: 0;
+  max-width: 560px; width: 100%; flex-shrink: 0;
 }
-.coll-overlay-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.coll-overlay-text {
-  width: 627px;
-  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
-  letter-spacing: 1.5px; color: #f2f3e5; text-align: center; margin: 0;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
+.coll-overlay-card img { width: 100%; height: auto; display: block; border-radius: 16px; }
 
 /* ─── Heart button ───────────────────────────────────── */
 .cat-heart {
@@ -463,7 +453,6 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
       <div class="coll-overlay-card">
         <img id="collOverlayImg" src="" alt="">
       </div>
-      <h1 class="coll-overlay-text" id="collOverlayText"></h1>
     </div>
   </div>
 
@@ -709,7 +698,6 @@ function openCollOverlay(item) {
   var cloud = document.getElementById('collCloud');
   var content = document.getElementById('collContent');
   document.getElementById('collOverlayImg').src = item.url;
-  document.getElementById('collOverlayText').textContent = sc(item.title);
   overlay.style.display = 'block';
   cloud.className = 'coll-overlay-cloud from-cat';
   content.className = 'coll-overlay-content from-cat';
