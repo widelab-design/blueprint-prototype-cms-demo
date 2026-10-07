@@ -325,8 +325,15 @@ const QUESTIONS = {
 };
 
 const params = new URLSearchParams(location.search);
-const qId = params.get('q') || '1';
-const q = QUESTIONS[qId] || QUESTIONS['1'];
+let q;
+if (params.get('from') === 'category' && sessionStorage.getItem('bp_cat_prompt')) {
+  const catPrompt = sessionStorage.getItem('bp_cat_prompt');
+  const catColor  = sessionStorage.getItem('bp_cat_color') || '#3f50b8';
+  q = { text: catPrompt, color: catColor, msgColor: catColor, key: 'bp_journal_cat_' + catPrompt.slice(0, 20).replace(/\W+/g, '_') };
+} else {
+  const qId = params.get('q') || '1';
+  q = QUESTIONS[qId] || QUESTIONS['1'];
+}
 
 // Apply question content
 document.getElementById('s-question').style.background = q.color;
