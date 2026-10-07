@@ -869,9 +869,9 @@ function renderRecGrid() {
   // shelf rows: [hero], [pair], [pair], [pair] ...
   var rows = [
     [ byType['Video'][0] ],
-    [ byType['Guided Audio'][0],   byType['Journal Prompt'][0]  ],
-    [ byType['Talent Quote'][0],   byType['Mindful Moment'][0]  ],
-    [ byType['Guided Audio'][1],   byType['Journal Prompt'][1]  ],
+    [ byType['Talent Quote'][0],   byType['Guided Audio'][0]   ],
+    [ byType['Journal Prompt'][0], byType['Mindful Moment'][0] ],
+    [ byType['Guided Audio'][1],   byType['Journal Prompt'][1] ],
   ].filter(function(r) { return r.some(Boolean); });
 
   var audioPalettes = [
@@ -883,9 +883,9 @@ function renderRecGrid() {
     '<circle cx="160" cy="160" r="250" fill="C1" opacity="0.88"/><circle cx="430" cy="430" r="160" fill="C2" opacity="0.7"/><circle cx="30" cy="30" r="60" fill="C2" opacity="0.45"/>',
   ];
   var hexColors     = ['#E65800','#3F50B8','#E768B0','#219653','#FDDA3C','#7040C8','#56CCF2'];
-  var houseColors   = ['#219653','#56CCF2','#E768B0','#FDDA3C','#E65800','#7040C8','#3F50B8'];
-  var journalColors = ['#7040C8','#219653','#E65800','#3F50B8','#56CCF2','#E768B0'];
-  var audioCount = 0, hexCount = 2, houseCount = 0, journalCount = 0;
+  var houseColors   = ['#E768B0','#219653','#56CCF2','#FDDA3C','#E65800','#7040C8','#3F50B8'];
+  var journalColors = ['#7040C8','#56CCF2','#E65800','#3F50B8','#E768B0','#219653'];
+  var audioCount = 0, hexCount = 0, houseCount = 0, journalCount = 0;
 
   function buildRecTile(item, isHero) {
     var base = 'rec-tile' + (isHero ? ' rec-tile-hero' : '');
