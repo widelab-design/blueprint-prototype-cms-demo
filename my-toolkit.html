@@ -869,8 +869,8 @@ function renderRecGrid() {
   // shelf rows: [hero], [pair], [pair], [pair] ...
   var rows = [
     [ byType['Video'][0] ],
-    [ byType['Talent Quote'][0],   byType['Guided Audio'][0]   ],
-    [ byType['Journal Prompt'][0], byType['Mindful Moment'][0] ],
+    [ byType['Journal Prompt'][0], byType['Guided Audio'][0]   ],
+    [ byType['Talent Quote'][0],   byType['Mindful Moment'][0] ],
     [ byType['Guided Audio'][1],   byType['Journal Prompt'][1] ],
   ].filter(function(r) { return r.some(Boolean); });
 
@@ -885,7 +885,7 @@ function renderRecGrid() {
   var hexColors     = ['#E65800','#3F50B8','#E768B0','#219653','#FDDA3C','#7040C8','#56CCF2'];
   var houseColors   = ['#E768B0','#219653','#56CCF2','#FDDA3C','#E65800','#7040C8','#3F50B8'];
   var journalColors = ['#7040C8','#56CCF2','#E65800','#3F50B8','#E768B0','#219653'];
-  var audioCount = 0, hexCount = 0, houseCount = 0, journalCount = 0;
+  var audioCount = 0, hexCount = 2, houseCount = 0, journalCount = 0;
 
   function buildRecTile(item, isHero) {
     var base = 'rec-tile' + (isHero ? ' rec-tile-hero' : '');

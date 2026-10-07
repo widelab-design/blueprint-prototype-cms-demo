@@ -480,14 +480,17 @@ let didTryNext = 's-thanks';
 // Jump straight to feedback flow (e.g. from KAT video or suggest-video)
 if (urlParams.get('feedback') === '1') {
   localStorage.setItem('bp_video_watched', '1');
-  setTimeout(function() { goTo('s-did-try'); }, 0);
+  var toScreen = urlParams.get('to') || 's-did-try';
+  document.getElementById('s-video').classList.remove('active');
+  var _toEl = document.getElementById(toScreen);
+  if (_toEl) { _toEl.classList.add('active'); cur = toScreen; }
 }
 function goTo(id) {
   document.getElementById(cur).classList.remove('active');
   var el = document.getElementById(id);
   el.classList.add('active');
   cur = id;
-  if (id === 's-did-try') {
+  if (id === 's-did-try' || id === 's-helpful') {
     el.classList.remove('fb-entered', 'fb-phase2');
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
