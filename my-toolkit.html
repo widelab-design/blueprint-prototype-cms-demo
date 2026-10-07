@@ -156,18 +156,18 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .rec-tile-hero { height: 473px; }
 .rec-tile.is-journal { border-radius: 50%; flex: 0 0 473px; }
 .rec-tile.is-hex {
-  height: 473px; border-radius: 0; overflow: visible;
-  background: transparent !important; flex: 0 0 473px;
+  height: 390px; border-radius: 0; overflow: visible;
+  background: transparent !important; flex: 0 0 450px;
 }
 .rec-tile.is-house {
-  height: 473px; border-radius: 0; overflow: visible;
-  background: transparent !important; flex: 0 0 473px;
+  height: 450px; border-radius: 0; overflow: visible;
+  background: transparent !important; flex: 0 0 450px;
 }
 
-/* shape tile shared styles */
+/* shape tile shared styles — identical to category.html */
 .hex-shape {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  clip-path: polygon(119px 0px, 354px 0px, 473px 195px, 354px 390px, 119px 390px, 0px 195px);
+  clip-path: polygon(113px 0px, 338px 0px, 450px 195px, 338px 390px, 113px 390px, 0px 195px);
 }
 .house-shape {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -176,12 +176,12 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .shape-photo-frame {
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -58%);
-  width: 200px; height: 200px; border-radius: 50%; overflow: hidden;
+  width: 220px; height: 220px; border-radius: 50%; overflow: hidden;
 }
 .house-photo-frame {
-  position: absolute; top: calc(46% + 28px); left: 50%;
+  position: absolute; top: calc(46% + 30px); left: 50%;
   transform: translate(-50%, -50%);
-  width: 200px; height: 200px; border-radius: 50%; overflow: hidden;
+  width: 220px; height: 220px; border-radius: 50%; overflow: hidden;
 }
 .shape-photo {
   width: 100%; height: 100%;
@@ -192,15 +192,15 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .cat-info-centered {
   position: absolute; bottom: 0;
   left: 50%; transform: translate(-50%, 50%);
-  width: 190px; background: #36363f; border-radius: 12px;
+  width: 210px; background: #36363f; border-radius: 12px;
   padding: 8px 12px; box-sizing: border-box; text-align: center; z-index: 2;
 }
 .cat-info-centered-spark {
   display: flex; align-items: center; justify-content: center; gap: 4px;
-  font-family: var(--font-body); font-size: 16px; font-weight: 500; color: #f2f3e5;
+  font-family: var(--font-body); font-size: 18px; font-weight: 500; color: #f2f3e5;
   margin-bottom: 4px;
 }
-.cat-info-centered-spark img { width: 14px; height: 14px; display: block; }
+.cat-info-centered-spark img { width: 16px; height: 16px; display: block; }
 .cat-info-audio {
   background: #36363f; border-radius: 12px; padding: 8px;
   display: flex; flex-direction: column; gap: 8px; z-index: 2;
