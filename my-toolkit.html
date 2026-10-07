@@ -137,6 +137,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   align-items: flex-end;
   padding-bottom: 12px;
 }
+.shelf-tiles.has-shapes { padding-bottom: 44px; }
 
 .shelf-plank {
   width: calc(100% + 60px + 32px); height: 20px;
@@ -964,11 +965,14 @@ function renderRecGrid() {
 
   wrap.innerHTML = rows.map(function(row, ri) {
     var isHero = ri === 0 && row.length === 1;
+    var hasShaped = row.some(function(item) {
+      return item && (item.type === 'Talent Quote' || item.type === 'Mindful Moment');
+    });
     var tiles = row.filter(Boolean).map(function(item) {
       return buildRecTile(item, isHero);
     }).join('');
     return '<div class="shelf-row">'
-      + '<div class="shelf-tiles">' + tiles + '</div>'
+      + '<div class="shelf-tiles' + (hasShaped ? ' has-shapes' : '') + '">' + tiles + '</div>'
       + '<div class="shelf-plank"></div>'
       + '</div>';
   }).join('');

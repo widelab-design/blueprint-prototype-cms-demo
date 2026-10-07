@@ -1,0 +1,703 @@
+[
+  {
+    "title": "A Small Simple Step",
+    "type": "Video",
+    "source": "Jim Kwik",
+    "url": "https://www.dropbox.com/scl/fo/b0pnxeaezsr71j5zi2rrk/ACXWFS-wCxbWymd5xcnpRgM?rlkey=zepj8tk07gbyw3aq0akzd5n3h&st=9h1myip0&raw=1",
+    "topic": "motivation",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Overcoming Challenges",
+    "type": "Video",
+    "source": "Karl-Anthony Towns",
+    "url": "https://www.dropbox.com/scl/fi/jjjqa1nmu9i9gffmdh7la/KAT-Overcoming-Challenges-2.mp4?rlkey=pv8h7fnjymrt7ao98dhozv5a1&st=vta9c8l3&raw=1",
+    "topic": "motivation",
+    "outcome": "build skill",
+    "duration": 2.0,
+    "difficulty": "Low",
+    "thumbnail": "./components/kat-thumbnail.png"
+  },
+  {
+    "title": "Calm in the Crash",
+    "type": "Video",
+    "source": "Aurora Straus",
+    "url": "https://www.dropbox.com/scl/fo/t36m9e2zrjhsymj7p8ekv/ALEsUIWJem_9sJz3qvTGNYg?rlkey=yp0mmqo6grz56j3rn00gfew7n&st=heboldml&raw=1",
+    "topic": "resilience",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Meet Your Mentor",
+    "type": "Video",
+    "source": "Jim Kwik",
+    "url": "https://www.dropbox.com/scl/fo/s9nhhqyfind3mktny8lqc/AFq4ZeYk2aH2KHcuXH4YXFk?rlkey=44opo938nr2cjqyr42lhlqyb5&st=1jne501c&raw=1",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Spelling Bee Champ",
+    "type": "Video",
+    "source": "Zaila Avant-garde",
+    "url": "https://www.dropbox.com/scl/fo/9oyc55sfogyv45xvxoze5/APJe50gvWD6IrD9OK2H62Us?rlkey=jjmmnjbgry1xdzbqchi544bk1&st=t7rgarza&raw=1",
+    "topic": "motivation",
+    "outcome": "build skill",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Finding Your Voice",
+    "type": "Video",
+    "source": "Simone Biles",
+    "url": "https://www.dropbox.com/scl/fo/b0pnxeaezsr71j5zi2rrk/ACXWFS-wCxbWymd5xcnpRgM?rlkey=zepj8tk07gbyw3aq0akzd5n3h&st=9h1myip0&raw=1",
+    "topic": "motivation",
+    "outcome": "reflect",
+    "duration": 2.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "The Power of Focus",
+    "type": "Video",
+    "source": "Jim Kwik",
+    "url": "https://www.dropbox.com/scl/fo/cwwq0x21cohlv5k79lpwz/AJYCxAnWXlvbM01KZzjFZrU?rlkey=2wdmwskuif5kui438loy1yzfc&st=8qoxb9ua&raw=1",
+    "topic": "focus",
+    "outcome": "build skill",
+    "duration": 3.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Bounce Back Stronger",
+    "type": "Video",
+    "source": "Aurora Straus",
+    "url": "https://www.dropbox.com/scl/fo/t36m9e2zrjhsymj7p8ekv/ALEsUIWJem_9sJz3qvTGNYg?rlkey=yp0mmqo6grz56j3rn00gfew7n&st=heboldml&raw=1",
+    "topic": "resilience",
+    "outcome": "reflect",
+    "duration": 2.0,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Own Your Story",
+    "type": "Video",
+    "source": "In-Q",
+    "url": "https://www.dropbox.com/scl/fo/s9nhhqyfind3mktny8lqc/AFq4ZeYk2aH2KHcuXH4YXFk?rlkey=44opo938nr2cjqyr42lhlqyb5&st=1jne501c&raw=1",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Growth Mindset",
+    "type": "Video",
+    "source": "Karl-Anthony Towns",
+    "url": "https://www.dropbox.com/scl/fo/9oyc55sfogyv45xvxoze5/APJe50gvWD6IrD9OK2H62Us?rlkey=jjmmnjbgry1xdzbqchi544bk1&st=t7rgarza&raw=1",
+    "topic": "motivation",
+    "outcome": "build skill",
+    "duration": 2.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Real Talk on Pressure",
+    "type": "Video",
+    "source": "Zaila Avant-garde",
+    "url": "https://www.dropbox.com/scl/fo/b0pnxeaezsr71j5zi2rrk/ACXWFS-wCxbWymd5xcnpRgM?rlkey=zepj8tk07gbyw3aq0akzd5n3h&st=9h1myip0&raw=1",
+    "topic": "academic pressure",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Your Superpower",
+    "type": "Video",
+    "source": "Donovan Taylor Hall",
+    "url": "https://www.dropbox.com/scl/fo/cwwq0x21cohlv5k79lpwz/AJYCxAnWXlvbM01KZzjFZrU?rlkey=2wdmwskuif5kui438loy1yzfc&st=8qoxb9ua&raw=1",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": 2.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Fail Forward",
+    "type": "Video",
+    "source": "Jim Kwik",
+    "url": "https://www.dropbox.com/scl/fo/t36m9e2zrjhsymj7p8ekv/ALEsUIWJem_9sJz3qvTGNYg?rlkey=yp0mmqo6grz56j3rn00gfew7n&st=heboldml&raw=1",
+    "topic": "resilience",
+    "outcome": "build skill",
+    "duration": 2.0,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Show Up for Yourself",
+    "type": "Video",
+    "source": "Aurora Straus",
+    "url": "https://www.dropbox.com/scl/fo/s9nhhqyfind3mktny8lqc/AFq4ZeYk2aH2KHcuXH4YXFk?rlkey=44opo938nr2cjqyr42lhlqyb5&st=1jne501c&raw=1",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Your Grade Is Not Your Worth",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/cg9cwhmmbuy8zcihyeo9r/Your-grade-is-Not-Your-Worth.wav?rlkey=eihd1i14sey7khfkjnolpblcf&st=evqkglef&raw=1",
+    "topic": "academic pressure",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Bullying: You Don’t Have to Handle It Alone",
+    "type": "Guided Audio",
+    "source": "Jim Kwik",
+    "url": "https://www.dropbox.com/scl/fi/czcjonlui7aawqp13duw0/Bullying-VO-V2.wav?rlkey=hxubrx2wsj52ujcrpk4ix6v87&st=sl8iin3q&raw=1",
+    "topic": "nutrition",
+    "outcome": "build skill",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Self-Worth",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/jutqy4rfaql4q057qhxp7/Self-Worth.wav?rlkey=ovilo43mz3o1lpqz4c4fbogb1&st=vl7zu52v&raw=1",
+    "topic": "nutrition",
+    "outcome": "psychoeducation",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Food + Your Mood",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/sbyaea874bnw18touac1z/Food-And-Your-Mood.wav?rlkey=pgsr8rrm8yivrffvobz3ec13w&st=ukvcvsfs&raw=1",
+    "topic": "self-talk",
+    "outcome": "build skill",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Trouble Falling Asleep?",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/cyduoqw06q9c3d41lybxb/Trouble-Falling-Asleep-Take-a-Minute.wav?rlkey=y25l0q6kbekp0utpb1uaiwbwz&st=i3jjehmb&raw=1",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Breathing Through Anxiety",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/cg9cwhmmbuy8zcihyeo9r/Your-grade-is-Not-Your-Worth.wav?rlkey=eihd1i14sey7khfkjnolpblcf&st=evqkglef&raw=1",
+    "topic": "anxiety",
+    "outcome": "build skill",
+    "duration": 2.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Let It Go",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/czcjonlui7aawqp13duw0/Bullying-VO-V2.wav?rlkey=hxubrx2wsj52ujcrpk4ix6v87&st=sl8iin3q&raw=1",
+    "topic": "stress",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Morning Intention",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/jutqy4rfaql4q057qhxp7/Self-Worth.wav?rlkey=ovilo43mz3o1lpqz4c4fbogb1&st=vl7zu52v&raw=1",
+    "topic": "mindfulness",
+    "outcome": "build skill",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Confidence Boost",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/sbyaea874bnw18touac1z/Food-And-Your-Mood.wav?rlkey=pgsr8rrm8yivrffvobz3ec13w&st=ukvcvsfs&raw=1",
+    "topic": "self-esteem",
+    "outcome": "build skill",
+    "duration": 2.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Body Scan",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/cyduoqw06q9c3d41lybxb/Trouble-Falling-Asleep-Take-a-Minute.wav?rlkey=y25l0q6kbekp0utpb1uaiwbwz&st=i3jjehmb&raw=1",
+    "topic": "body awareness",
+    "outcome": "reflect",
+    "duration": 3.0,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Managing Anger",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/cg9cwhmmbuy8zcihyeo9r/Your-grade-is-Not-Your-Worth.wav?rlkey=eihd1i14sey7khfkjnolpblcf&st=evqkglef&raw=1",
+    "topic": "emotions",
+    "outcome": "build skill",
+    "duration": 2.0,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Study Mode",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/czcjonlui7aawqp13duw0/Bullying-VO-V2.wav?rlkey=hxubrx2wsj52ujcrpk4ix6v87&st=sl8iin3q&raw=1",
+    "topic": "focus",
+    "outcome": "build skill",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Wind Down",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/jutqy4rfaql4q057qhxp7/Self-Worth.wav?rlkey=ovilo43mz3o1lpqz4c4fbogb1&st=vl7zu52v&raw=1",
+    "topic": "sleep",
+    "outcome": "reflect",
+    "duration": 2.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Gratitude Practice",
+    "type": "Guided Audio",
+    "source": "Take A Minute",
+    "url": "https://www.dropbox.com/scl/fi/sbyaea874bnw18touac1z/Food-And-Your-Mood.wav?rlkey=pgsr8rrm8yivrffvobz3ec13w&st=ukvcvsfs&raw=1",
+    "topic": "mindfulness",
+    "outcome": "reflect",
+    "duration": 1.0,
+    "difficulty": "Low"
+  },
+  {
+    "title": "I'm Proud of You",
+    "type": "Talent Quote",
+    "source": "In-Q",
+    "url": "https://www.dropbox.com/scl/fi/45lb1w05g36vohmxo8mnx/Proud-In-Q-Blueprint.png?rlkey=r9tze9hjriggek5hxz8om3lza&st=a7g2gkcl&raw=1",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Positive Thoughts (Animated 1)",
+    "type": "Talent Quote",
+    "source": "Jason Demers",
+    "url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "self-talk",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Level Up",
+    "type": "Talent Quote",
+    "source": "Zaila Avant-garde",
+    "url": "https://www.dropbox.com/scl/fi/g2gzdslm2a9fmo9oiv7hz/Level-Up-Zaila-Avant-garde-Blueprint.png?rlkey=h8iamphm9l0s18x8vr7jilrbb&st=nhuav6z8&raw=1",
+    "topic": "resilience",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Motivation (Animated)",
+    "type": "Talent Quote",
+    "source": "Donovan Taylor Hall",
+    "url": "https://www.dropbox.com/scl/fi/99sh2rt4o5t5asx5010zt/Motivation-Donovan-Taylor-Hall-Blueprint-Animated.png?rlkey=y07np7tzhtcos4gjdsljyhqpu&st=nm6fhl5g&raw=1",
+    "topic": "motivation",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Motivation",
+    "type": "Talent Quote",
+    "source": "Donovan Taylor Hall",
+    "url": "https://www.dropbox.com/scl/fi/280u1m6cmqrmwx2tec1wk/Motivation-Donovan-Taylor-Hall-Blueprint.png?rlkey=17fgegdy9v481mt9guji51pwo&st=w03wn2gq&raw=1",
+    "topic": "motivation",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Believe in Yourself",
+    "type": "Talent Quote",
+    "source": "In-Q",
+    "url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Keep Going",
+    "type": "Talent Quote",
+    "source": "Aurora Straus",
+    "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "resilience",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "You Are Enough",
+    "type": "Talent Quote",
+    "source": "Zaila Avant-garde",
+    "url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Rise Up",
+    "type": "Talent Quote",
+    "source": "Karl-Anthony Towns",
+    "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "motivation",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Your Story Matters",
+    "type": "Talent Quote",
+    "source": "Jim Kwik",
+    "url": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Champion Mindset",
+    "type": "Talent Quote",
+    "source": "Donovan Taylor Hall",
+    "url": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "motivation",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "One Step at a Time",
+    "type": "Talent Quote",
+    "source": "In-Q",
+    "url": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "resilience",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Courage Over Comfort",
+    "type": "Talent Quote",
+    "source": "Aurora Straus",
+    "url": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "You Were Built for This",
+    "type": "Talent Quote",
+    "source": "Karl-Anthony Towns",
+    "url": "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "resilience",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "HUNGER HAS CLUES",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/gwaa8kjjnt9ffvpeg471s/FOOD-3.png?rlkey=j28dzyd502gkrdq5ra5rscxe8&st=y0pmjr7t&raw=1",
+    "topic": "body awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "THOUGHTS AREN’T FEELINGS",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/mps2f7kwk8zkq2s4luefi/EMOTIONS-5.png?rlkey=mdcyb8x7ewncagskc7obb0jyk&st=blz8gxc5&raw=1",
+    "topic": "self-talk",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "YOUR BODY KNOWS",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/skqj14htzycsfmatam9kn/EMOTIONS-6.png?rlkey=mct6b9ts7b7tcog83ozcp1j90&st=4z4ekj2h&raw=1",
+    "topic": "body awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "GIVE YOUR PHONE A BEDTIME",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/r4zlfdep9evkto9sbxo80/BODY-AND-SLEEP-4.png?rlkey=iy6y2lm9s09fw4zcbya1ko410&st=cv6rf1qk&raw=1",
+    "topic": "sleep",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "WHO BENEFITS?",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/a1dth2kb96cfmr91mkzm4/WHO-BENEFITS.png?rlkey=crg6cxjxmopvtcsbupm7zn0pz&st=yz9lgcn0&raw=1",
+    "topic": "digital discernment",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "LOOKS REAL. IS IT?",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/mre8llb07585eeehygah1/LOOKS-REAL.-IS-IT.png?rlkey=y5ekgsh7mnlmvzof2yvx7d13c&st=7wz7n57v&raw=1",
+    "topic": "digital discernment",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "POPULAR ≠ EXPERT",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/4wu1pwkdrr3p8jctagco0/POPULAR-IS-NOT-EXPERT.png?rlkey=1egsjx3rk8q6yf53w3h74hevc&st=0ca328n6&raw=1",
+    "topic": "digital discernment",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "WHAT IS YOUR FEED FEEDING YOU?",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://www.dropbox.com/scl/fi/tfzwtk3y8oc5udn73tymc/DIGITAL-MEDIA.png?rlkey=jk97moqs99teviyd77zgd3p7c&st=rlo874o7&raw=1",
+    "topic": "social media",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "SLEEP IS YOUR SUPERPOWER",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "sleep",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "BREATHE BEFORE YOU REACT",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://images.unsplash.com/photo-1499557354967-2b2d8910bcca?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "emotions",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "YOU DON’T HAVE TO BE PERFECT",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "self-esteem",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "COMPARISON IS A THIEF",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "social media",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "YOUR WORTH ISN’T MEASURED IN LIKES",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "digital discernment",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "SMALL STEPS STILL MOVE YOU FORWARD",
+    "type": "Mindful Moment",
+    "source": "",
+    "url": "https://images.unsplash.com/photo-1513097633097-329a3a64e0d4?w=400&h=400&fit=crop&crop=faces&auto=format",
+    "topic": "motivation",
+    "outcome": "build skill",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "What's a challenge you've faced recently? What made it so hard?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "What advice would you give to a friend who felt like they didn't fit in?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "loneliness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Think about something that was hard to learn. What helped you keep going?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "motivation",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Is there something in your life that feels completely negative right now? Could there ever be another side to it?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Think of a time you felt really nervous or anxious. What helped you get through it?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Have you ever gone through something really hard that changed how you see the world? What changed?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Who's a superhero (real or fictional) you look up to? What inspires you about them?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "What's one thing you're proud of that you haven't told anyone about?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "Write about a time you helped someone. How did it make you feel?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "empathy",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "What does success mean to you — not to your parents, not to your teachers, but to you?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "If you could change one thing about how your school day feels, what would it be?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "academic pressure",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "What's one thing you wish people understood about you?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Low"
+  },
+  {
+    "title": "If your future self could send you one message right now, what do you think it would say?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "motivation",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  },
+  {
+    "title": "Think about a mistake you made. What would you do differently now?",
+    "type": "Journal Prompt",
+    "source": "Jim Kwik",
+    "url": "",
+    "topic": "self-awareness",
+    "outcome": "reflect",
+    "duration": null,
+    "difficulty": "Medium"
+  }
+]
