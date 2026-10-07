@@ -72,10 +72,10 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 /* ─── Main content ──────────────────────────────────────────── */
 .toolkit-main {
   position: absolute;
-  left: 152px; top: 72px; bottom: 0; right: 48px;
+  left: 152px; top: 72px; bottom: 0; right: 0;
   overflow-y: auto; overflow-x: hidden;
   display: flex; flex-direction: column; align-items: flex-start;
-  padding: 0 12px;
+  padding: 0 60px 0 12px;
 }
 .toolkit-main::-webkit-scrollbar { width: 0; }
 
@@ -124,28 +124,26 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .video-tile:hover { transform: scale(1.025); }
 
 /* ─── Recommended shelves ─────────────────────────────────────── */
-.rec-grid { display: flex; flex-direction: column; gap: 0; width: 100%; }
+.rec-grid { display: flex; flex-direction: column; gap: 64px; width: 100%; }
 
 .shelf-row {
   display: flex; flex-direction: column; width: 100%;
-  opacity: 0; transform: translateX(120px);
-  transition: transform 700ms cubic-bezier(0.25,0.46,0.45,0.94), opacity 500ms ease;
+  opacity: 0; transform: translateX(400px);
 }
-.shelf-row.visible { opacity: 1; transform: translateX(0); }
-.shelf-row:first-child { opacity: 1; transform: translateX(0); transition: none; }
+.shelf-row:first-child { opacity: 1; transform: translateX(0); }
 
 .shelf-tiles {
   display: flex; gap: 24px; width: 100%;
-  padding: 24px 0 0; box-sizing: border-box;
+  align-items: flex-end;
+  padding-bottom: 12px;
 }
 
 .shelf-plank {
-  width: 100%; height: 20px;
-  background: linear-gradient(to bottom, #b8753a 0%, #8f5420 55%, #7a4418 100%);
-  border-radius: 4px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.45), 0 2px 4px rgba(0,0,0,0.3);
-  margin-top: 2px;
-  flex-shrink: 0;
+  width: calc(100% + 60px); height: 20px;
+  margin-right: -60px; flex-shrink: 0;
+  background: #2b2b32;
+  border-radius: 12px 0 0 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
 .rec-tile {
@@ -157,18 +155,18 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .rec-tile-hero { height: 473px; }
 .rec-tile.is-journal { border-radius: 50%; flex: 0 0 473px; }
 .rec-tile.is-hex {
-  height: 390px; border-radius: 0; overflow: visible;
-  background: transparent !important; flex: 0 0 473px; margin-bottom: 35px;
+  height: 473px; border-radius: 0; overflow: visible;
+  background: transparent !important; flex: 0 0 473px;
 }
 .rec-tile.is-house {
-  border-radius: 0; overflow: visible;
-  background: transparent !important; flex: 0 0 473px; margin-bottom: 35px;
+  height: 473px; border-radius: 0; overflow: visible;
+  background: transparent !important; flex: 0 0 473px;
 }
 
 /* shape tile shared styles */
 .hex-shape {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  clip-path: polygon(105px 0px, 315px 0px, 420px 182px, 315px 364px, 105px 364px, 0px 182px);
+  clip-path: polygon(119px 0px, 354px 0px, 473px 195px, 354px 390px, 119px 390px, 0px 195px);
 }
 .house-shape {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -884,9 +882,9 @@ function renderRecGrid() {
     '<circle cx="160" cy="160" r="250" fill="C1" opacity="0.88"/><circle cx="430" cy="430" r="160" fill="C2" opacity="0.7"/><circle cx="30" cy="30" r="60" fill="C2" opacity="0.45"/>',
   ];
   var hexColors     = ['#E65800','#3F50B8','#E768B0','#219653','#FDDA3C','#7040C8','#56CCF2'];
-  var houseColors   = ['#E65800','#3F50B8','#E768B0','#219653','#FDDA3C','#7040C8','#56CCF2'];
-  var journalColors = ['#E65800','#3F50B8','#E768B0','#219653','#7040C8','#56CCF2'];
-  var audioCount = 0, hexCount = 0, houseCount = 0, journalCount = 0;
+  var houseColors   = ['#219653','#56CCF2','#E768B0','#FDDA3C','#E65800','#7040C8','#3F50B8'];
+  var journalColors = ['#7040C8','#219653','#E65800','#3F50B8','#56CCF2','#E768B0'];
+  var audioCount = 0, hexCount = 2, houseCount = 0, journalCount = 0;
 
   function buildRecTile(item, isHero) {
     var base = 'rec-tile' + (isHero ? ' rec-tile-hero' : '');
@@ -975,19 +973,39 @@ function renderRecGrid() {
       + '</div>';
   }).join('');
 
-  // Scroll-driven reveal for rows 2+
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
+  initShelfScroll();
+}
+
+function initShelfScroll() {
+  var scrollEl = document.querySelector('.toolkit-main');
+  if (!scrollEl) return;
+
+  var REVEAL_PX = 320; // scroll px to go from hidden to fully visible
+
+  function updateShelves() {
+    var cRect = scrollEl.getBoundingClientRect();
+    var viewH = scrollEl.clientHeight;
+    document.querySelectorAll('#recGrid .shelf-row').forEach(function(row, i) {
+      if (i === 0 || row._settled) return;
+      var rRect = row.getBoundingClientRect();
+      var topInView = rRect.top - cRect.top; // row top relative to container top
+      var entered = viewH - topInView; // px the row has entered from the bottom
+      var progress = Math.max(0, Math.min(1, entered / REVEAL_PX));
+      if (progress >= 1) {
+        row.style.transform = 'translateX(0)';
+        row.style.opacity = '1';
+        row._settled = true;
+      } else {
+        row.style.transform = 'translateX(' + Math.round((1 - progress) * 400) + 'px)';
+        row.style.opacity = String(progress.toFixed(2));
       }
     });
-  }, { threshold: 0.08 });
+  }
 
-  wrap.querySelectorAll('.shelf-row:not(:first-child)').forEach(function(row) {
-    observer.observe(row);
-  });
+  scrollEl.removeEventListener('scroll', scrollEl._shelfHandler);
+  scrollEl._shelfHandler = updateShelves;
+  scrollEl.addEventListener('scroll', updateShelves);
+  updateShelves();
 }
 
 function renderContentSections() {
