@@ -62,10 +62,23 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   margin: 0;
 }
 
-/* ─── 2×2 tile grid ──────────────────────────────────── */
+/* ─── Type filter tabs ───────────────────────────────── */
+.type-tabs {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.type-tab {
+  height: 40px; padding: 0 20px; border-radius: 12px; border: none;
+  background: #2b2b35; color: rgba(242,243,229,0.5);
+  font-family: var(--font-body); font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: background 120ms, color 120ms;
+}
+.type-tab.active { background: #f2f3e5; color: #1f1f25; }
+.type-tab:not(.active):hover { color: #f2f3e5; }
+
+/* ─── 2-col tile grid ────────────────────────────────── */
 .cat-grid {
   display: flex; flex-direction: column;
-  gap: 24px;
+  gap: 64px;
   width: 924px;
 }
 .cat-row { display: flex; gap: 24px; }
@@ -81,11 +94,244 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 }
 .cat-tile:hover { transform: scale(1.015); }
 
+/* Shape tiles — hexagon + house */
+.cat-tile.is-hex {
+  /* Polygon-toolkit.svg: 485×421 → scaled to 450px wide = 390px tall */
+  height: 390px;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent !important;
+  margin-bottom: 35px;
+}
+.cat-tile.is-house {
+  border-radius: 0;
+  overflow: visible;
+  background: transparent !important;
+  margin-bottom: 35px;
+}
+/* Inner shape divs carry the clip — info box stays outside the clip */
+.hex-shape {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  clip-path: polygon(113px 0px, 338px 0px, 450px 195px, 338px 390px, 113px 390px, 0px 195px);
+}
+.house-shape {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  clip-path: polygon(0% 43%, 50% 0%, 100% 43%, 100% 100%, 0% 100%);
+}
+.shape-photo-frame {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -58%);
+  width: 220px; height: 220px;
+  border-radius: 50%; overflow: hidden;
+}
+.house-photo { object-position: left center !important; }
+.fb-opt {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  width: 220px; padding: 32px 24px; border-radius: 24px;
+  background: #2e2e38; border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 22px; font-weight: 500; color: #f2f3e5;
+  transition: background 140ms, transform 140ms;
+}
+.fb-opt:hover { background: #3a3a48; transform: scale(1.04); }
+.house-photo-frame {
+  position: absolute; top: calc(46% + 30px); left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px; height: 220px;
+  border-radius: 50%; overflow: hidden;
+}
+.shape-photo {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 5%;
+  transform: scale(1.5);
+  transform-origin: 50% 5%;
+  display: block;
+}
+.cat-info-centered {
+  position: absolute; bottom: 0;
+  left: 50%; transform: translate(-50%, 50%);
+  width: 210px;
+  background: #36363f; border-radius: 12px;
+  padding: 8px 12px; box-sizing: border-box;
+  text-align: center; z-index: 2;
+}
+.cat-info-centered-spark {
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  font-family: var(--font-body); font-size: 18px; font-weight: 500; color: #f2f3e5;
+  margin-bottom: 4px;
+}
+.cat-info-centered-spark img { width: 16px; height: 16px; display: block; }
+.house-img {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 60%;
+  width: 100%; object-fit: cover; object-position: left center; display: block;
+}
+
+/* Audio tile — horizontal list item */
+.audio-cover-art {
+  position: absolute; inset: 0; overflow: hidden; border-radius: 20px;
+}
+.cat-tile-audio-row {
+  width: 924px; height: 88px; border-radius: 16px;
+  background: #2b2b35;
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 20px 0 16px; box-sizing: border-box;
+  cursor: pointer; transition: background 140ms;
+  position: relative;
+}
+.cat-tile-audio-row:hover { background: #33333f; }
+.audio-row-cover {
+  width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+}
+.audio-row-cover svg { display: block; }
+.audio-row-info { flex: 1; min-width: 0; }
+.audio-row-title {
+  font-family: var(--font-display); font-size: 20px; font-weight: 400;
+  color: #f2f3e5; margin: 0 0 2px; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: -0.3px;
+}
+.audio-row-meta {
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: #737472; margin: 0;
+}
+.audio-row-play {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 120ms;
+}
+.audio-row-play:hover { background: rgba(255,255,255,0.18); }
+
+/* Equalizer bars */
+.eq-bars {
+  display: flex; align-items: flex-end; gap: 3px;
+  height: 18px; margin-bottom: 6px;
+}
+.eq-bar {
+  width: 3px; border-radius: 2px; background: #f2f3e5;
+  animation: eq-bounce 1.1s ease-in-out infinite alternate;
+}
+.eq-bar:nth-child(1) { height: 8px;  animation-delay: 0s;    animation-duration: 0.9s; }
+.eq-bar:nth-child(2) { height: 14px; animation-delay: 0.15s; animation-duration: 1.1s; }
+.eq-bar:nth-child(3) { height: 18px; animation-delay: 0.3s;  animation-duration: 0.8s; }
+.eq-bar:nth-child(4) { height: 11px; animation-delay: 0.1s;  animation-duration: 1.2s; }
+.eq-bar:nth-child(5) { height: 16px; animation-delay: 0.4s;  animation-duration: 1s;   }
+.eq-bar:nth-child(6) { height: 7px;  animation-delay: 0.25s; animation-duration: 0.85s;}
+
+@keyframes eq-bounce {
+  from { transform: scaleY(0.3); }
+  to   { transform: scaleY(1); }
+}
+
+/* Journal circle tile */
+.cat-tile-journal {
+  border-radius: 50% !important;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 60px; box-sizing: border-box;
+}
+.journal-tile-prompt {
+  font-family: var(--font-body); font-size: 32px; font-weight: 500; color: #f2f3e5;
+  line-height: 1.15; letter-spacing: -0.5px; margin: 0;
+  text-align: center;
+}
+.journal-tile-source {
+  font-family: var(--font-body); font-size: 13px;
+  color: rgba(242,243,229,0.4); margin: 16px 0 0; text-align: center;
+}
+
 .cat-tile-art {
   position: absolute; inset: 0;
 }
 .cat-tile-art img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover; object-position: left center; display: block;
+}
+
+/* ─── Audio full-width info bar ─────────────────────── */
+.cat-info-audio {
+  position: absolute; bottom: 12px; left: 12px; right: 12px;
+  background: #36363f; border-radius: 12px;
+  padding: 8px;
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 2;
+}
+.cat-info-audio-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-body); font-size: 18px; font-weight: 500; color: #f2f3e5;
+  letter-spacing: -0.2px;
+}
+.cat-info-audio-meta .sparks {
+  display: flex; align-items: center; gap: 4px;
+}
+.cat-info-audio-bottom {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 8px;
+}
+.cat-info-audio-play {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(255,255,255,0.15); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 120ms;
+}
+.cat-info-audio-play:hover { background: rgba(255,255,255,0.25); }
+
+/* ─── Collectible overlay ────────────────────────────── */
+.coll-overlay {
+  position: absolute; inset: 0; z-index: 52;
+  background: #b38aff; border-radius: 20px; overflow: hidden;
+  display: none;
+}
+.coll-overlay-cloud {
+  position: absolute;
+  width: 1499px; height: 937px;
+  left: -203px; top: 55px;
+  pointer-events: none; z-index: 1;
+  transform-origin: center center;
+}
+.coll-overlay-cloud img { width: 100%; height: 100%; display: block; }
+.coll-overlay-cloud.from-cat { transform: scale(3); }
+.coll-overlay-cloud.entered {
+  transform: scale(1);
+  transition: transform 900ms cubic-bezier(0.75,0,0.3,0.99);
+}
+.coll-overlay-cloud.exiting {
+  transform: scale(3);
+  transition: transform 900ms cubic-bezier(0.75,0,0.3,0.99);
+}
+.coll-overlay-content {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 36px; z-index: 5;
+  padding: 100px 80px 0; box-sizing: border-box;
+}
+.coll-overlay-content.from-cat { opacity: 0; transform: translateY(400px); }
+.coll-overlay-content.entered {
+  opacity: 1; transform: translateY(0);
+  transition: transform 900ms cubic-bezier(0.75,0,0.3,0.99), opacity 900ms cubic-bezier(0.75,0,0.3,0.99);
+}
+.coll-overlay-content.exiting {
+  opacity: 0; transform: translateY(400px);
+  transition: transform 900ms cubic-bezier(0.75,0,0.3,0.99), opacity 900ms cubic-bezier(0.75,0,0.3,0.99);
+}
+.coll-overlay-back {
+  position: absolute; top: 48px; left: 24px; z-index: 20;
+  width: 48px; height: 48px; border-radius: 8px;
+  background: rgba(255,255,255,0.16); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+}
+.coll-overlay-card {
+  width: 240px; height: 240px; border-radius: 16px;
+  overflow: hidden; border: 1px solid #444450; flex-shrink: 0;
+}
+.coll-overlay-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.coll-overlay-text {
+  width: 627px;
+  font-family: var(--font-display); font-weight: 400; font-size: 80px; line-height: 1.06;
+  letter-spacing: 1.5px; color: #f2f3e5; text-align: center; margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* ─── Heart button ───────────────────────────────────── */
@@ -119,6 +365,7 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
 .cat-info-title {
   font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.12;
   color: #f2f3e5; letter-spacing: -0.4px; margin: 0;
+  text-transform: none;
 }
 
 </style>
@@ -141,9 +388,94 @@ body { background: #0a0a0f; overflow: hidden; margin: 0; }
   <div class="cat-scroll">
     <div class="cat-inner">
       <h1 class="cat-title" id="catTitle">Category</h1>
+      <div class="type-tabs" id="typeTabs">
+        <button class="type-tab active" onclick="setTypeTab('Video', this)">Watch</button>
+        <button class="type-tab" onclick="setTypeTab('Guided Audio', this)">Listen</button>
+        <button class="type-tab" onclick="setTypeTab('Talent Quote', this)">Get inspired</button>
+        <button class="type-tab" onclick="setTypeTab('Mindful Moment', this)">Slow down</button>
+        <button class="type-tab" onclick="setTypeTab('Journal Prompt', this)">Write</button>
+      </div>
       <div class="cat-grid" id="catGrid"></div>
     </div>
   </div>
+
+  <!-- ── Audio player overlay ──────────────────────── -->
+  <div id="audioPlayer" style="display:flex; visibility:hidden; opacity:0; position:absolute; inset:0; z-index:50; border-radius:20px; overflow:hidden; flex-direction:column; transition:opacity 180ms ease;">
+
+    <!-- bg color + floating circles -->
+    <div id="apBg" style="position:absolute; inset:0;">
+      <svg id="apCircles" viewBox="0 0 450 450" preserveAspectRatio="xMidYMid slice" fill="none" style="position:absolute;inset:0;width:100%;height:100%;"></svg>
+    </div>
+
+    <!-- back button -->
+    <button onclick="closeAudioPlayer()" style="position:absolute;top:40px;left:32px;z-index:2;width:48px;height:48px;border-radius:12px;background:rgba(0,0,0,0.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#1f1f25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <!-- title area -->
+    <div style="position:absolute;top:48px;left:96px;right:48px;z-index:2;">
+      <p id="apSource" style="font-family:var(--font-body);font-size:16px;font-weight:500;color:rgba(0,0,0,0.45);margin:0 0 4px;"></p>
+      <h2 id="apTitle" style="font-family:var(--font-display);font-size:48px;font-weight:400;color:rgba(0,0,0,0.75);margin:0;line-height:1.1;letter-spacing:-1px;"></h2>
+    </div>
+
+    <!-- progress + waveform -->
+    <div style="position:absolute;bottom:180px;left:48px;right:48px;z-index:2;">
+      <svg id="apWaveform" width="100%" height="48" viewBox="0 0 1098 48" preserveAspectRatio="none" style="display:block;margin-bottom:8px;"></svg>
+      <input id="apSeek" type="range" min="0" max="100" value="0" step="0.1"
+        style="width:100%;height:4px;-webkit-appearance:none;appearance:none;background:rgba(0,0,0,0.2);border-radius:2px;outline:none;cursor:pointer;accent-color:rgba(0,0,0,0.5);"
+        oninput="apSeekTo(this.value)" />
+      <div style="display:flex;justify-content:space-between;margin-top:8px;">
+        <span id="apCurrent" style="font-family:var(--font-body);font-size:14px;font-weight:500;color:rgba(0,0,0,0.5);">0:00</span>
+        <span id="apTotal" style="font-family:var(--font-body);font-size:14px;font-weight:500;color:rgba(0,0,0,0.5);">--:--</span>
+      </div>
+    </div>
+
+    <!-- complete button -->
+    <button onclick="goToFeedback()" style="position:absolute;top:40px;right:32px;z-index:2;background:rgba(0,0,0,0.12);border:none;border-radius:12px;padding:14px 28px;color:rgba(0,0,0,0.65);font-family:var(--font-body);font-size:18px;font-weight:600;cursor:pointer;">Complete</button>
+
+    <!-- controls -->
+    <div style="position:absolute;bottom:48px;left:48px;right:48px;z-index:2;display:flex;gap:16px;">
+      <button onclick="apSkip(-15)" id="apBtnBack" style="flex:1;height:80px;border-radius:20px;background:rgba(0,0,0,0.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 120ms;">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M10 8v16M10 16l12-8v16L10 16z" stroke="rgba(0,0,0,0.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button onclick="apTogglePlay()" id="apBtnPlay" style="flex:1;height:80px;border-radius:20px;background:rgba(0,0,0,0.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 120ms;">
+        <svg id="apPlayIcon" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 6l18 10L8 26V6z" fill="rgba(0,0,0,0.65)"/></svg>
+      </button>
+      <button onclick="apSkip(15)" style="flex:1;height:80px;border-radius:20px;background:rgba(0,0,0,0.12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 120ms;">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M22 8v16M22 16L10 8v16l12-8z" stroke="rgba(0,0,0,0.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ── Collectible overlay ───────────────────────── -->
+  <div class="coll-overlay" id="collOverlay">
+    <div class="sb"><span>9:41 Mon Jun 6</span><span>100% 🔋</span></div>
+    <div class="coll-overlay-cloud" id="collCloud">
+      <img src="./components/cloud-1.svg" alt="">
+    </div>
+    <button class="coll-overlay-back" onclick="closeCollOverlay()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M12.5 15.8334L6.66667 10L12.5 4.16669" stroke="#f2f3e5" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="coll-overlay-content" id="collContent">
+      <div class="coll-overlay-card">
+        <img id="collOverlayImg" src="" alt="">
+      </div>
+      <h1 class="coll-overlay-text" id="collOverlayText"></h1>
+    </div>
+  </div>
+
+  <!-- ── Video player overlay ──────────────────────── -->
+  <div id="videoPlayer" style="display:flex; visibility:hidden; opacity:0; position:absolute; inset:0; z-index:51; border-radius:20px; overflow:hidden; background:#000; flex-direction:column; align-items:center; justify-content:center; transition:opacity 180ms ease;">
+    <video id="vpVideo" style="width:100%;height:100%;object-fit:contain;" playsinline controls></video>
+    <button onclick="closeVideoPlayer()" style="position:absolute;top:40px;left:32px;z-index:2;width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button onclick="goToFeedback()" style="position:absolute;bottom:40px;right:32px;z-index:2;background:rgba(255,255,255,0.18);border:none;border-radius:12px;padding:14px 28px;color:#fff;font-family:var(--font-body);font-size:18px;font-weight:600;cursor:pointer;">Complete</button>
+  </div>
+
 
 </div>
 </div>
@@ -155,91 +487,291 @@ function scale() {
 }
 scale(); addEventListener('resize', scale);
 
-const CATEGORIES = {
-  'calm-down': {
-    title: 'Calm down',
-    videos: [
-      { bg: '#d0e8f5', art: './components/01-thumbnail.png', title: 'Aurora Strauss: Calm in the crash', duration: '2:14', sparks: 1 },
-      { bg: '#b8ddd0', art: './components/02-thumbnail.png', title: 'Box breathing with Dr. Sarah Lin',   duration: '3:00', sparks: 1 },
-      { bg: '#c8d8e8', art: './components/04-thumbnail.png', title: 'Cold water reset: 60 seconds',       duration: '1:00', sparks: 1 },
-      { bg: '#a0c8d8', art: './components/06-thumbnail.png', title: 'Progressive muscle release',         duration: '4:30', sparks: 2 },
-    ],
-  },
-  'boost-energy': {
-    title: 'Boost energy',
-    videos: [
-      { bg: '#fff9dd', art: './components/02-thumbnail.png', title: 'Zalia: Daring to be uniquely you',   duration: '1:07', sparks: 1 },
-      { bg: '#f8d9d0', art: './components/03-thumbnail.png', title: 'Karl Anthony Tawns: Morning fire',   duration: '1:07', sparks: 1 },
-      { bg: '#c4a3ff', art: './components/04-thumbnail.png', title: 'Jim Kwik: Power your brain',         duration: '2:00', sparks: 1 },
-      { bg: '#fce3bb', art: './components/06-thumbnail.png', title: 'Wim Hof: The ice man breathes',      duration: '3:15', sparks: 2 },
-    ],
-  },
-  'feel-good': {
-    title: 'Feel good',
-    videos: [
-      { bg: '#f8b3b8', art: './components/01-thumbnail.png', title: 'Gratitude unlock: 3 minutes',       duration: '3:00', sparks: 1 },
-      { bg: '#c8efd8', art: './components/03-thumbnail.png', title: 'Mel Robbins: The high five habit',   duration: '1:30', sparks: 1 },
-      { bg: '#fde8d0', art: './components/04-thumbnail.png', title: 'Body scan for self-compassion',      duration: '5:00', sparks: 2 },
-      { bg: '#f4c0d0', art: './components/06-thumbnail.png', title: 'Dance break: just 2 minutes',        duration: '2:00', sparks: 1 },
-    ],
-  },
-  'focus': {
-    title: 'Focus',
-    videos: [
-      { bg: '#b8c0ed', art: './components/02-thumbnail.png', title: 'Deep work: single task flow',        duration: '2:00', sparks: 1 },
-      { bg: '#8898d8', art: './components/03-thumbnail.png', title: 'Huberman: Eye focus drill',          duration: '1:45', sparks: 1 },
-      { bg: '#6878b8', art: './components/04-thumbnail.png', title: 'Pomodoro intro with Ali Abdaal',     duration: '3:00', sparks: 2 },
-      { bg: '#98a8c8', art: './components/01-thumbnail.png', title: '4-7-8 breath for mental clarity',    duration: '2:30', sparks: 1 },
-    ],
-  },
-  'wind-down': {
-    title: 'Wind down',
-    videos: [
-      { bg: '#c4a3ff', art: './components/01-thumbnail.png', title: 'Sleep story: forest at dusk',        duration: '5:00', sparks: 2 },
-      { bg: '#d8b8f0', art: './components/02-thumbnail.png', title: 'Matthew Walker: Wind-down ritual',   duration: '2:30', sparks: 1 },
-      { bg: '#a880e8', art: './components/03-thumbnail.png', title: 'Yoga nidra: full body let go',       duration: '8:00', sparks: 3 },
-      { bg: '#8060c0', art: './components/06-thumbnail.png', title: 'Phone-free evening: 10 tips',        duration: '1:30', sparks: 1 },
-    ],
-  },
+const CAT_TITLES = {
+  'calm-down': 'Calm down', 'boost-energy': 'Boost energy',
+  'feel-good': 'Feel good', 'focus': 'Focus', 'wind-down': 'Wind down',
 };
-
 const params = new URLSearchParams(location.search);
 const catKey = params.get('cat') || 'boost-energy';
-const cat = CATEGORIES[catKey] || CATEGORIES['boost-energy'];
+document.getElementById('catTitle').textContent = CAT_TITLES[catKey] || 'Browse';
+document.title = 'Blueprint — ' + (CAT_TITLES[catKey] || 'Browse');
 
-document.getElementById('catTitle').textContent = cat.title;
-document.title = 'Blueprint — ' + cat.title;
+var _allItems = [];
+var _activeType = 'Video';
 
-const grid = document.getElementById('catGrid');
-const rows = [cat.videos.slice(0, 2), cat.videos.slice(2, 4)];
+fetch('/toolkit-sample.json', { cache: 'no-cache' })
+  .then(function(r) { return r.json(); })
+  .then(function(data) { _allItems = data; renderGrid(); })
+  .catch(function() {});
 
-rows.forEach((row, ri) => {
-  const rowEl = document.createElement('div');
-  rowEl.className = 'cat-row';
-  row.forEach((v, ci) => {
-    const vid = catKey + '-' + (ri * 2 + ci);
-    const div = document.createElement('div');
-    div.className = 'cat-tile';
-    div.style.background = v.bg;
-    div.innerHTML = `
-      <div class="cat-tile-art"><img src="${v.art}" alt=""></div>
-      <div class="cat-heart" data-vid="${vid}" onclick="toggleHeart(this)">
-        <img src="./components/heart-default.svg" alt="save">
-      </div>
-      <div class="cat-info">
-        <div class="cat-info-meta">
-          <span>${v.duration}</span>
-          <span class="cat-info-sparks">${v.sparks} <img src="./components/spark-color.svg" alt="spark"></span>
-        </div>
-        <p class="cat-info-title">${v.title}</p>
-      </div>`;
-    rowEl.appendChild(div);
+function setTypeTab(type, btn) {
+  _activeType = type;
+  document.querySelectorAll('.type-tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function renderGrid() {
+  var grid = document.getElementById('catGrid');
+  var items = _activeType === 'all'
+    ? _allItems
+    : _allItems.filter(function(it) { return it.type === _activeType; });
+
+  grid.innerHTML = '';
+
+  if (_activeType === 'Journal Prompt') {
+    // path layout: center · pair · left · right · pair · pair · repeat
+    var pattern = ['center', 'pair', 'left', 'right', 'pair', 'pair'];
+    var pi = 0, patIdx = 0;
+    while (pi < items.length) {
+      var ptype = pattern[patIdx % pattern.length];
+      var rowEl = document.createElement('div');
+      rowEl.className = 'cat-row';
+      if (ptype === 'pair') {
+        var chunk = items.slice(pi, pi + 2);
+        chunk.forEach(function(item, k) { rowEl.appendChild(buildTile(item, pi + k)); });
+        pi += chunk.length;
+      } else {
+        rowEl.style.justifyContent = ptype === 'center' ? 'center' : ptype === 'left' ? 'flex-start' : 'flex-end';
+        rowEl.appendChild(buildTile(items[pi], pi));
+        pi++;
+      }
+      grid.appendChild(rowEl);
+      patIdx++;
+    }
+    return;
+  }
+
+  var i = 0;
+  while (i < items.length) {
+    var rowEl = document.createElement('div');
+    rowEl.className = 'cat-row';
+    var chunk = items.slice(i, i + 2);
+    chunk.forEach(function(item, idx) {
+      rowEl.appendChild(buildTile(item, i + idx));
+    });
+    grid.appendChild(rowEl);
+    i += 2;
+  }
+}
+
+function sc(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s; }
+
+function buildTile(item, idx) {
+  var div = document.createElement('div');
+  div.className = 'cat-tile';
+  var esc = function(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); };
+
+  if (item.type === 'Video') {
+    div.style.background = '#0d0d14';
+    var thumbHtml = item.thumbnail
+      ? '<img src="' + esc(item.thumbnail) + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.7;" alt="">'
+      : '';
+    div.innerHTML =
+      thumbHtml
+      + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">'
+        + '<div style="width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;">'
+        + '<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M8 5l16 9-16 9V5z" fill="#fff"/></svg>'
+        + '</div></div>'
+      + '<button class="cat-heart" onclick="event.stopPropagation();toggleHeart(this)"><img src="./components/heart-default.svg" alt="save"></button>'
+      + '<div class="cat-info">'
+        + '<div class="cat-info-meta"><span>' + (item.duration ? item.duration + ' min' : '1 min') + '</span>'
+        + '<span class="cat-info-sparks">1 <img src="./components/spark-color.svg" alt="spark"></span></div>'
+        + '<p class="cat-info-title">' + esc(sc(item.title)) + '</p>'
+      + '</div>';
+    (function(capturedItem) { div.onclick = function() { openVideoPlayer(capturedItem); }; })(item);
+
+  } else if (item.type === 'Guided Audio') {
+    var palettes = [
+      { bg: '#fff9dd', c1: '#f5c200', c2: '#ffdf70' },
+      { bg: '#f8d9d0', c1: '#d44a0a', c2: '#f09060' },
+      { bg: '#c4a3ff', c1: '#7040c8', c2: '#9f70e8' },
+      { bg: '#fce3bb', c1: '#e88a00', c2: '#f5b83a' },
+      { bg: '#c8f0d8', c1: '#2a9d5c', c2: '#68d898' },
+    ];
+    var p = palettes[idx % palettes.length];
+    div.style.background = p.bg;
+    var layouts = [
+      '<circle cx="30" cy="430" r="290" fill="IDX_C1" opacity="0.9"/><circle cx="370" cy="80" r="140" fill="IDX_C2" opacity="0.75"/><circle cx="430" cy="260" r="70" fill="IDX_C2" opacity="0.4"/>',
+      '<circle cx="460" cy="-20" r="300" fill="IDX_C2" opacity="0.85"/><circle cx="80" cy="400" r="110" fill="IDX_C1" opacity="0.8"/><circle cx="180" cy="200" r="55" fill="IDX_C2" opacity="0.35"/>',
+      '<circle cx="160" cy="160" r="250" fill="IDX_C1" opacity="0.88"/><circle cx="430" cy="430" r="160" fill="IDX_C2" opacity="0.7"/><circle cx="30" cy="30" r="60" fill="IDX_C2" opacity="0.45"/>',
+      '<circle cx="50" cy="100" r="200" fill="IDX_C2" opacity="0.8"/><circle cx="300" cy="420" r="220" fill="IDX_C1" opacity="0.85"/><circle cx="400" cy="80" r="65" fill="IDX_C1" opacity="0.4"/>',
+      '<circle cx="420" cy="420" r="260" fill="IDX_C1" opacity="0.9"/><circle cx="100" cy="60" r="130" fill="IDX_C2" opacity="0.75"/><circle cx="60" cy="280" r="55" fill="IDX_C2" opacity="0.4"/>',
+    ];
+    var svgShapes = layouts[idx % layouts.length].replace(/IDX_C1/g, p.c1).replace(/IDX_C2/g, p.c2);
+    div.innerHTML =
+      '<div class="audio-cover-art">'
+        + '<svg width="450" height="450" viewBox="0 0 450 450" fill="none">' + svgShapes + '</svg>'
+      + '</div>'
+      + '<button class="cat-heart" onclick="event.stopPropagation();toggleHeart(this)"><img src="./components/heart-default.svg" alt="save"></button>'
+      + '<div class="cat-info-audio">'
+        + '<div class="cat-info-audio-meta">'
+          + '<span>' + (item.duration ? item.duration + ' min' : '1 min') + '</span>'
+          + '<span class="sparks">1 <img src="./components/spark-color.svg" style="width:14px;height:14px;vertical-align:middle;" alt="spark"></span>'
+        + '</div>'
+        + '<div class="cat-info-audio-bottom">'
+          + '<p class="cat-info-title" style="margin:0;flex:1;min-width:0;">' + esc(sc(item.title)) + '</p>'
+          + '<button class="cat-info-audio-play">'
+            + '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1.5l8 5.5-8 5.5V1.5z" fill="#f2f3e5"/></svg>'
+          + '</button>'
+        + '</div>'
+      + '</div>';
+    (function(capturedItem, capturedP, capturedShapes) {
+      div.onclick = function() { openAudioPlayer(capturedItem, capturedP, capturedShapes); };
+    })(item, p, svgShapes);
+
+  } else if (item.type === 'Talent Quote') {
+    var hexColors = ['#E65800', '#3F50B8', '#E768B0', '#219653', '#FDDA3C', '#7040C8', '#56CCF2'];
+    div.classList.add('is-hex');
+    div.innerHTML =
+      '<div class="hex-shape" style="background:' + hexColors[(idx * 3) % hexColors.length] + ';">'
+        + '<div class="shape-photo-frame"><img class="shape-photo" src="' + esc(item.url) + '" alt=""></div>'
+      + '</div>'
+      + '<div class="cat-info-centered">'
+        + '<div class="cat-info-centered-spark">1 <img src="./components/spark-color.svg" alt=""></div>'
+        + '<p class="cat-info-title" style="margin:0;text-align:center;">' + esc(sc(item.title)) + '</p>'
+      + '</div>';
+    (function(capturedItem) { div.onclick = function() { openCollOverlay(capturedItem); }; })(item);
+
+  } else if (item.type === 'Mindful Moment') {
+    var houseColors = ['#E65800', '#3F50B8', '#E768B0', '#219653', '#FDDA3C', '#7040C8', '#56CCF2'];
+    div.classList.add('is-house');
+    div.innerHTML =
+      '<div class="house-shape" style="background:' + houseColors[idx % houseColors.length] + ';">'
+        + '<div class="house-photo-frame"><img class="shape-photo house-photo" src="' + esc(item.url) + '" alt=""></div>'
+      + '</div>'
+      + '<div class="cat-info-centered">'
+        + '<div class="cat-info-centered-spark">1 <img src="./components/spark-color.svg" alt=""></div>'
+        + '<p class="cat-info-title" style="margin:0;text-align:center;">' + esc(sc(item.title)) + '</p>'
+      + '</div>';
+    (function(capturedItem) { div.onclick = function() { openCollOverlay(capturedItem); }; })(item);
+
+  } else if (item.type === 'Journal Prompt') {
+    var journalColors = ['#E65800', '#3F50B8', '#E768B0', '#219653', '#7040C8', '#56CCF2'];
+    div.classList.add('cat-tile-journal');
+    div.style.background = journalColors[(idx * 5) % journalColors.length];
+    div.innerHTML =
+      '<p class="journal-tile-prompt">' + esc(item.title) + '</p>'
+      + (item.source ? '<p class="journal-tile-source">— ' + esc(item.source) + '</p>' : '');
+  }
+
+  return div;
+}
+
+// ── Audio player ────────────────────────────────────────
+var _apAudio = null;
+var _apTimer = null;
+
+function openAudioPlayer(item, palette, svgShapes) {
+  var overlay = document.getElementById('audioPlayer');
+  document.getElementById('apBg').style.background = palette.bg;
+  document.getElementById('apCircles').innerHTML = svgShapes;
+  // Title + source
+  document.getElementById('apTitle').textContent = item.title;
+  document.getElementById('apSource').textContent = item.source || '';
+  // Waveform (static decorative bars)
+  var bars = ''; var w = 1098; var bw = 4; var gap = 5; var n = Math.floor(w / (bw + gap));
+  var heights = [8,14,22,30,18,38,24,16,42,28,12,36,20,44,10,32,26,40,18,34,22,48,16,30,8,38,24,20,44,14];
+  for (var i = 0; i < n; i++) {
+    var h = heights[i % heights.length];
+    var x = i * (bw + gap);
+    bars += '<rect x="' + x + '" y="' + (48-h)/2 + '" width="' + bw + '" height="' + h + '" rx="2" fill="rgba(0,0,0,0.2)"/>';
+  }
+  document.getElementById('apWaveform').innerHTML = bars;
+  // Audio
+  if (_apAudio) { _apAudio.pause(); clearInterval(_apTimer); }
+  _apAudio = new Audio(item.url);
+  _apAudio.addEventListener('loadedmetadata', function() {
+    document.getElementById('apTotal').textContent = apFmt(_apAudio.duration);
   });
-  grid.appendChild(rowEl);
-});
+  _apAudio.addEventListener('ended', function() { apSetPlayIcon(false); goToFeedback(); });
+  _apTimer = setInterval(function() {
+    if (!_apAudio || !_apAudio.duration) return;
+    var pct = (_apAudio.currentTime / _apAudio.duration) * 100;
+    document.getElementById('apSeek').value = pct;
+    document.getElementById('apCurrent').textContent = apFmt(_apAudio.currentTime);
+  }, 500);
+  overlay.style.visibility = 'visible';
+  overlay.style.opacity = '1';
+  _apAudio.play();
+  apSetPlayIcon(true);
+}
+
+function closeAudioPlayer() {
+  if (_apAudio) { _apAudio.pause(); clearInterval(_apTimer); }
+  var overlay = document.getElementById('audioPlayer');
+  overlay.style.opacity = '0';
+  overlay.style.visibility = 'hidden';
+}
+
+function openCollOverlay(item) {
+  var overlay = document.getElementById('collOverlay');
+  var cloud = document.getElementById('collCloud');
+  var content = document.getElementById('collContent');
+  document.getElementById('collOverlayImg').src = item.url;
+  document.getElementById('collOverlayText').textContent = sc(item.title);
+  overlay.style.display = 'block';
+  cloud.className = 'coll-overlay-cloud from-cat';
+  content.className = 'coll-overlay-content from-cat';
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      cloud.classList.add('entered');
+      content.classList.add('entered');
+    });
+  });
+}
+
+function closeCollOverlay() {
+  var cloud = document.getElementById('collCloud');
+  var content = document.getElementById('collContent');
+  cloud.classList.add('exiting');
+  content.classList.add('exiting');
+  setTimeout(function() {
+    var overlay = document.getElementById('collOverlay');
+    overlay.style.display = 'none';
+    cloud.className = 'coll-overlay-cloud';
+    content.className = 'coll-overlay-content';
+  }, 900);
+}
+
+function goToFeedback() {
+  window.location.href = 'toolkit-video.html?feedback=1&to=s-helpful';
+}
+function openVideoPlayer(item) {
+  var vp = document.getElementById('videoPlayer');
+  var vid = document.getElementById('vpVideo');
+  vid.src = item.url;
+  vid.onended = goToFeedback;
+  vp.style.visibility = 'visible';
+  vp.style.opacity = '1';
+  vid.play();
+}
+function closeVideoPlayer() {
+  var vp = document.getElementById('videoPlayer');
+  var vid = document.getElementById('vpVideo');
+  vid.pause();
+  vid.src = '';
+  vp.style.opacity = '0';
+  vp.style.visibility = 'hidden';
+}
+
+function apTogglePlay() {
+  if (!_apAudio) return;
+  if (_apAudio.paused) { _apAudio.play(); apSetPlayIcon(true); }
+  else { _apAudio.pause(); apSetPlayIcon(false); }
+}
+
+function apSkip(sec) { if (_apAudio) _apAudio.currentTime = Math.max(0, _apAudio.currentTime + sec); }
+function apSeekTo(pct) { if (_apAudio && _apAudio.duration) _apAudio.currentTime = (pct / 100) * _apAudio.duration; }
+function apFmt(s) { var m = Math.floor(s/60); var sec = Math.floor(s%60); return m + ':' + (sec<10?'0':'') + sec; }
+function apSetPlayIcon(playing) {
+  document.getElementById('apPlayIcon').innerHTML = playing
+    ? '<path d="M10 6h4v20h-4V6zm8 0h4v20h-4V6z" fill="rgba(0,0,0,0.65)"/>'
+    : '<path d="M8 6l18 10L8 26V6z" fill="rgba(0,0,0,0.65)"/>';
+}
 
 function toggleHeart(btn) {
-  const img = btn.querySelector('img');
+  var img = btn.querySelector('img');
   if (btn.classList.contains('saved')) {
     btn.classList.remove('saved');
     img.src = './components/heart-default.svg';
